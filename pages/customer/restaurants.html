@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants - TasteNow</title>
+
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow
+            </a>
+
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="../../index.html" class="navbar-link">Home</a>
+                <a href="restaurants.html" class="navbar-link active">Restaurants</a>
+                <a href="foods.html" class="navbar-link">Foods</a>
+                <a href="about.html" class="navbar-link">About</a>
+                <a href="contact.html" class="navbar-link">Contact</a>
+            </div>
+
+            <div class="navbar-actions">
+                <a href="cart.html" class="navbar-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="navbar-badge">3</span>
+                </a>
+                <a href="order-history.html" class="navbar-icon">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mt-xl mb-xl">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <div class="breadcrumb-item">
+                <a href="../../index.html">Home</a>
+            </div>
+            <div class="breadcrumb-item">Restaurants</div>
+        </div>
+
+        <h1 class="mb-lg">All Restaurants</h1>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="filter-item">
+                <input type="text" class="form-control" placeholder="Search restaurants...">
+            </div>
+
+            <div class="filter-item">
+                <select class="form-control">
+                    <option>All Cuisines</option>
+                    <option>Indian</option>
+                    <option>Chinese</option>
+                    <option>Italian</option>
+                    <option>American</option>
+                    <option>Japanese</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <select class="form-control">
+                    <option>Sort By: Recommended</option>
+                    <option>Rating: High to Low</option>
+                    <option>Delivery Time</option>
+                    <option>Price: Low to High</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+        </div>
+
+        <!-- Restaurant Grid -->
+        <div class="grid grid-3">
+            <!-- Restaurant Cards (Repeat) -->
+            <div class="card restaurant-card">
+                <div style="position: relative;">
+                    <img src="https://via.placeholder.com/400x200?text=Restaurant" alt="Restaurant" class="card-img">
+                    <span class="restaurant-badge">Open Now</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Spice Palace</h3>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star-half-alt rating-star"></i>
+                        <span class="text-muted">(4.5)</span>
+                    </div>
+                    <p class="card-text">Indian • Asian • Curry</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>30-40 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$$ - $$$</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="menu.html" class="btn btn-primary btn-block">View Menu</a>
+                </div>
+            </div>
+
+            <!-- Add 5 more restaurant cards with different data -->
+            <div class="card restaurant-card">
+                <div style="position: relative;">
+                    <img src="https://via.placeholder.com/400x200?text=Restaurant" alt="Restaurant" class="card-img">
+                    <span class="restaurant-badge">Open Now</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Burger Haven</h3>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="far fa-star rating-star"></i>
+                        <span class="text-muted">(4.0)</span>
+                    </div>
+                    <p class="card-text">American • Burgers • Fast Food</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>20-30 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$ - $$</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="menu.html" class="btn btn-primary btn-block">View Menu</a>
+                </div>
+            </div>
+
+            <div class="card restaurant-card">
+                <div style="position: relative;">
+                    <img src="https://via.placeholder.com/400x200?text=Restaurant" alt="Restaurant" class="card-img">
+                    <span class="restaurant-badge">Open Now</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Sushi Express</h3>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <span class="text-muted">(5.0)</span>
+                    </div>
+                    <p class="card-text">Japanese • Sushi • Asian</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>25-35 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$$$ - $$$$</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="menu.html" class="btn btn-primary btn-block">View Menu</a>
+                </div>
+            </div>
+
+            <div class="card restaurant-card">
+                <div style="position: relative;">
+                    <img src="https://via.placeholder.com/400x200?text=Restaurant" alt="Restaurant" class="card-img">
+                    <span class="restaurant-badge" style="background-color: var(--medium-gray);">Closed</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Pizza Paradise</h3>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="far fa-star rating-star"></i>
+                        <span class="text-muted">(4.2)</span>
+                    </div>
+                    <p class="card-text">Italian • Pizza • Pasta</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>35-45 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$$ - $$$</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="menu.html" class="btn btn-outline btn-block">View Menu</a>
+                </div>
+            </div>
+
+            <div class="card restaurant-card">
+                <div style="position: relative;">
+                    <img src="https://via.placeholder.com/400x200?text=Restaurant" alt="Restaurant" class="card-img">
+                    <span class="restaurant-badge">Open Now</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Taco Fiesta</h3>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <span class="text-muted">(4.8)</span>
+                    </div>
+                    <p class="card-text">Mexican • Tacos • Burritos</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>15-25 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$ - $$</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="menu.html" class="btn btn-primary btn-block">View Menu</a>
+                </div>
+            </div>
+
+            <div class="card restaurant-card">
+                <div style="position: relative;">
+                    <img src="https://via.placeholder.com/400x200?text=Restaurant" alt="Restaurant" class="card-img">
+                    <span class="restaurant-badge">Open Now</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Noodle House</h3>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star-half-alt rating-star"></i>
+                        <span class="text-muted">(4.6)</span>
+                    </div>
+                    <p class="card-text">Chinese • Noodles • Asian</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>25-35 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$$ - $$$</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="menu.html" class="btn btn-primary btn-block">View Menu</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TasteNow</h3>
+                    <p>Your local food ordering platform.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3>For Restaurants</h3>
+                    <a href="#">Partner With Us</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> info@tastenow.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TasteNow. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/restaurant.js"></script>
+</body>
+
+</html>

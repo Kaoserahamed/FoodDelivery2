@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - TasteNow</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow
+            </a>
+            
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="../../index.html" class="navbar-link">Home</a>
+                <a href="restaurants.html" class="navbar-link">Restaurants</a>
+                <a href="#" class="navbar-link">About</a>
+                <a href="#" class="navbar-link">Contact</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <a href="cart.html" class="navbar-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="navbar-badge">3</span>
+                </a>
+                <a href="order-history.html" class="navbar-icon">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mt-xl mb-xl">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <div class="breadcrumb-item">
+                <a href="../../index.html">Home</a>
+            </div>
+            <div class="breadcrumb-item">Order History</div>
+        </div>
+
+        <h1 class="mb-lg">My Orders</h1>
+
+        <!-- Filter Tabs -->
+        <div class="nav-pills">
+            <div class="nav-pill active">All Orders</div>
+            <div class="nav-pill">In Progress</div>
+            <div class="nav-pill">Delivered</div>
+            <div class="nav-pill">Cancelled</div>
+        </div>
+
+        <!-- Order Cards -->
+        <!-- Order 1 -->
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <p class="order-id">Order #12345</p>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">
+                        <i class="fas fa-calendar"></i> Dec 20, 2024 • 2:30 PM
+                    </p>
+                </div>
+                <span class="badge badge-warning">In Progress</span>
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-md);">
+                <p class="fw-semibold">Spice Palace</p>
+                <p class="text-muted" style="font-size: var(--font-size-sm);">
+                    <i class="fas fa-map-marker-alt"></i> 123 Main Street, Apt 4B
+                </p>
+            </div>
+
+            <div class="order-items">
+                <div class="order-item">
+                    <span>2x Butter Chicken</span>
+                    <span>$29.98</span>
+                </div>
+                <div class="order-item">
+                    <span>3x Garlic Naan</span>
+                    <span>$11.97</span>
+                </div>
+                <div class="order-item">
+                    <span>2x Mango Lassi</span>
+                    <span>$7.98</span>
+                </div>
+            </div>
+
+            <div class="order-footer">
+                <div>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">Total Amount</p>
+                    <p class="price">$57.91</p>
+                </div>
+                <div class="d-flex gap-sm">
+                    <button class="btn btn-outline btn-sm">Track Order</button>
+                    <button class="btn btn-primary btn-sm">Reorder</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order 2 -->
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <p class="order-id">Order #12344</p>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">
+                        <i class="fas fa-calendar"></i> Dec 18, 2024 • 7:15 PM
+                    </p>
+                </div>
+                <span class="badge badge-success">Delivered</span>
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-md);">
+                <p class="fw-semibold">Burger Haven</p>
+                <p class="text-muted" style="font-size: var(--font-size-sm);">
+                    <i class="fas fa-map-marker-alt"></i> 123 Main Street, Apt 4B
+                </p>
+            </div>
+
+            <div class="order-items">
+                <div class="order-item">
+                    <span>1x Classic Burger</span>
+                    <span>$12.99</span>
+                </div>
+                <div class="order-item">
+                    <span>1x French Fries</span>
+                    <span>$4.99</span>
+                </div>
+                <div class="order-item">
+                    <span>1x Chocolate Shake</span>
+                    <span>$5.99</span>
+                </div>
+            </div>
+
+            <div class="order-footer">
+                <div>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">Total Amount</p>
+                    <p class="price">$28.95</p>
+                </div>
+                <div class="d-flex gap-sm">
+                    <button class="btn btn-outline btn-sm">Rate Order</button>
+                    <button class="btn btn-primary btn-sm">Reorder</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order 3 -->
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <p class="order-id">Order #12343</p>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">
+                        <i class="fas fa-calendar"></i> Dec 15, 2024 • 1:45 PM
+                    </p>
+                </div>
+                <span class="badge badge-success">Delivered</span>
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-md);">
+                <p class="fw-semibold">Sushi Express</p>
+                <p class="text-muted" style="font-size: var(--font-size-sm);">
+                    <i class="fas fa-map-marker-alt"></i> 123 Main Street, Apt 4B
+                </p>
+            </div>
+
+            <div class="order-items">
+                <div class="order-item">
+                    <span>2x California Roll</span>
+                    <span>$24.98</span>
+                </div>
+                <div class="order-item">
+                    <span>1x Miso Soup</span>
+                    <span>$3.99</span>
+                </div>
+                <div class="order-item">
+                    <span>1x Green Tea</span>
+                    <span>$2.99</span>
+                </div>
+            </div>
+
+            <div class="order-footer">
+                <div>
+                    <p class="text-muted" style="font-size: var(--font-size-sm);">Total Amount</p>
+                    <p class="price">$36.94</p>
+                </div>
+                <div class="d-flex gap-sm">
+                    <button class="btn btn-outline btn-sm">View Receipt</button>
+                    <button class="btn btn-primary btn-sm">Reorder</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default - show when no orders) -->
+        <!-- <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders yet. Start exploring restaurants!</p>
+            <a href="restaurants.html" class="btn btn-primary btn-lg mt-lg">Browse Restaurants</a>
+        </div> -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TasteNow</h3>
+                    <p>Your local food ordering platform.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3>For Restaurants</h3>
+                    <a href="#">Partner With Us</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> info@tastenow.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TasteNow. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/order.js"></script>
+</body>
+</html>

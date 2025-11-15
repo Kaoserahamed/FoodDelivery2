@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Restaurants - TasteNow Admin</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow Admin
+            </a>
+            
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="dashboard.html" class="navbar-link">Dashboard</a>
+                <a href="restaurants.html" class="navbar-link active">Restaurants</a>
+                <a href="users.html" class="navbar-link">Users</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <div class="navbar-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="navbar-badge">8</span>
+                </div>
+                <div class="navbar-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content with Sidebar -->
+    <div class="container">
+        <div class="layout-sidebar mt-xl mb-xl">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-menu">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="restaurants.html" class="sidebar-link active">
+                        <i class="fas fa-store"></i>
+                        <span>Restaurants</span>
+                    </a>
+                    <a href="users.html" class="sidebar-link">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mt-xl" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                    <h4 class="mb-md">Quick Actions</h4>
+                    <button class="btn btn-primary btn-block btn-sm mb-sm" onclick="openModal('addRestaurantModal')">
+                        <i class="fas fa-plus"></i> Add Restaurant
+                    </button>
+                    <button class="btn btn-secondary btn-block btn-sm" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Page Header -->
+                <div class="dashboard-header">
+                    <div class="d-flex justify-between align-center">
+                        <div>
+                            <h1>Manage Restaurants</h1>
+                            <p class="text-muted">View and manage all restaurant accounts</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('addRestaurantModal')">
+                            <i class="fas fa-plus"></i> Add New Restaurant
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                    <div class="stat-card" style="border-left-color: var(--primary-color);">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Total Restaurants</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--success-color);">
+                        <div class="stat-value">142</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--warning-color);">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--danger-color);">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Suspended</div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="card mt-lg">
+                    <div class="card-body" style="padding: var(--spacing-md);">
+                        <div class="d-flex gap-md align-center">
+                            <input type="text" class="form-control" placeholder="Search restaurants..." style="flex: 1;" id="searchInput">
+                            <select class="form-control" style="max-width: 200px;" id="filterStatus">
+                                <option value="all">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="suspended">Suspended</option>
+                            </select>
+                            <select class="form-control" style="max-width: 200px;" id="sortBy">
+                                <option>Sort by: Name A-Z</option>
+                                <option>Sort by: Name Z-A</option>
+                                <option>Sort by: Rating</option>
+                                <option>Sort by: Orders</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Restaurants Table -->
+                <div class="table-container mt-lg">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Logo</th>
+                                <th>Restaurant Name</th>
+                                <th>Owner</th>
+                                <th>Email</th>
+                                <th>Orders</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th style="width: 200px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="restaurantsTable">
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://via.placeholder.com/60?text=PP" alt="Logo" style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Pizza Palace</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Italian • 2.5 km away</p>
+                                    </div>
+                                </td>
+                                <td>Marco Rossi</td>
+                                <td>marco@pizzapalace.com</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">1,245</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <i class="fas fa-star" style="color: #FFD700;"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewRestaurant(1)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editRestaurant(1)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Suspend" onclick="suspendRestaurant(1)">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://via.placeholder.com/60?text=CH" alt="Logo" style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Curry House</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Indian • 1.8 km away</p>
+                                    </div>
+                                </td>
+                                <td>Raj Patel</td>
+                                <td>raj@curryhouse.com</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">980</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <i class="fas fa-star" style="color: #FFD700;"></i>
+                                        <span>4.6</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewRestaurant(2)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editRestaurant(2)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Suspend" onclick="suspendRestaurant(2)">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://via.placeholder.com/60?text=SS" alt="Logo" style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Sushi Supreme</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Japanese • 3.2 km away</p>
+                                    </div>
+                                </td>
+                                <td>Yuki Tanaka</td>
+                                <td>yuki@sushisupreme.com</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">745</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <i class="fas fa-star" style="color: #FFD700;"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewRestaurant(3)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editRestaurant(3)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Suspend" onclick="suspendRestaurant(3)">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="pending">
+                                <td>
+                                    <img src="https://via.placeholder.com/60?text=BB" alt="Logo" style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Burger Barn</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">American • 2.1 km away</p>
+                                    </div>
+                                </td>
+                                <td>John Smith</td>
+                                <td>john@burgerbarn.com</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">650</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <i class="fas fa-star" style="color: #FFD700;"></i>
+                                        <span>4.5</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-warning">Pending</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewRestaurant(4)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editRestaurant(4)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Reject" onclick="suspendRestaurant(4)">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://via.placeholder.com/60?text=TT" alt="Logo" style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Thai Tasty</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Thai • 1.5 km away</p>
+                                    </div>
+                                </td>
+                                <td>Somchai Thai</td>
+                                <td>somchai@thaitasty.com</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">520</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <i class="fas fa-star" style="color: #FFD700;"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewRestaurant(5)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editRestaurant(5)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Suspend" onclick="suspendRestaurant(5)">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Restaurant Modal -->
+    <div class="modal" id="addRestaurantModal">
+        <div class="modal-dialog" style="max-width: 600px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add New Restaurant</h2>
+                    <button class="modal-close" onclick="closeModal('addRestaurantModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveRestaurant(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Restaurant Name *</label>
+                                <input type="text" class="form-control" placeholder="Enter restaurant name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cuisine Type *</label>
+                                <input type="text" class="form-control" placeholder="e.g., Italian, Indian" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Owner Name *</label>
+                                <input type="text" class="form-control" placeholder="Enter owner name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-control" placeholder="owner@restaurant.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Phone *</label>
+                                <input type="tel" class="form-control" placeholder="Enter phone number" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">City *</label>
+                                <input type="text" class="form-control" placeholder="Enter city" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Address *</label>
+                            <textarea class="form-control" placeholder="Enter restaurant address" rows="2" required></textarea>
+                        </div>
+
+                        <div class="form-actions" style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                            <button type="submit" class="btn btn-primary">Add Restaurant</button>
+                            <button type="button" class="btn btn-outline" onclick="closeModal('addRestaurantModal')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div class="alert-toast" id="alertToast"></div>
+
+    <script>
+        // Modal Functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                e.target.classList.remove('active');
+            }
+        });
+
+        // Restaurant Management
+        function viewRestaurant(restaurantId) {
+            showAlert('Viewing restaurant #' + restaurantId, 'info');
+        }
+
+        function editRestaurant(restaurantId) {
+            showAlert('Edit functionality - Restaurant #' + restaurantId, 'info');
+            openModal('addRestaurantModal');
+        }
+
+        function suspendRestaurant(restaurantId) {
+            if (confirm('Are you sure you want to suspend this restaurant?')) {
+                showAlert('Restaurant suspended successfully', 'success');
+            }
+        }
+
+        // Save Restaurant
+        function saveRestaurant(e) {
+            e.preventDefault();
+            showAlert('Restaurant added successfully!', 'success');
+            closeModal('addRestaurantModal');
+            e.target.reset();
+        }
+
+        // Export Data
+        function exportData() {
+            showAlert('Exporting restaurant data...', 'info');
+        }
+
+        // Filter Functions
+        document.getElementById('filterStatus')?.addEventListener('change', (e) => {
+            const status = e.target.value;
+            const rows = document.querySelectorAll('#restaurantsTable tr');
+            
+            rows.forEach(row => {
+                if (status === 'all' || row.dataset.status === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Search Functionality
+        document.getElementById('searchInput')?.addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#restaurantsTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Alert Function
+        function showAlert(message, type = 'info') {
+            const alertToast = document.getElementById('alertToast');
+            alertToast.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            alertToast.style.display = 'block';
+            
+            setTimeout(() => {
+                alertToast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Navbar Toggle
+        document.getElementById('navbarToggle')?.addEventListener('click', () => {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        });
+
+        // Logout Function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showAlert('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>

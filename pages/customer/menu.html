@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Spice Palace - TasteNow</title>
+
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow
+            </a>
+
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="../../index.html" class="navbar-link">Home</a>
+                <a href="restaurants.html" class="navbar-link">Restaurants</a>
+                <a href="foods.html" class="navbar-link">Foods</a>
+                <a href="about.html" class="navbar-link">About</a>
+                <a href="contact.html" class="navbar-link">Contact</a>
+            </div>
+
+            <div class="navbar-actions">
+                <a href="cart.html" class="navbar-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="navbar-badge">3</span>
+                </a>
+                <a href="order-history.html" class="navbar-icon">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mt-xl mb-xl">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <div class="breadcrumb-item">
+                <a href="../../index.html">Home</a>
+            </div>
+            <div class="breadcrumb-item">
+                <a href="restaurants.html">Restaurants</a>
+            </div>
+            <div class="breadcrumb-item">Spice Palace</div>
+        </div>
+
+        <!-- Restaurant Header -->
+        <div class="menu-header">
+            <div class="menu-restaurant-info">
+                <img src="https://via.placeholder.com/120?text=Logo" alt="Restaurant Logo" class="menu-restaurant-logo">
+                <div>
+                    <h1>Spice Palace</h1>
+                    <div class="rating mb-sm">
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star rating-star"></i>
+                        <i class="fas fa-star-half-alt rating-star"></i>
+                        <span class="text-muted">(4.5) • 200+ ratings</span>
+                    </div>
+                    <p class="text-muted mb-sm">Indian • Asian • Curry • Spicy</p>
+                    <div class="restaurant-meta">
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>30-40 min</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$$ - $$$</span>
+                        </div>
+                        <div class="restaurant-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>2.5 km away</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-success mt-sm">Open Now</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="menu-categories">
+            <div class="category-pill active" data-category="all">All Items</div>
+            <div class="category-pill" data-category="appetizers">Appetizers</div>
+            <div class="category-pill" data-category="main-course">Main Course</div>
+            <div class="category-pill" data-category="breads">Breads</div>
+            <div class="category-pill" data-category="rice">Rice & Biryani</div>
+            <div class="category-pill" data-category="desserts">Desserts</div>
+            <div class="category-pill" data-category="beverages">Beverages</div>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="grid" style="gap: var(--spacing-md);">
+            <!-- Menu Item 1 -->
+            <div class="menu-item-card" data-category="appetizers">
+                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80" alt="Samosa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Vegetable Samosa</h3>
+                    <p class="menu-item-description">Crispy pastry filled with spiced potatoes and peas, served with
+                        mint chutney</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-success">Vegetarian</span>
+                        <span class="badge badge-warning">Spicy</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$4.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 2 -->
+            <div class="menu-item-card" data-category="appetizers">
+                <img src="https://images.unsplash.com/photo-1599599810694-b5ac4dd64fca?auto=format&fit=crop&w=400&q=80" alt="Pakora" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Mixed Vegetable Pakora</h3>
+                    <p class="menu-item-description">Deep-fried fritters made with mixed vegetables in chickpea batter
+                    </p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-success">Vegetarian</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$5.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 3 -->
+            <div class="menu-item-card" data-category="main-course">
+                <img src="https://images.unsplash.com/photo-1603894416497-0886cf6fbf91?auto=format&fit=crop&w=400&q=80" alt="Butter Chicken" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Butter Chicken</h3>
+                    <p class="menu-item-description">Tender chicken cooked in rich tomato-based creamy curry sauce</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-danger">Popular</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$14.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 4 -->
+            <div class="menu-item-card" data-category="main-course">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" alt="Paneer Tikka" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Paneer Tikka Masala</h3>
+                    <p class="menu-item-description">Grilled cottage cheese cubes in creamy tomato-based gravy with
+                        spices</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-success">Vegetarian</span>
+                        <span class="badge badge-danger">Popular</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$12.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 5 -->
+            <div class="menu-item-card" data-category="main-course">
+                <img src="https://images.unsplash.com/photo-1624867495656-81eb489ce2c5?auto=format&fit=crop&w=400&q=80" alt="Lamb Curry" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Lamb Rogan Josh</h3>
+                    <p class="menu-item-description">Aromatic lamb curry cooked with yogurt, garlic, and traditional
+                        spices</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-warning">Spicy</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$16.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 6 -->
+            <div class="menu-item-card" data-category="breads">
+                <img src="https://images.unsplash.com/photo-1590080876549-cd379b57d3fc?auto=format&fit=crop&w=400&q=80" alt="Naan" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Garlic Naan</h3>
+                    <p class="menu-item-description">Fluffy Indian bread topped with garlic and butter, baked in tandoor
+                    </p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-success">Vegetarian</span>
+                        <span class="badge badge-danger">Popular</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$3.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 7 -->
+            <div class="menu-item-card" data-category="rice">
+                <img src="https://images.unsplash.com/photo-1585238341710-4913d3ca7229?auto=format&fit=crop&w=400&q=80" alt="Biryani" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Chicken Biryani</h3>
+                    <p class="menu-item-description">Fragrant basmati rice layered with marinated chicken and aromatic
+                        spices</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-danger">Popular</span>
+                        <span class="badge badge-warning">Spicy</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$15.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 8 -->
+            <div class="menu-item-card" data-category="desserts">
+                <img src="https://images.unsplash.com/photo-1585247099507-84a860bda2b0?auto=format&fit=crop&w=400&q=80" alt="Gulab Jamun" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Gulab Jamun</h3>
+                    <p class="menu-item-description">Soft milk dumplings soaked in rose-flavored sugar syrup, served
+                        warm</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-success">Vegetarian</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$4.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Item 9 -->
+            <div class="menu-item-card" data-category="beverages">
+                <img src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=400&q=80" alt="Mango Lassi" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3>Mango Lassi</h3>
+                    <p class="menu-item-description">Sweet yogurt-based drink blended with fresh mango pulp</p>
+                    <div class="d-flex gap-sm">
+                        <span class="badge badge-success">Vegetarian</span>
+                    </div>
+                </div>
+                <div class="menu-item-actions">
+                    <span class="price">$3.99</span>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
+                        <span class="quantity-value">0</span>
+                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Cart Button -->
+        <div style="position: fixed; bottom: var(--spacing-xl); right: var(--spacing-xl); z-index: 99;">
+            <a href="cart.html" class="btn btn-primary btn-lg"
+                style="border-radius: var(--radius-full); box-shadow: var(--shadow-xl);">
+                <i class="fas fa-shopping-cart"></i> View Cart (3)
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TasteNow</h3>
+                    <p>Your local food ordering platform.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3>For Restaurants</h3>
+                    <a href="#">Partner With Us</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> info@tastenow.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TasteNow. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/menu.js"></script>
+    <script>
+        // Quantity selector functions
+        function increaseQuantity(btn) {
+            const quantityValue = btn.previousElementSibling;
+            let quantity = parseInt(quantityValue.textContent);
+            quantity++;
+            quantityValue.textContent = quantity;
+        }
+
+        function decreaseQuantity(btn) {
+            const quantityValue = btn.nextElementSibling;
+            let quantity = parseInt(quantityValue.textContent);
+            if (quantity > 0) {
+                quantity--;
+                quantityValue.textContent = quantity;
+            }
+        }
+
+        // Category filtering
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', function () {
+                // Remove active class from all pills
+                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                // Add active class to clicked pill
+                this.classList.add('active');
+
+                const category = this.getAttribute('data-category');
+                const menuItems = document.querySelectorAll('.menu-item-card');
+
+                menuItems.forEach(item => {
+                    if (category === 'all' || item.getAttribute('data-category') === category) {
+                        item.style.display = 'grid';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

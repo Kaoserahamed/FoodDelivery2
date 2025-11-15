@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TasteNow</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="../../index.html">
+                    <div style="font-size: 48px; color: var(--primary-color);">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                </a>
+                <h2 class="auth-title">Create Account</h2>
+                <p class="auth-subtitle">Sign up to start ordering</p>
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullname" class="form-label">Full Name</label>
+                    <input type="text" id="fullname" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: start; gap: var(--spacing-xs);">
+                        <input type="checkbox" id="terms" required>
+                        <span>I agree to the <a href="#" class="text-primary">Terms & Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a></span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="d-flex gap-md">
+                <button class="btn btn-outline btn-block">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button class="btn btn-outline btn-block">
+                    <i class="fab fa-facebook"></i> Facebook
+                </button>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html" class="text-primary fw-semibold">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/auth.js"></script>
+</body>
+</html>

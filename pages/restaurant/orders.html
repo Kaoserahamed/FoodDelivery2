@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - TasteNow</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow
+            </a>
+            
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="dashboard.html" class="navbar-link">Dashboard</a>
+                <a href="orders.html" class="navbar-link active">Orders</a>
+                <a href="menu-management.html" class="navbar-link">Menu</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <div class="navbar-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="navbar-badge">5</span>
+                </div>
+                <div class="navbar-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content with Sidebar -->
+    <div class="container">
+        <div class="layout-sidebar mt-xl mb-xl">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-menu">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="orders.html" class="sidebar-link active">
+                        <i class="fas fa-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                    <a href="menu-management.html" class="sidebar-link">
+                        <i class="fas fa-list"></i>
+                        <span>Menu Management</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-star"></i>
+                        <span>Reviews</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>            <!-- Quick Stats -->
+            <div class="mt-xl" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                <h4 class="mb-md">Today's Summary</h4>
+                <div class="d-flex justify-between mb-sm">
+                    <span class="text-muted">Total Orders:</span>
+                    <span class="fw-semibold">24</span>
+                </div>
+                <div class="d-flex justify-between mb-sm">
+                    <span class="text-muted">Pending:</span>
+                    <span class="fw-semibold text-warning">5</span>
+                </div>
+                <div class="d-flex justify-between">
+                    <span class="text-muted">Completed:</span>
+                    <span class="fw-semibold text-success">19</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="dashboard-header">
+                <div class="d-flex justify-between align-center">
+                    <div>
+                        <h1>Order Management</h1>
+                        <p class="text-muted">Manage and track all your restaurant orders</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshOrders()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order Filters -->
+            <div class="nav-pills">
+                <div class="nav-pill active" data-status="all" onclick="filterOrders('all')">
+                    All Orders <span class="badge" style="background-color: var(--medium-gray); margin-left: var(--spacing-xs);">24</span>
+                </div>
+                <div class="nav-pill" data-status="pending" onclick="filterOrders('pending')">
+                    Pending <span class="badge badge-warning" style="margin-left: var(--spacing-xs);">5</span>
+                </div>
+                <div class="nav-pill" data-status="preparing" onclick="filterOrders('preparing')">
+                    Preparing <span class="badge badge-info" style="margin-left: var(--spacing-xs);">7</span>
+                </div>
+                <div class="nav-pill" data-status="ready" onclick="filterOrders('ready')">
+                    Ready <span class="badge badge-success" style="margin-left: var(--spacing-xs);">3</span>
+                </div>
+                <div class="nav-pill" data-status="delivered" onclick="filterOrders('delivered')">
+                    Delivered <span class="badge" style="background-color: var(--dark-gray); margin-left: var(--spacing-xs);">9</span>
+                </div>
+            </div>
+
+            <!-- Search and Sort -->
+            <div class="card">
+                <div class="card-body" style="padding: var(--spacing-md);">
+                    <div class="d-flex gap-md align-center">
+                        <input type="text" class="form-control" placeholder="Search by Order ID or Customer Name..." style="flex: 1;">
+                        <select class="form-control" style="max-width: 200px;">
+                            <option>Sort by: Latest</option>
+                            <option>Sort by: Oldest</option>
+                            <option>Sort by: Amount High-Low</option>
+                            <option>Sort by: Amount Low-High</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div id="ordersList">
+                <!-- Pending Order Card -->
+                <div class="card mt-lg order-card" data-status="pending">
+                    <div class="card-body">
+                        <div class="d-flex justify-between align-center mb-md">
+                            <div>
+                                <h3 style="margin: 0;">Order #12350</h3>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">
+                                    <i class="fas fa-clock"></i> Placed 15 minutes ago • 2:30 PM
+                                </p>
+                            </div>
+                            <span class="badge badge-warning">Pending</span>
+                        </div>
+
+                        <div class="d-flex gap-lg mb-md" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Customer</p>
+                                <p class="fw-semibold" style="margin: 0;">John Smith</p>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">+1 234 567 8901</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Delivery Address</p>
+                                <p style="margin: 0; font-size: var(--font-size-sm);">123 Main Street, Apt 4B, City, State 12345</p>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Total Amount</p>
+                                <p class="price" style="margin: 0;">$45.99</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-md">
+                            <h4 class="mb-sm">Order Items:</h4>
+                            <div style="display: grid; gap: var(--spacing-sm);">
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>2x Butter Chicken</span>
+                                    <span class="fw-semibold">$29.98</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>3x Garlic Naan</span>
+                                    <span class="fw-semibold">$11.97</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>1x Mango Lassi</span>
+                                    <span class="fw-semibold">$3.99</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info" style="margin-bottom: var(--spacing-md);">
+                            <strong>Special Instructions:</strong> Please make it extra spicy. No onions.
+                        </div>
+
+                        <div class="d-flex gap-md">
+                            <button class="btn btn-primary" onclick="updateOrderStatus(12350, 'preparing')">
+                                <i class="fas fa-check"></i> Accept Order
+                            </button>
+                            <button class="btn btn-danger" onclick="openModal('rejectModal')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-phone"></i> Call Customer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preparing Order Card -->
+                <div class="card mt-lg order-card" data-status="preparing">
+                    <div class="card-body">
+                        <div class="d-flex justify-between align-center mb-md">
+                            <div>
+                                <h3 style="margin: 0;">Order #12349</h3>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">
+                                    <i class="fas fa-clock"></i> Placed 30 minutes ago • 2:15 PM
+                                </p>
+                            </div>
+                            <span class="badge badge-info">Preparing</span>
+                        </div>
+
+                        <div class="d-flex gap-lg mb-md" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Customer</p>
+                                <p class="fw-semibold" style="margin: 0;">Sarah Johnson</p>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">+1 234 567 8902</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Delivery Address</p>
+                                <p style="margin: 0; font-size: var(--font-size-sm);">456 Oak Avenue, Suite 2A, City, State 12345</p>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Total Amount</p>
+                                <p class="price" style="margin: 0;">$32.50</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-md">
+                            <h4 class="mb-sm">Order Items:</h4>
+                            <div style="display: grid; gap: var(--spacing-sm);">
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>1x Paneer Tikka Masala</span>
+                                    <span class="fw-semibold">$12.99</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>2x Plain Naan</span>
+                                    <span class="fw-semibold">$5.98</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>1x Vegetable Samosa</span>
+                                    <span class="fw-semibold">$4.99</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preparation Timer -->
+                        <div class="alert alert-warning" style="margin-bottom: var(--spacing-md);">
+                            <div class="d-flex justify-between align-center">
+                                <span><i class="fas fa-hourglass-half"></i> Estimated prep time: 15 minutes</span>
+                                <span class="fw-semibold">Timer: 12:45</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-md">
+                            <button class="btn btn-success" onclick="updateOrderStatus(12349, 'ready')">
+                                <i class="fas fa-check-circle"></i> Mark as Ready
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-phone"></i> Call Customer
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ready Order Card -->
+                <div class="card mt-lg order-card" data-status="ready">
+                    <div class="card-body">
+                        <div class="d-flex justify-between align-center mb-md">
+                            <div>
+                                <h3 style="margin: 0;">Order #12348</h3>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">
+                                    <i class="fas fa-clock"></i> Placed 55 minutes ago • 1:50 PM
+                                </p>
+                            </div>
+                            <span class="badge badge-success">Ready for Pickup</span>
+                        </div>
+
+                        <div class="d-flex gap-lg mb-md" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Customer</p>
+                                <p class="fw-semibold" style="margin: 0;">Mike Wilson</p>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">+1 234 567 8903</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Delivery Address</p>
+                                <p style="margin: 0; font-size: var(--font-size-sm);">789 Pine Road, Building C, City, State 12345</p>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Total Amount</p>
+                                <p class="price" style="margin: 0;">$68.99</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-md">
+                            <h4 class="mb-sm">Order Items:</h4>
+                            <div style="display: grid; gap: var(--spacing-sm);">
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>1x Chicken Biryani</span>
+                                    <span class="fw-semibold">$15.99</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>2x Butter Chicken</span>
+                                    <span class="fw-semibold">$29.98</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>4x Garlic Naan</span>
+                                    <span class="fw-semibold">$15.96</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>2x Gulab Jamun</span>
+                                    <span class="fw-semibold">$9.98</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success" style="margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-check-circle"></i> Order is ready! Waiting for delivery driver.
+                        </div>
+
+                        <div class="d-flex gap-md">
+                            <button class="btn btn-primary" onclick="updateOrderStatus(12348, 'delivered')">
+                                <i class="fas fa-truck"></i> Mark as Dispatched
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-phone"></i> Call Customer
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-print"></i> Print Receipt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivered Order Card -->
+                <div class="card mt-lg order-card" data-status="delivered">
+                    <div class="card-body">
+                        <div class="d-flex justify-between align-center mb-md">
+                            <div>
+                                <h3 style="margin: 0;">Order #12347</h3>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">
+                                    <i class="fas fa-clock"></i> Delivered 1 hour ago • 1:30 PM
+                                </p>
+                            </div>
+                            <span class="badge badge-success">Delivered</span>
+                        </div>
+
+                        <div class="d-flex gap-lg mb-md" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Customer</p>
+                                <p class="fw-semibold" style="margin: 0;">Emily Brown</p>
+                                <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">+1 234 567 8904</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Delivery Address</p>
+                                <p style="margin: 0; font-size: var(--font-size-sm);">321 Elm Street, Unit 5, City, State 12345</p>
+                            </div>
+                            <div>
+                                <p class="text-muted mb-xs" style="font-size: var(--font-size-sm);">Total Amount</p>
+                                <p class="price" style="margin: 0;">$54.25</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-md">
+                            <h4 class="mb-sm">Order Items:</h4>
+                            <div style="display: grid; gap: var(--spacing-sm);">
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>2x Paneer Tikka Masala</span>
+                                    <span class="fw-semibold">$25.98</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>3x Garlic Naan</span>
+                                    <span class="fw-semibold">$11.97</span>
+                                </div>
+                                <div class="d-flex justify-between" style="padding: var(--spacing-sm); background-color: var(--light-gray); border-radius: var(--radius-sm);">
+                                    <span>2x Mango Lassi</span>
+                                    <span class="fw-semibold">$7.98</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-md">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-eye"></i> View Receipt
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-print"></i> Print Receipt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State (Hidden initially) -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <h3>No Orders Found</h3>
+                <p>No orders match the selected filter</p>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Reject Order Modal -->
+<div class="modal" id="rejectModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Reject Order</h3>
+            <button class="modal-close" onclick="closeModal('rejectModal')">&times;</button>
+        </div>
+        <form id="rejectOrderForm">
+            <div class="form-group">
+                <label class="form-label">Reason for Rejection</label>
+                <select class="form-control" required>
+                    <option value="">Select a reason...</option>
+                    <option>Restaurant too busy</option>
+                    <option>Items unavailable</option>
+                    <option>Kitchen closed</option>
+                    <option>Delivery area out of range</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Additional Details (Optional)</label>
+                <textarea class="form-control" rows="3" placeholder="Provide more details..."></textarea>
+            </div>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> The customer will be notified about the cancellation.
+            </div>
+            <div class="d-flex gap-md">
+                <button type="submit" class="btn btn-danger" style="flex: 1;">Confirm Rejection</button>
+                <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('rejectModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TasteNow</h3>
+                <p>Your local food ordering platform.</p>
+            </div>
+            <div class="footer-section">
+                <h3>For Restaurants</h3>
+                <a href="#">Help Center</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Support</h3>
+                <p><i class="fas fa-envelope"></i> support@tastenow.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TasteNow. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../../js/main.js"></script>
+<script>
+    // Filter orders by status
+    function filterOrders(status) {
+        const pills = document.querySelectorAll('.nav-pill');
+        pills.forEach(pill => pill.classList.remove('active'));
+        event.target.closest('.nav-pill').classList.add('active');
+
+        const orders = document.querySelectorAll('.order-card');
+        let visibleCount = 0;
+
+        orders.forEach(order => {
+            if (status === 'all' || order.getAttribute('data-status') === status) {
+                order.style.display = 'block';
+                visibleCount++;
+            } else {
+                order.style.display = 'none';
+            }
+        });
+
+        const emptyState = document.getElementById('emptyState');
+        emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    // Update order status
+    function updateOrderStatus(orderId, newStatus) {
+        alert(`Order #${orderId} status updated to: ${newStatus}`);
+        // In real app, this would send to backend
+    }
+
+    // Refresh orders
+    function refreshOrders() {
+        alert('Orders refreshed!');
+        // In real app, this would fetch latest orders from backend
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'none';
+    }
+
+    // Logout
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '../../index.html';
+        }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+
+    // Form submission
+    document.getElementById('rejectOrderForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Order has been rejected. Customer will be notified.');
+        closeModal('rejectModal');
+        this.reset();
+    });
+</script>
+</body>
+
+</html>

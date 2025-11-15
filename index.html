@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteNow - Order Food from Local Restaurants</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow
+            </a>
+
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="index.html" class="navbar-link active">Home</a>
+                <a href="pages/customer/restaurants.html" class="navbar-link">Restaurants</a>
+                <a href="pages/customer/foods.html" class="navbar-link">Foods</a>
+                <a href="pages/customer/about.html" class="navbar-link">About</a>
+                <a href="pages/customer/contact.html" class="navbar-link">Contact</a>
+            </div>
+
+            <div class="navbar-actions">
+                <a href="pages/customer/cart.html" class="navbar-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="navbar-badge">3</span>
+                </a>
+                <a href="pages/customer/login.html" class="btn btn-primary btn-sm">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Delicious Food, Delivered Fast</h1>
+            <p class="hero-subtitle">Order from your favorite local restaurants</p>
+
+            <div class="hero-search">
+                <input type="text" placeholder="Search for restaurants or dishes..." class="form-control">
+                <button class="btn btn-secondary">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Restaurants -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Restaurants</h2>
+                <p class="section-subtitle">Discover the best places near you</p>
+            </div>
+
+            <div class="grid grid-3">
+                <!-- Restaurant Card 1 -->
+                <div class="card restaurant-card">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561d1f?auto=format&fit=crop&w=400&q=80" alt="Spice Palace" class="card-img">
+                        <span class="restaurant-badge">Open Now</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Spice Palace</h3>
+                        <div class="rating mb-sm">
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star-half-alt rating-star"></i>
+                            <span class="text-muted">(4.5)</span>
+                        </div>
+                        <p class="card-text">Indian • Asian • Curry</p>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>30-40 min</span>
+                            </div>
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$$ - $$$</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="pages/customer/menu.html" class="btn btn-primary btn-block">View Menu</a>
+                    </div>
+                </div>
+
+                <!-- Restaurant Card 2 -->
+                <div class="card restaurant-card">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Burger Haven" class="card-img">
+                        <span class="restaurant-badge">Open Now</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Burger Haven</h3>
+                        <div class="rating mb-sm">
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="far fa-star rating-star"></i>
+                            <span class="text-muted">(4.0)</span>
+                        </div>
+                        <p class="card-text">American • Burgers • Fast Food</p>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>20-30 min</span>
+                            </div>
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$ - $$</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="pages/customer/menu.html" class="btn btn-primary btn-block">View Menu</a>
+                    </div>
+                </div>
+
+                <!-- Restaurant Card 3 -->
+                <div class="card restaurant-card">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80" alt="Sushi Express" class="card-img">
+                        <span class="restaurant-badge">Open Now</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Sushi Express</h3>
+                        <div class="rating mb-sm">
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <i class="fas fa-star rating-star"></i>
+                            <span class="text-muted">(5.0)</span>
+                        </div>
+                        <p class="card-text">Japanese • Sushi • Asian</p>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>25-35 min</span>
+                            </div>
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$$$ - $$$$</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="pages/customer/menu.html" class="btn btn-primary btn-block">View Menu</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-xl">
+                <a href="pages/customer/restaurants.html" class="btn btn-outline btn-lg">View All Restaurants</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Dishes -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Popular Dishes</h2>
+                <p class="section-subtitle">Trending dishes from top restaurants</p>
+            </div>
+
+            <div class="grid grid-4">
+                <!-- Dish Card 1 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1606787620884-c0ec84bc5524?auto=format&fit=crop&w=400&q=80" alt="Margherita Pizza" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Margherita Pizza</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Pizza Palace</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$12.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 2 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" alt="Butter Chicken" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Butter Chicken</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Curry House</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$14.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 3 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80" alt="Salmon Sushi Roll" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Salmon Sushi Roll</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Sushi Express</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$16.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 5.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 4 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Classic Burger" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Classic Burger</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Burger Haven</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$9.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 5 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1585238341710-4913d3ca7229?auto=format&fit=crop&w=400&q=80" alt="Pad Thai" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Pad Thai</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Thai Tasty</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$11.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 6 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1609007656244-cd671800d3f7?auto=format&fit=crop&w=400&q=80" alt="Tikka Masala" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Paneer Tikka Masala</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Spice Palace</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$13.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 7 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1574080676950-d049bfeb57b5?auto=format&fit=crop&w=400&q=80" alt="Caesar Salad" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Caesar Salad</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Green Leaf Cafe</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$10.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish Card 8 -->
+                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e157?auto=format&fit=crop&w=400&q=80" alt="Chocolate Cake" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">Chocolate Cake</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Sweet Delights</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$7.99</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-xl">
+                <a href="pages/customer/foods.html" class="btn btn-outline btn-lg">View All Dishes</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto; text-align: center; color: var(--white);">
+                <h2 style="color: var(--white); margin-bottom: var(--spacing-md);">Stay Updated</h2>
+                <p style="margin-bottom: var(--spacing-lg);">Subscribe to get exclusive deals and latest restaurant updates delivered to your inbox.</p>
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <input type="email" placeholder="Enter your email" class="form-control" style="flex: 1;">
+                    <button class="btn btn-light">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TasteNow</h3>
+                    <p>Your local food ordering platform. Supporting local restaurants and connecting hungry customers.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="pages/customer/restaurants.html">Restaurants</a>
+                    <a href="pages/customer/about.html">About Us</a>
+                    <a href="pages/customer/contact.html">Contact</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>For Restaurants</h3>
+                    <a href="#">Partner With Us</a>
+                    <a href="#">Restaurant Dashboard</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> info@tastenow.com</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 8900</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Food Street, City</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 TasteNow. All rights reserved. | Developed by Kaoserahamed</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

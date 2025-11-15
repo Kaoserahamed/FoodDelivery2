@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - TasteNow Admin</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow Admin
+            </a>
+            
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="dashboard.html" class="navbar-link">Dashboard</a>
+                <a href="restaurants.html" class="navbar-link">Restaurants</a>
+                <a href="users.html" class="navbar-link active">Users</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <div class="navbar-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="navbar-badge">8</span>
+                </div>
+                <div class="navbar-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content with Sidebar -->
+    <div class="container">
+        <div class="layout-sidebar mt-xl mb-xl">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-menu">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="restaurants.html" class="sidebar-link">
+                        <i class="fas fa-store"></i>
+                        <span>Restaurants</span>
+                    </a>
+                    <a href="users.html" class="sidebar-link active">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mt-xl" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
+                    <h4 class="mb-md">Quick Actions</h4>
+                    <button class="btn btn-primary btn-block btn-sm mb-sm" onclick="openModal('addUserModal')">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                    <button class="btn btn-secondary btn-block btn-sm" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Page Header -->
+                <div class="dashboard-header">
+                    <div class="d-flex justify-between align-center">
+                        <div>
+                            <h1>Manage Users</h1>
+                            <p class="text-muted">View and manage all customer accounts</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('addUserModal')">
+                            <i class="fas fa-plus"></i> Add New User
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                    <div class="stat-card" style="border-left-color: var(--primary-color);">
+                        <div class="stat-value">8,932</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--success-color);">
+                        <div class="stat-value">7,654</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--info-color);">
+                        <div class="stat-value">1,042</div>
+                        <div class="stat-label">This Month</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--warning-color);">
+                        <div class="stat-value">236</div>
+                        <div class="stat-label">Inactive</div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="card mt-lg">
+                    <div class="card-body" style="padding: var(--spacing-md);">
+                        <div class="d-flex gap-md align-center">
+                            <input type="text" class="form-control" placeholder="Search users by name or email..." style="flex: 1;" id="searchInput">
+                            <select class="form-control" style="max-width: 200px;" id="filterStatus">
+                                <option value="all">All Users</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            <select class="form-control" style="max-width: 200px;" id="sortBy">
+                                <option>Sort by: Name A-Z</option>
+                                <option>Sort by: Name Z-A</option>
+                                <option>Sort by: Join Date</option>
+                                <option>Sort by: Orders</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container mt-lg">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Avatar</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Orders</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th style="width: 200px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=60&q=80" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Sarah Johnson</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">ID: USR001</p>
+                                    </div>
+                                </td>
+                                <td>sarah.johnson@email.com</td>
+                                <td>+1 (555) 123-4567</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">24</span></td>
+                                <td>Nov 2024</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewUser(1)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editUser(1)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Deactivate" onclick="deactivateUser(1)">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&q=80" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Mike Chen</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">ID: USR002</p>
+                                    </div>
+                                </td>
+                                <td>mike.chen@email.com</td>
+                                <td>+1 (555) 234-5678</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">18</span></td>
+                                <td>Oct 2024</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewUser(2)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editUser(2)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Deactivate" onclick="deactivateUser(2)">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=60&q=80" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Emma Wilson</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">ID: USR003</p>
+                                    </div>
+                                </td>
+                                <td>emma.wilson@email.com</td>
+                                <td>+1 (555) 345-6789</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">35</span></td>
+                                <td>Sep 2024</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewUser(3)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editUser(3)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Deactivate" onclick="deactivateUser(3)">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="active">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=60&q=80" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">James Brown</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">ID: USR004</p>
+                                    </div>
+                                </td>
+                                <td>james.brown@email.com</td>
+                                <td>+1 (555) 456-7890</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">12</span></td>
+                                <td>Nov 2024</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewUser(4)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editUser(4)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Deactivate" onclick="deactivateUser(4)">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr data-status="inactive">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&q=80" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; opacity: 0.6;">
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="fw-semibold" style="margin: 0;">Lisa Anderson</p>
+                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">ID: USR005</p>
+                                    </div>
+                                </td>
+                                <td>lisa.anderson@email.com</td>
+                                <td>+1 (555) 567-8901</td>
+                                <td><span class="badge" style="background-color: var(--info-color); color: white;">8</span></td>
+                                <td>Aug 2024</td>
+                                <td><span class="badge badge-warning">Inactive</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn action-btn-view" title="View" onclick="viewUser(5)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-edit" title="Edit" onclick="editUser(5)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" title="Delete" onclick="deleteUser(5)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-dialog" style="max-width: 600px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add New User</h2>
+                    <button class="modal-close" onclick="closeModal('addUserModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveUser(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">First Name *</label>
+                                <input type="text" class="form-control" placeholder="Enter first name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" placeholder="Enter last name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" placeholder="user@email.com" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Phone *</label>
+                                <input type="tel" class="form-control" placeholder="Enter phone number" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" placeholder="Enter city">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password *</label>
+                            <input type="password" class="form-control" placeholder="Enter password" required>
+                        </div>
+
+                        <div class="form-actions" style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                            <button type="submit" class="btn btn-primary">Add User</button>
+                            <button type="button" class="btn btn-outline" onclick="closeModal('addUserModal')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div class="alert-toast" id="alertToast"></div>
+
+    <script>
+        // Modal Functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                e.target.classList.remove('active');
+            }
+        });
+
+        // User Management
+        function viewUser(userId) {
+            showAlert('Viewing user #' + userId, 'info');
+        }
+
+        function editUser(userId) {
+            showAlert('Edit functionality - User #' + userId, 'info');
+            openModal('addUserModal');
+        }
+
+        function deactivateUser(userId) {
+            if (confirm('Are you sure you want to deactivate this user account?')) {
+                showAlert('User account deactivated successfully', 'success');
+            }
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user permanently?')) {
+                showAlert('User account deleted successfully', 'success');
+            }
+        }
+
+        // Save User
+        function saveUser(e) {
+            e.preventDefault();
+            showAlert('User added successfully!', 'success');
+            closeModal('addUserModal');
+            e.target.reset();
+        }
+
+        // Export Data
+        function exportData() {
+            showAlert('Exporting user data...', 'info');
+        }
+
+        // Filter Functions
+        document.getElementById('filterStatus')?.addEventListener('change', (e) => {
+            const status = e.target.value;
+            const rows = document.querySelectorAll('#usersTable tr');
+            
+            rows.forEach(row => {
+                if (status === 'all' || row.dataset.status === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Search Functionality
+        document.getElementById('searchInput')?.addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Alert Function
+        function showAlert(message, type = 'info') {
+            const alertToast = document.getElementById('alertToast');
+            alertToast.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            alertToast.style.display = 'block';
+            
+            setTimeout(() => {
+                alertToast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Navbar Toggle
+        document.getElementById('navbarToggle')?.addEventListener('click', () => {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        });
+
+        // Logout Function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showAlert('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
