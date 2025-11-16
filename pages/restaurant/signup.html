@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Sign Up - TasteNow</title>
+
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="signup.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow
+            </a>
+
+            <div class="navbar-actions">
+                <a href="login.html" class="btn btn-outline btn-sm">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <!-- <section class="section" style="background: linear-gradient(135deg, var(--primary-color) 0%, #e85d75 100%); color: var(--white); padding: var(--spacing-xl) 0;">
+        <div class="container">
+            <h1 style="font-size: 2.5rem; color: var(--white); margin-bottom: var(--spacing-md); text-align: center;">Partner With TasteNow</h1>
+            <p style="font-size: 18px; text-align: center; max-width: 600px; margin: 0 auto;">Join our platform and reach thousands of hungry customers. Grow your restaurant business with us!</p>
+        </div>
+    </section> -->
+
+    <!-- Sign Up Form -->
+    <div class="container" style="padding: var(--spacing-xl) 0;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div class="card">
+                <div class="card-body" style="padding: var(--spacing-xl);">
+                    <form id="restaurantSignupForm">
+                        <!-- Owner Information Section -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <h3
+                                style="color: var(--primary-color); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray);">
+                                <i class="fas fa-user"></i> Owner Information
+                            </h3>
+
+                            <div class="form-group">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="ownerName" name="ownerName" required>
+                            </div>
+
+                            <div class="grid grid-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="ownerEmail" name="ownerEmail" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="ownerPhone" name="ownerPhone" required>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="ownerPassword" name="ownerPassword"
+                                        required minlength="6">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Confirm Password *</label>
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                        name="confirmPassword" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Restaurant Information Section -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <h3
+                                style="color: var(--primary-color); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray);">
+                                <i class="fas fa-store"></i> Restaurant Information
+                            </h3>
+
+                            <div class="form-group">
+                                <label class="form-label">Restaurant Name *</label>
+                                <input type="text" class="form-control" id="restaurantName" name="restaurantName"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Description *</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" required
+                                    placeholder="Tell customers about your restaurant..."></textarea>
+                            </div>
+
+                            <div class="grid grid-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Cuisine Type *</label>
+                                    <select class="form-control" id="cuisineType" name="cuisineType" required>
+                                        <option value="">Select Cuisine Type</option>
+                                        <option value="Indian">Indian</option>
+                                        <option value="Chinese">Chinese</option>
+                                        <option value="Italian">Italian</option>
+                                        <option value="Mexican">Mexican</option>
+                                        <option value="American">American</option>
+                                        <option value="Japanese">Japanese</option>
+                                        <option value="Thai">Thai</option>
+                                        <option value="Mediterranean">Mediterranean</option>
+                                        <option value="Fast Food">Fast Food</option>
+                                        <option value="Asian Fusion">Asian Fusion</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Price Range *</label>
+                                    <select class="form-control" id="priceRange" name="priceRange" required>
+                                        <option value="">Select Price Range</option>
+                                        <option value="$">$ - Budget Friendly</option>
+                                        <option value="$$">$$ - Moderate</option>
+                                        <option value="$$$">$$$ - Expensive</option>
+                                        <option value="$$$$">$$$$ - Fine Dining</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Full Address *</label>
+                                <textarea class="form-control" id="address" name="address" rows="2" required
+                                    placeholder="Street address, City, State, ZIP"></textarea>
+                            </div>
+
+                            <div class="grid grid-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Restaurant Phone *</label>
+                                    <input type="tel" class="form-control" id="restaurantPhone" name="restaurantPhone"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Restaurant Email</label>
+                                    <input type="email" class="form-control" id="restaurantEmail"
+                                        name="restaurantEmail">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-3 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Opening Time *</label>
+                                    <input type="time" class="form-control" id="openingTime" name="openingTime"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Closing Time *</label>
+                                    <input type="time" class="form-control" id="closingTime" name="closingTime"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Avg Delivery Time *</label>
+                                    <select class="form-control" id="deliveryTime" name="deliveryTime" required>
+                                        <option value="">Select Time</option>
+                                        <option value="15-25 min">15-25 min</option>
+                                        <option value="20-30 min">20-30 min</option>
+                                        <option value="25-35 min">25-35 min</option>
+                                        <option value="30-40 min">30-40 min</option>
+                                        <option value="35-45 min">35-45 min</option>
+                                        <option value="40-50 min">40-50 min</option>
+                                        <option value="45-60 min">45-60 min</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Restaurant Image URL (Optional)</label>
+                                <input type="url" class="form-control" id="imageUrl" name="imageUrl"
+                                    placeholder="https://example.com/image.jpg">
+                                <small class="text-muted">Provide a URL to your restaurant's image</small>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-group">
+                            <label class="form-checkbox">
+                                <input type="checkbox" id="termsAccepted" required>
+                                <span>I agree to the <a href="#" style="color: var(--primary-color);">Terms &
+                                        Conditions</a> and <a href="#" style="color: var(--primary-color);">Privacy
+                                        Policy</a></span>
+                            </label>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="errorMessage" class="alert alert-danger"
+                            style="display: none; margin-bottom: var(--spacing-md);"></div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" id="submitBtn">
+                            <i class="fas fa-store"></i> Register Restaurant
+                        </button>
+
+                        <div class="text-center mt-lg">
+                            <p style="color: var(--medium-gray);">
+                                Already have an account?
+                                <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Login
+                                    here</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form submission
+        document.getElementById('restaurantSignupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const errorDiv = document.getElementById('errorMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            errorDiv.style.display = 'none';
+
+            // Validate passwords match
+            const password = document.getElementById('ownerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match!';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Validate password strength
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters long!';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                owner: {
+                    name: document.getElementById('ownerName').value,
+                    email: document.getElementById('ownerEmail').value,
+                    phone: document.getElementById('ownerPhone').value,
+                    password: password,
+                    user_type: 'restaurant'
+                },
+                restaurant: {
+                    name: document.getElementById('restaurantName').value,
+                    description: document.getElementById('description').value,
+                    cuisine_type: document.getElementById('cuisineType').value,
+                    address: document.getElementById('address').value,
+                    phone: document.getElementById('restaurantPhone').value,
+                    email: document.getElementById('restaurantEmail').value,
+                    opening_time: document.getElementById('openingTime').value,
+                    closing_time: document.getElementById('closingTime').value,
+                    delivery_time: document.getElementById('deliveryTime').value,
+                    price_range: document.getElementById('priceRange').value,
+                    image_url: document.getElementById('imageUrl').value || null
+                }
+            };
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+            try {
+                // FIXED: Correct API URL with port
+                const response = await fetch('http://localhost:5000/api/restaurant/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success - redirect to login
+                    alert('Registration successful! Please login to continue.');
+                    window.location.href = 'login.html';
+                } else {
+                    // Error from server
+                    errorDiv.textContent = data.message || 'Registration failed. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = 'Network error. Please check your connection and try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-store"></i> Register Restaurant';
+            }
+        });
+    </script>
+</body>
+
+</html>

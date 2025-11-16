@@ -38,16 +38,19 @@
                 <a href="index.html" class="navbar-link active">Home</a>
                 <a href="pages/customer/restaurants.html" class="navbar-link">Restaurants</a>
                 <a href="pages/customer/foods.html" class="navbar-link">Foods</a>
-                <a href="pages/customer/about.html" class="navbar-link">About</a>
-                <a href="pages/customer/contact.html" class="navbar-link">Contact</a>
             </div>
 
             <div class="navbar-actions">
                 <a href="pages/customer/cart.html" class="navbar-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="navbar-badge">3</span>
+                    <span class="navbar-badge" id="cartBadge">0</span>
                 </a>
-                <a href="pages/customer/login.html" class="btn btn-primary btn-sm">Login</a>
+                <a href="pages/customer/order-history.html" class="navbar-icon" id="ordersIcon" style="display: none;">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <div id="authLinks">
+                    <a href="pages/customer/login.html" class="btn btn-primary btn-sm">Login</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -59,8 +62,9 @@
             <p class="hero-subtitle">Order from your favorite local restaurants</p>
 
             <div class="hero-search">
-                <input type="text" placeholder="Search for restaurants or dishes..." class="form-control">
-                <button class="btn btn-secondary">Search</button>
+                <input type="text" placeholder="Search for restaurants or dishes..." class="form-control"
+                    id="heroSearchInput">
+                <button class="btn btn-secondary" onclick="searchFromHero()">Search</button>
             </div>
         </div>
     </section>
@@ -73,105 +77,8 @@
                 <p class="section-subtitle">Discover the best places near you</p>
             </div>
 
-            <div class="grid grid-3">
-                <!-- Restaurant Card 1 -->
-                <div class="card restaurant-card">
-                    <div style="position: relative;">
-                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561d1f?auto=format&fit=crop&w=400&q=80" alt="Spice Palace" class="card-img">
-                        <span class="restaurant-badge">Open Now</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Spice Palace</h3>
-                        <div class="rating mb-sm">
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star-half-alt rating-star"></i>
-                            <span class="text-muted">(4.5)</span>
-                        </div>
-                        <p class="card-text">Indian • Asian • Curry</p>
-                        <div class="restaurant-meta">
-                            <div class="restaurant-meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>30-40 min</span>
-                            </div>
-                            <div class="restaurant-meta-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>$$ - $$$</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="pages/customer/menu.html" class="btn btn-primary btn-block">View Menu</a>
-                    </div>
-                </div>
-
-                <!-- Restaurant Card 2 -->
-                <div class="card restaurant-card">
-                    <div style="position: relative;">
-                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Burger Haven" class="card-img">
-                        <span class="restaurant-badge">Open Now</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Burger Haven</h3>
-                        <div class="rating mb-sm">
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="far fa-star rating-star"></i>
-                            <span class="text-muted">(4.0)</span>
-                        </div>
-                        <p class="card-text">American • Burgers • Fast Food</p>
-                        <div class="restaurant-meta">
-                            <div class="restaurant-meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>20-30 min</span>
-                            </div>
-                            <div class="restaurant-meta-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>$ - $$</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="pages/customer/menu.html" class="btn btn-primary btn-block">View Menu</a>
-                    </div>
-                </div>
-
-                <!-- Restaurant Card 3 -->
-                <div class="card restaurant-card">
-                    <div style="position: relative;">
-                        <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80" alt="Sushi Express" class="card-img">
-                        <span class="restaurant-badge">Open Now</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">Sushi Express</h3>
-                        <div class="rating mb-sm">
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <i class="fas fa-star rating-star"></i>
-                            <span class="text-muted">(5.0)</span>
-                        </div>
-                        <p class="card-text">Japanese • Sushi • Asian</p>
-                        <div class="restaurant-meta">
-                            <div class="restaurant-meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>25-35 min</span>
-                            </div>
-                            <div class="restaurant-meta-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>$$$ - $$$$</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="pages/customer/menu.html" class="btn btn-primary btn-block">View Menu</a>
-                    </div>
-                </div>
+            <div class="grid grid-3" id="restaurantsGrid">
+                <!-- Restaurant cards will be dynamically populated from backend -->
             </div>
 
             <div class="text-center mt-xl">
@@ -188,110 +95,8 @@
                 <p class="section-subtitle">Trending dishes from top restaurants</p>
             </div>
 
-            <div class="grid grid-4">
-                <!-- Dish Card 1 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1606787620884-c0ec84bc5524?auto=format&fit=crop&w=400&q=80" alt="Margherita Pizza" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Margherita Pizza</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Pizza Palace</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$12.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.7</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 2 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" alt="Butter Chicken" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Butter Chicken</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Curry House</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$14.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.8</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 3 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80" alt="Salmon Sushi Roll" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Salmon Sushi Roll</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Sushi Express</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$16.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 5.0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 4 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Classic Burger" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Classic Burger</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Burger Haven</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$9.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.6</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 5 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1585238341710-4913d3ca7229?auto=format&fit=crop&w=400&q=80" alt="Pad Thai" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Pad Thai</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Thai Tasty</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$11.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.5</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 6 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1609007656244-cd671800d3f7?auto=format&fit=crop&w=400&q=80" alt="Tikka Masala" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Paneer Tikka Masala</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Spice Palace</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$13.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.7</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 7 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1574080676950-d049bfeb57b5?auto=format&fit=crop&w=400&q=80" alt="Caesar Salad" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Caesar Salad</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Green Leaf Cafe</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$10.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.4</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dish Card 8 -->
-                <div class="card" style="cursor: pointer; transition: all 0.3s ease;">
-                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e157?auto=format&fit=crop&w=400&q=80" alt="Chocolate Cake" class="card-img">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">Chocolate Cake</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">Sweet Delights</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$7.99</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ 4.9</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-4" id="popularDishesGrid">
+                <!-- Dish cards will be dynamically populated from backend -->
             </div>
 
             <div class="text-center mt-xl">
@@ -305,10 +110,12 @@
         <div class="container">
             <div style="max-width: 600px; margin: 0 auto; text-align: center; color: var(--white);">
                 <h2 style="color: var(--white); margin-bottom: var(--spacing-md);">Stay Updated</h2>
-                <p style="margin-bottom: var(--spacing-lg);">Subscribe to get exclusive deals and latest restaurant updates delivered to your inbox.</p>
+                <p style="margin-bottom: var(--spacing-lg);">Subscribe to get exclusive deals and latest restaurant
+                    updates delivered to your inbox.</p>
                 <div style="display: flex; gap: var(--spacing-sm);">
-                    <input type="email" placeholder="Enter your email" class="form-control" style="flex: 1;">
-                    <button class="btn btn-light">Subscribe</button>
+                    <input type="email" placeholder="Enter your email" class="form-control" id="newsletterEmail"
+                        style="flex: 1;">
+                    <button class="btn btn-light" onclick="subscribeNewsletter()">Subscribe</button>
                 </div>
             </div>
         </div>
@@ -353,8 +160,405 @@
         </div>
     </footer>
 
+    <!-- Modal for Food Details -->
+    <div class="modal" id="foodModal">
+        <div class="modal-dialog" style="max-width: 500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalFoodName">Food Name</h2>
+                    <button class="modal-close" onclick="closeModal('foodModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalFoodImage" src="" alt="Food"
+                        style="width: 100%; height: 300px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: var(--spacing-lg);">
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Restaurant:</strong> <span
+                                id="modalRestaurant"></span></p>
+                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Category:</strong> <span
+                                id="modalCategory"></span></p>
+                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Price:</strong> <span
+                                id="modalPrice" class="fw-semibold"
+                                style="color: var(--primary-color); font-size: 18px;"></span></p>
+                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Rating:</strong> <span
+                                id="modalRating"></span></p>
+                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Type:</strong> <span
+                                id="modalType"></span></p>
+                    </div>
+                    <p id="modalDescription"
+                        style="color: var(--dark-gray); line-height: 1.6; margin-bottom: var(--spacing-md);"></p>
+                    <div class="form-group">
+                        <label class="form-label">Quantity</label>
+                        <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                            <button class="btn btn-outline btn-sm" onclick="decreaseQty()">-</button>
+                            <input type="number" id="modalQty" class="form-control" value="1" min="1"
+                                style="max-width: 80px; text-align: center;">
+                            <button class="btn btn-outline btn-sm" onclick="increaseQty()">+</button>
+                        </div>
+                    </div>
+                    <div class="form-actions"
+                        style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                        <button class="btn btn-primary btn-block" onclick="addToCart()">Add to Cart</button>
+                        <button class="btn btn-outline btn-block" onclick="closeModal('foodModal')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script src="js/main.js"></script>
+    <script>
+        // Data arrays - To be populated from backend
+        let restaurantsData = [];
+        let popularDishesData = [];
+        let currentSelectedFood = null;
+
+        // Initialize page
+        function initHomePage() {
+            loadRestaurants();
+            loadPopularDishes();
+            updateCartBadge();
+            updateAuthUI();
+        }
+
+        // Load restaurants from backend
+        function loadRestaurants() {
+            // TODO: Replace with actual API call
+            // Example: fetch('/api/restaurants/featured')
+            //   .then(response => response.json())
+            //   .then(data => {
+            //     restaurantsData = data;
+            //     displayRestaurants();
+            //   });
+
+            // For now, grid will be empty until backend data is added
+            displayRestaurants();
+        }
+
+        // Display restaurants
+        function displayRestaurants() {
+            const grid = document.getElementById('restaurantsGrid');
+            grid.innerHTML = '';
+
+            if (restaurantsData.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--medium-gray); padding: var(--spacing-xl);">No restaurants available at the moment. Please check back later!</p>';
+                return;
+            }
+
+            restaurantsData.forEach(restaurant => {
+                const card = document.createElement('div');
+                card.className = 'card restaurant-card';
+                card.innerHTML = `
+                    <div style="position: relative;">
+                        <img src="${restaurant.image || 'https://via.placeholder.com/400x300?text=Restaurant'}" alt="${restaurant.name}" class="card-img">
+                        <span class="restaurant-badge">${restaurant.isOpen ? 'Open Now' : 'Closed'}</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${restaurant.name}</h3>
+                        <div class="rating mb-sm">
+                            ${generateStarRating(restaurant.rating)}
+                            <span class="text-muted">(${restaurant.rating})</span>
+                        </div>
+                        <p class="card-text">${restaurant.cuisine || 'Various Cuisines'}</p>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>${restaurant.deliveryTime || '30-40'} min</span>
+                            </div>
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>${restaurant.priceRange || '$$'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="pages/customer/menu.html?id=${restaurant.id}" class="btn btn-primary btn-block">View Menu</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Generate star rating HTML
+        function generateStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            let html = '';
+
+            for (let i = 0; i < fullStars; i++) {
+                html += '<i class="fas fa-star rating-star"></i>';
+            }
+
+            if (hasHalfStar) {
+                html += '<i class="fas fa-star-half-alt rating-star"></i>';
+            }
+
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                html += '<i class="far fa-star rating-star"></i>';
+            }
+
+            return html;
+        }
+
+        // Load popular dishes from backend
+        function loadPopularDishes() {
+            // TODO: Replace with actual API call
+            // Example: fetch('/api/foods/popular')
+            //   .then(response => response.json())
+            //   .then(data => {
+            //     popularDishesData = data;
+            //     displayPopularDishes();
+            //   });
+
+            // For now, grid will be empty until backend data is added
+            displayPopularDishes();
+        }
+
+        // Display popular dishes
+        function displayPopularDishes() {
+            const grid = document.getElementById('popularDishesGrid');
+            grid.innerHTML = '';
+
+            if (popularDishesData.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--medium-gray); padding: var(--spacing-xl);">No dishes available at the moment. Please check back later!</p>';
+                return;
+            }
+
+            popularDishesData.forEach(dish => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.cursor = 'pointer';
+                card.style.transition = 'all 0.3s ease';
+                card.innerHTML = `
+                    <img src="${dish.image || 'https://via.placeholder.com/400x300?text=Food'}" alt="${dish.name}" class="card-img">
+                    <div class="card-body">
+                        <h4 class="card-title" style="margin-bottom: 4px;">${dish.name}</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${dish.restaurant || 'Restaurant'}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${dish.price.toFixed(2)}</span>
+                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ ${dish.rating}</span>
+                        </div>
+                        <span class="badge" style="background-color: ${dish.type === 'veg' ? '#51CF66' : '#FF6B6B'}; color: white;">${dish.type === 'veg' ? 'Veg' : 'Non-Veg'}</span>
+                    </div>
+                `;
+
+                // Add click event to open modal
+                card.addEventListener('click', () => openFoodModal(dish));
+
+                // Add hover effect
+                card.addEventListener('mouseenter', function () {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)';
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow-sm)';
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Open food modal
+        function openFoodModal(food) {
+            currentSelectedFood = food;
+
+            document.getElementById('modalFoodName').textContent = food.name;
+            document.getElementById('modalFoodImage').src = food.image || 'https://via.placeholder.com/400x300?text=Food';
+            document.getElementById('modalRestaurant').textContent = food.restaurant || 'Restaurant';
+            document.getElementById('modalCategory').textContent = (food.category || 'main-course').replace('-', ' ').toUpperCase();
+            document.getElementById('modalPrice').textContent = '$' + food.price.toFixed(2);
+            document.getElementById('modalRating').innerHTML = `<i class="fas fa-star" style="color: #FFD700;"></i> ${food.rating}`;
+            document.getElementById('modalType').textContent = food.type === 'veg' ? 'Vegetarian' : food.type === 'vegan' ? 'Vegan' : 'Non-Vegetarian';
+            document.getElementById('modalDescription').textContent = food.description || 'Delicious food item from our menu.';
+            document.getElementById('modalQty').value = 1;
+
+            openModal('foodModal');
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Quantity controls
+        function increaseQty() {
+            const input = document.getElementById('modalQty');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decreaseQty() {
+            const input = document.getElementById('modalQty');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
+        // Add to cart
+        function addToCart() {
+            if (!currentSelectedFood) {
+                alert('Error: No food item selected');
+                return;
+            }
+
+            const qty = parseInt(document.getElementById('modalQty').value);
+
+            const cartItem = {
+                id: currentSelectedFood.id,
+                name: currentSelectedFood.name,
+                price: currentSelectedFood.price,
+                quantity: qty,
+                restaurant: currentSelectedFood.restaurant || 'Restaurant',
+                restaurantId: currentSelectedFood.restaurantId || currentSelectedFood.id,
+                image: currentSelectedFood.image || 'https://via.placeholder.com/400x300?text=Food'
+            };
+
+            // Load existing cart
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            // Check if item already exists
+            const existingItem = cart.find(item => item.id === currentSelectedFood.id);
+            if (existingItem) {
+                existingItem.quantity += qty;
+            } else {
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update cart badge
+            updateCartBadge();
+
+            // Show success message
+            alert(`${currentSelectedFood.name} x${qty} added to cart!`);
+            closeModal('foodModal');
+        }
+
+        // Search from hero
+        function searchFromHero() {
+            const searchTerm = document.getElementById('heroSearchInput').value;
+            if (searchTerm.trim()) {
+                // Redirect to foods page with search query
+                window.location.href = `pages/customer/foods.html?search=${encodeURIComponent(searchTerm)}`;
+            }
+        }
+
+        // Newsletter subscription
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value;
+            if (email && email.includes('@')) {
+                // TODO: Replace with actual API call
+                alert('Thank you for subscribing! You will receive updates at ' + email);
+                document.getElementById('newsletterEmail').value = '';
+            } else {
+                alert('Please enter a valid email address');
+            }
+        }
+
+        // Update cart badge from localStorage
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                badge.textContent = totalItems;
+            }
+        }
+
+        // Simple auth UI updater
+        function updateAuthUI() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('user');
+            const authLinks = document.getElementById('authLinks');
+            const ordersIcon = document.getElementById('ordersIcon');
+
+            if (!authLinks) return;
+
+            if (token && user) {
+                const userData = JSON.parse(user);
+                authLinks.innerHTML = `
+                    <span style="font-size: 14px; color: #666; margin-right: 16px;">
+                        Hi, ${userData.firstName}!
+                    </span>
+                    <button id="logoutBtn" class="btn btn-primary btn-sm" style="cursor: pointer;">
+                        Logout
+                    </button>
+                `;
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('user');
+                    window.location.href = 'index.html';
+                });
+
+                // Show orders icon when logged in
+                if (ordersIcon) {
+                    ordersIcon.style.display = 'inline-block';
+                }
+            } else {
+                authLinks.innerHTML = `
+                    <a href="pages/customer/login.html" class="btn btn-sm" style="background: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); margin-right: 8px; text-decoration: none; padding: 8px 16px;">Login</a>
+                    <a href="pages/customer/register.html" class="btn btn-primary btn-sm" style="text-decoration: none;">Sign Up</a>
+                `;
+
+                // Hide orders icon when not logged in
+                if (ordersIcon) {
+                    ordersIcon.style.display = 'none';
+                }
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                e.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Navbar toggle
+        document.getElementById('navbarToggle')?.addEventListener('click', () => {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        });
+
+        // Hero search on Enter key
+        document.getElementById('heroSearchInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchFromHero();
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initHomePage();
+        });
+
+        // Update badge when storage changes (for cross-tab sync)
+        window.addEventListener('storage', () => {
+            updateCartBadge();
+            updateAuthUI();
+        });
+    </script>
+    <script src="js/global-auth.js"></script>
 </body>
 
 </html>

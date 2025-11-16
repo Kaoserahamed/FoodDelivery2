@@ -34,19 +34,19 @@
                 <a href="../../index.html" class="navbar-link">Home</a>
                 <a href="restaurants.html" class="navbar-link">Restaurants</a>
                 <a href="foods.html" class="navbar-link">Foods</a>
-                <a href="about.html" class="navbar-link">About</a>
-                <a href="contact.html" class="navbar-link">Contact</a>
             </div>
 
             <div class="navbar-actions">
                 <a href="cart.html" class="navbar-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="navbar-badge">3</span>
+                    <span class="navbar-badge" id="cartBadge">0</span>
                 </a>
-                <a href="order-history.html" class="navbar-icon">
+                <a href="order-history.html" class="navbar-icon" id="ordersIcon" style="display: none;">
                     <i class="fas fa-receipt"></i>
                 </a>
-                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                <div id="authLinks">
+                    <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -125,11 +125,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$4.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Vegetable Samosa', 1, 1, 4.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -146,11 +142,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$5.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Mixed Vegetable Pakora', 1, 2, 5.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -166,11 +158,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$14.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Butter Chicken', 1, 3, 14.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -188,11 +176,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$12.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Paneer Tikka Masala', 1, 4, 12.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -209,11 +193,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$16.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Lamb Rogan Josh', 1, 5, 16.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -231,11 +211,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$3.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Garlic Naan', 1, 6, 3.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -253,11 +229,7 @@
                 </div>
                 <div class="menu-item-actions">
                     <span class="price">$15.99</span>
-                    <div class="quantity-selector">
-                        <button class="quantity-btn" onclick="decreaseQuantity(this)">-</button>
-                        <span class="quantity-value">0</span>
-                        <button class="quantity-btn" onclick="increaseQuantity(this)">+</button>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="addToCart(this, 'Chicken Biryani', 1, 7, 15.99)" style="width: 100%; margin-top: 8px;">Add to Cart</button>
                 </div>
             </div>
 
@@ -360,7 +332,54 @@
             }
         }
 
-        // Category filtering
+        // Add to cart function
+        function addToCart(btn, itemName, restaurantId, itemId, price) {
+            // Default quantity to 1 when clicking add to cart button
+            const quantity = 1;
+
+            const cartItem = {
+                id: itemId,
+                name: itemName,
+                price: price,
+                quantity: quantity,
+                restaurant: 'Spice Palace',
+                restaurantId: restaurantId,
+                image: btn.closest('.menu-item-card').querySelector('img')?.src || ''
+            };
+
+            // Load existing cart
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            // Check if item already exists
+            const existingItem = cart.find(item => item.id === itemId);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update cart badge
+            updateCartBadge();
+
+            // Show alert
+            alert(`${itemName} added to cart!`);
+        }
+
+        // Update cart badge
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                badge.textContent = totalItems;
+            }
+        }
+
+        // Initialize cart badge on page load
+        document.addEventListener('DOMContentLoaded', updateCartBadge);
         document.querySelectorAll('.category-pill').forEach(pill => {
             pill.addEventListener('click', function () {
                 // Remove active class from all pills
@@ -381,6 +400,7 @@
             });
         });
     </script>
+    <script src="../../js/global-auth.js"></script>
 </body>
 
 </html>

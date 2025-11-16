@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Login - TasteNow</title>
+
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Login Section -->
+    <div class="container"
+        style="padding: var(--spacing-xl) 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div style="max-width: 450px; width: 100%;">
+            <div class="card">
+                <div class="card-body" style="padding: var(--spacing-xl);">
+                    <!-- Header -->
+                    <div class="text-center mb-xl">
+                        <div style="font-size: 4rem; color: var(--primary-color); margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h2 style="margin-bottom: var(--spacing-sm);">Restaurant Login</h2>
+                        <p class="text-muted">Access your restaurant dashboard</p>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="restaurantLoginForm">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <div style="position: relative;">
+                                <i class="fas fa-envelope"
+                                    style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--medium-gray);"></i>
+                                <input type="email" class="form-control" id="email" name="email" required
+                                    style="padding-left: 40px;" placeholder="restaurant@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div style="position: relative;">
+                                <i class="fas fa-lock"
+                                    style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--medium-gray);"></i>
+                                <input type="password" class="form-control" id="password" name="password" required
+                                    style="padding-left: 40px;" placeholder="Enter your password">
+                                <button type="button" id="togglePassword"
+                                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--medium-gray); cursor: pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                            <label class="form-checkbox">
+                                <input type="checkbox" id="rememberMe">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" style="color: var(--primary-color); font-size: 14px;">Forgot Password?</a>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="errorMessage" class="alert alert-danger"
+                            style="display: none; margin-bottom: var(--spacing-md);"></div>
+
+                        <!-- Success Message -->
+                        <div id="successMessage" class="alert alert-success"
+                            style="display: none; margin-bottom: var(--spacing-md);"></div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                        </button>
+
+                        <div class="text-center mt-lg">
+                            <p style="color: var(--medium-gray);">
+                                Don't have an account?
+                                <a href="signup.html" style="color: var(--primary-color); font-weight: 600;">Register
+                                    your restaurant</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // Login request
+        document.getElementById('restaurantLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loginBtn = document.getElementById('loginBtn');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/restaurant/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    errorDiv.textContent = data.message || "Invalid login credentials";
+                    errorDiv.style.display = "block";
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Dashboard';
+                    return;
+                }
+
+                /** SUCCESS LOGIN — DIRECT REDIRECT **/
+                successDiv.textContent = 'Login successful! Redirecting...';
+                successDiv.style.display = 'block';
+
+                localStorage.setItem('restaurantAuthToken', data.token);
+                localStorage.setItem('restaurantUser', JSON.stringify(data.user));
+                localStorage.setItem('restaurantData', JSON.stringify(data.restaurant));
+
+                if (rememberMe) {
+                    localStorage.setItem('rememberRestaurant', 'true');
+                }
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 800);
+
+            } catch (err) {
+                console.error(err);
+                errorDiv.textContent = 'Network error. Please try again.';
+                errorDiv.style.display = 'block';
+
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Dashboard';
+            }
+        });
+
+        // Auto redirect if token exists
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('restaurantAuthToken');
+            if (token) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

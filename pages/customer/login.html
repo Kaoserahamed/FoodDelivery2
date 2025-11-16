@@ -12,12 +12,198 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-3xl);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .auth-header div {
+            display: inline-block;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .auth-subtitle {
+            color: var(--gray-text);
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255,107,107,0.1);
+        }
+        
+        .d-flex {
+            display: flex;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .align-center {
+            align-items: center;
+        }
+        
+        .gap-md {
+            gap: var(--spacing-md);
+        }
+        
+        .text-primary {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .text-primary:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .btn-lg {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            font-size: 14px;
+            color: var(--gray-text);
+        }
+        
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            display: none;
+            font-size: 14px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .alert.show {
+            display: block;
+        }
+        
+        .alert-danger {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        
+        .alert-success {
+            background-color: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,107,107,0.3);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <a href="../../index.html">
+                <a href="../../index.html" style="text-decoration: none;">
                     <div style="font-size: 48px; color: var(--primary-color);">
                         <i class="fas fa-utensils"></i>
                     </div>
@@ -25,6 +211,8 @@
                 <h2 class="auth-title">Welcome Back!</h2>
                 <p class="auth-subtitle">Login to your account</p>
             </div>
+            
+            <div id="alertBox" class="alert"></div>
             
             <form id="loginForm">
                 <div class="form-group">
@@ -38,35 +226,113 @@
                 </div>
                 
                 <div class="form-group d-flex justify-between align-center">
-                    <label style="display: flex; align-items: center; gap: var(--spacing-xs);">
+                    <label style="display: flex; align-items: center; gap: var(--spacing-xs); cursor: pointer;">
                         <input type="checkbox" id="remember">
                         <span>Remember me</span>
                     </label>
                     <a href="#" class="text-primary">Forgot Password?</a>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-block btn-lg">Login</button>
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">Login</button>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                </div>
             </form>
             
-            <div class="auth-divider">
-                <span>OR</span>
-            </div>
-            
-            <div class="d-flex gap-md">
-                <button class="btn btn-outline btn-block">
-                    <i class="fab fa-google"></i> Google
-                </button>
-                <button class="btn btn-outline btn-block">
-                    <i class="fab fa-facebook"></i> Facebook
-                </button>
-            </div>
-            
             <div class="auth-footer">
-                <p>Don't have an account? <a href="register.html" class="text-primary fw-semibold">Sign Up</a></p>
+                <p>Don't have an account? <a href="register.html" class="text-primary">Sign Up</a></p>
             </div>
         </div>
     </div>
 
-    <script src="../../assets/js/auth.js"></script>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const alertBox = document.getElementById('alertBox');
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            
+            // Validation - Simple checks only (for dummy data)
+            if (!email) {
+                showAlert('Please enter your email', 'danger');
+                return;
+            }
+            
+            if (!password) {
+                showAlert('Please enter your password', 'danger');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                loading.style.display = 'block';
+                
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+                
+                // Store token
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                if (remember) {
+                    localStorage.setItem('rememberEmail', email);
+                }
+                
+                showAlert('Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 1500);
+                
+            } catch (error) {
+                showAlert(error.message || 'Login failed. Please try again.', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+        
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert show alert-${type}`;
+        }
+        
+        // Load remembered email
+        window.addEventListener('load', () => {
+            const rememberEmail = localStorage.getItem('rememberEmail');
+            if (rememberEmail) {
+                document.getElementById('email').value = rememberEmail;
+                document.getElementById('remember').checked = true;
+            }
+        });
+        
+        // Update navbar with user info
+        function updateAuthUI() {
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            
+            if (token && user) {
+                const firstName = user.firstName || user.fullName?.split(' ')[0] || 'User';
+                console.log('User logged in:', firstName);
+            }
+        }
+    </script>
 </body>
 </html>

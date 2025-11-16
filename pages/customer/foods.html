@@ -30,16 +30,19 @@
                 <a href="../../index.html" class="navbar-link">Home</a>
                 <a href="restaurants.html" class="navbar-link">Restaurants</a>
                 <a href="foods.html" class="navbar-link active">Foods</a>
-                <a href="about.html" class="navbar-link">About</a>
-                <a href="contact.html" class="navbar-link">Contact</a>
             </div>
 
             <div class="navbar-actions">
                 <a href="cart.html" class="navbar-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="navbar-badge">3</span>
+                    <span class="navbar-badge" id="cartBadge">0</span>
                 </a>
-                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                <a href="order-history.html" class="navbar-icon" id="ordersIcon" style="display: none;">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <div id="authLinks">
+                    <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -480,8 +483,48 @@
 
         // Add to cart
         function addToCart() {
-            const qty = document.getElementById('modalQty').value;
-            alert('Added ' + qty + ' item(s) to cart!');
+            const foodName = document.getElementById('modalFoodName').textContent;
+            const qty = parseInt(document.getElementById('modalQty').value);
+            const foodImage = document.getElementById('modalFoodImage').src;
+            const foodPrice = parseFloat(document.getElementById('modalPrice').textContent.replace('$', ''));
+            const foodRestaurant = document.getElementById('modalRestaurant').textContent;
+
+            // Find the food item to get its ID
+            const foodItem = foodData.find(f => f.name === foodName);
+            if (!foodItem) {
+                alert('Error: Food item not found');
+                return;
+            }
+
+            const cartItem = {
+                id: foodItem.id,
+                name: foodName,
+                price: foodPrice,
+                quantity: qty,
+                restaurant: foodRestaurant,
+                restaurantId: foodItem.id, // Using food ID as restaurant ID
+                image: foodImage
+            };
+
+            // Load existing cart
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            // Check if item already exists
+            const existingItem = cart.find(item => item.id === foodItem.id);
+            if (existingItem) {
+                existingItem.quantity += qty;
+            } else {
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update cart badge
+            updateCartBadge();
+
+            // Show success message
+            alert(`${foodName} x${qty} added to cart!`);
             closeModal('foodModal');
         }
 
@@ -504,8 +547,25 @@
             menu.classList.toggle('active');
         });
 
+        // Update cart badge from localStorage
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                badge.textContent = totalItems;
+            }
+        }
+
         // Initialize
         initPage();
+
+        // Update badge on page load
+        document.addEventListener('DOMContentLoaded', updateCartBadge);
+
+        // Update badge when storage changes (for cross-tab sync)
+        window.addEventListener('storage', updateCartBadge);
     </script>
+    <script src="../../js/global-auth.js"></script>
 </body>
 </html>

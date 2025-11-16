@@ -34,19 +34,19 @@
                 <a href="../../index.html" class="navbar-link">Home</a>
                 <a href="restaurants.html" class="navbar-link active">Restaurants</a>
                 <a href="foods.html" class="navbar-link">Foods</a>
-                <a href="about.html" class="navbar-link">About</a>
-                <a href="contact.html" class="navbar-link">Contact</a>
             </div>
 
             <div class="navbar-actions">
                 <a href="cart.html" class="navbar-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="navbar-badge">3</span>
+                    <span class="navbar-badge" id="cartBadge">0</span>
                 </a>
-                <a href="order-history.html" class="navbar-icon">
+                <a href="order-history.html" class="navbar-icon" id="ordersIcon" style="display: none;">
                     <i class="fas fa-receipt"></i>
                 </a>
-                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                <div id="authLinks">
+                    <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -322,6 +322,24 @@
 
     <script src="../../js/main.js"></script>
     <script src="../../js/restaurant.js"></script>
+    <script>
+        // Update cart badge from localStorage
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                badge.textContent = totalItems;
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', updateCartBadge);
+
+        // Update badge when storage changes (for cross-tab sync)
+        window.addEventListener('storage', updateCartBadge);
+    </script>
+    <script src="../../js/global-auth.js"></script>
 </body>
 
 </html>
