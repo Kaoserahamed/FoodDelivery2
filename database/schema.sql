@@ -151,25 +151,3 @@ VALUES ('John Doe', 'john@example.com', '+1234567891', MD5('password123'), 'cust
 INSERT INTO users (name, email, phone, password, user_type) 
 VALUES ('Spice Palace Owner', 'spicepalace@restaurant.com', '+1234567892', MD5('restaurant123'), 'restaurant');
 
--- Insert Sample Restaurant
-INSERT INTO restaurants (user_id, name, description, cuisine_type, address, phone, email, opening_time, closing_time, delivery_time, price_range, rating, total_reviews, is_open)
-VALUES (3, 'Spice Palace', 'Authentic Indian cuisine with a modern twist', 'Indian', '123 Main Street, City', '+1234567892', 'spicepalace@restaurant.com', '11:00:00', '22:00:00', '30-40 min', '$$ - $$$', 4.5, 200, TRUE);
-
--- Insert Sample Menu Categories
-INSERT INTO menu_categories (restaurant_id, name, display_order) VALUES
-(1, 'Appetizers', 1),
-(1, 'Main Course', 2),
-(1, 'Breads', 3),
-(1, 'Rice & Biryani', 4),
-(1, 'Desserts', 5),
-(1, 'Beverages', 6);
-
--- Insert Sample Menu Items
-INSERT INTO menu_items (restaurant_id, category_id, name, description, price, is_vegetarian, is_available) VALUES
-(1, 1, 'Vegetable Samosa', 'Crispy pastry filled with spiced potatoes and peas', 4.99, TRUE, TRUE),
-(1, 2, 'Butter Chicken', 'Tender chicken in rich tomato-based creamy curry', 14.99, FALSE, TRUE),
-(1, 2, 'Paneer Tikka Masala', 'Grilled cottage cheese increamy tomato gravy', 12.99, TRUE, TRUE),
-(1, 3, 'Garlic Naan', 'Fluffy bread topped with garlic and butter', 3.99, TRUE, TRUE),
-(1, 4, 'Chicken Biryani', 'Fragrant rice with marinated chicken', 15.99, FALSE, TRUE),
-(1, 5, 'Gulab Jamun', 'Soft milk dumplings in rose syrup', 4.99, TRUE, TRUE),
-(1, 6, 'Mango Lassi', 'Sweet yogurt drink with mango', 3.99, TRUE, TRUE);

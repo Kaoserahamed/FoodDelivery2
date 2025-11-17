@@ -222,17 +222,72 @@
         }
 
         // Load restaurants from backend
-        function loadRestaurants() {
-            // TODO: Replace with actual API call
-            // Example: fetch('/api/restaurants/featured')
-            //   .then(response => response.json())
-            //   .then(data => {
-            //     restaurantsData = data;
-            //     displayRestaurants();
-            //   });
+        async function loadRestaurants() {
+            try {
+                const response = await fetch('http://localhost:5000/api/restaurants');
+                const data = await response.json();
 
-            // For now, grid will be empty until backend data is added
-            displayRestaurants();
+                if (response.ok && Array.isArray(data)) {
+                    // Transform backend data to frontend format
+                    restaurantsData = data.map(restaurant => ({
+                        id: restaurant.restaurant_id,
+                        name: restaurant.name,
+                        cuisine: restaurant.cuisine_type,
+                        rating: restaurant.rating || 4.5,
+                        deliveryTime: restaurant.delivery_time || '30-40',
+                        priceRange: restaurant.price_range || '$$',
+                        image: restaurant.image_url,
+                        isOpen: restaurant.is_open,
+                        address: restaurant.address,
+                        phone: restaurant.phone
+                    }));
+
+                    console.log('✅ Restaurants loaded:', restaurantsData.length);
+                    displayRestaurants();
+                } else {
+                    console.error('Failed to load restaurants:', data);
+                    displayRestaurants(); // Show empty state
+                }
+            } catch (error) {
+                console.error('❌ Error loading restaurants:', error);
+                displayRestaurants(); // Show empty state
+            }
+        }
+
+        // Load popular dishes from backend
+        async function loadPopularDishes() {
+            try {
+                const response = await fetch('http://localhost:5000/api/menu/popular?limit=8');
+                const data = await response.json();
+
+                if (response.ok) {
+                    const items = data.items || data;
+
+                    if (Array.isArray(items)) {
+                        popularDishesData = items.map(item => ({
+                            id: item.item_id || item.menu_item_id,
+                            name: item.name,
+                            price: parseFloat(item.price),
+                            rating: item.rating || 4.5,
+                            image: item.image_url,
+                            restaurant: item.restaurant_name,
+                            restaurantId: item.restaurant_id,
+                            category: item.category,
+                            type: item.is_vegetarian ? 'veg' : 'non-veg',
+                            description: item.description
+                        }));
+
+                        console.log('✅ Popular dishes loaded:', popularDishesData.length);
+                        displayPopularDishes();
+                    }
+                } else {
+                    console.error('Failed to load dishes:', data);
+                    displayPopularDishes(); // Show empty state
+                }
+            } catch (error) {
+                console.error('❌ Error loading dishes:', error);
+                displayPopularDishes(); // Show empty state
+            }
         }
 
         // Display restaurants
@@ -301,62 +356,48 @@
             return html;
         }
 
-        // Load popular dishes from backend
-        function loadPopularDishes() {
-            // TODO: Replace with actual API call
-            // Example: fetch('/api/foods/popular')
-            //   .then(response => response.json())
-            //   .then(data => {
-            //     popularDishesData = data;
-            //     displayPopularDishes();
-            //   });
+        
 
-            // For now, grid will be empty until backend data is added
-            displayPopularDishes();
-        }
-
-        // Display popular dishes
         function displayPopularDishes() {
-            const grid = document.getElementById('popularDishesGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('foodsGrid');
+            const noResults = document.getElementById('noResults');
+            const resultCount = document.getElementById('resultCount');
 
-            if (popularDishesData.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--medium-gray); padding: var(--spacing-xl);">No dishes available at the moment. Please check back later!</p>';
+            if (filteredData.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                resultCount.textContent = '0';
                 return;
             }
 
-            popularDishesData.forEach(dish => {
+            noResults.style.display = 'none';
+            grid.innerHTML = '';
+            resultCount.textContent = filteredData.length;
+
+            filteredData.forEach(food => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.cursor = 'pointer';
-                card.style.transition = 'all 0.3s ease';
+
+                const imageUrl = food.image_url || 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(food.name);
+                const restaurant = allRestaurants[food.restaurant_id];
+                const restaurantName = restaurant?.name || 'Unknown Restaurant';
+                const vegetarianStatus = food.is_vegetarian ? '🥬 Veg' : '🍗 Non-Veg';
+                const availabilityBadge = food.is_available ? '' : '<span class="badge" style="background-color: #FF8C00; color: white; margin-left: 4px;">Unavailable</span>';
+
                 card.innerHTML = `
-                    <img src="${dish.image || 'https://via.placeholder.com/400x300?text=Food'}" alt="${dish.name}" class="card-img">
+                    <img src="${imageUrl}" alt="${food.name}" class="card-img" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
                     <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">${dish.name}</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${dish.restaurant || 'Restaurant'}</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${dish.price.toFixed(2)}</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ ${dish.rating}</span>
+                        <h4 class="card-title" style="margin-bottom: 4px;">${food.name}</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${restaurantName}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${parseFloat(food.price).toFixed(2)}</span>
                         </div>
-                        <span class="badge" style="background-color: ${dish.type === 'veg' ? '#51CF66' : '#FF6B6B'}; color: white;">${dish.type === 'veg' ? 'Veg' : 'Non-Veg'}</span>
+                        <span class="badge" style="background-color: ${food.is_vegetarian ? '#51CF66' : '#FF6B6B'}; color: white;">${vegetarianStatus}</span>
+                        ${availabilityBadge}
                     </div>
                 `;
-
-                // Add click event to open modal
-                card.addEventListener('click', () => openFoodModal(dish));
-
-                // Add hover effect
-                card.addEventListener('mouseenter', function () {
-                    this.style.transform = 'translateY(-5px)';
-                    this.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)';
-                });
-
-                card.addEventListener('mouseleave', function () {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = 'var(--shadow-sm)';
-                });
-
+                card.onclick = () => openFoodModal(food);
                 grid.appendChild(card);
             });
         }

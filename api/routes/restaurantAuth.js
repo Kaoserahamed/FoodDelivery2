@@ -3,9 +3,10 @@ const router = express.Router();
 const db = require('../../config/database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { verifyToken, isRestaurant } = require('../../middleware/auth');
 
 // ----------------------------------------------------
-// RESTAURANT SIGNUP (FULLY FIXED - PROMISE VERSION)
+// RESTAURANT SIGNUP
 // ----------------------------------------------------
 router.post('/signup', async (req, res) => {
   const { owner, restaurant } = req.body;
@@ -61,11 +62,11 @@ router.post('/signup', async (req, res) => {
 
     // Create restaurant
     const [restaurantResult] = await conn.query(
-      `INSERT INTO restaurants 
-      (user_id, name, description, cuisine_type, address, phone, email,
-      opening_time, closing_time, delivery_time, price_range, image_url, is_open)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE)`,
-      [
+    `INSERT INTO restaurants 
+    (user_id, name, description, cuisine_type, address, phone, email,
+    opening_time, closing_time, delivery_time, price_range, image_url, is_open, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE, TRUE)`,
+    [
         userId,
         restaurant.name,
         restaurant.description,
@@ -78,8 +79,8 @@ router.post('/signup', async (req, res) => {
         restaurant.delivery_time,
         restaurant.price_range,
         restaurant.image_url || null
-      ]
-    );
+    ]
+);
 
     await conn.commit();
 
@@ -101,7 +102,7 @@ router.post('/signup', async (req, res) => {
 });
 
 // ----------------------------------------------------
-// RESTAURANT LOGIN (PROMISE VERSION)
+// RESTAURANT LOGIN
 // ----------------------------------------------------
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -139,13 +140,6 @@ router.post('/login', async (req, res) => {
 
     const restaurant = restaurants[0];
 
-    // if (!restaurant.is_open) {
-    //   return res.status(403).json({
-    //     message: "Restaurant pending approval",
-    //     pendingApproval: true
-    //   });
-    // }
-
     const token = jwt.sign(
       {
         userId: user.user_id,
@@ -169,6 +163,241 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: "Login failed", error: err.message });
   }
+});
+
+// ----------------------------------------------------
+// GET RESTAURANT PROFILE
+// ----------------------------------------------------
+router.get('/profile', verifyToken, isRestaurant, (req, res) => {
+  const userId = req.userId;
+
+  db.query(
+    'SELECT * FROM restaurants WHERE user_id = ?',
+    [userId],
+    (err, restaurants) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error finding restaurant', error: err });
+      }
+
+      if (restaurants.length === 0) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+
+      res.status(200).json({
+        success: true,
+        restaurant: restaurants[0]
+      });
+    }
+  );
+});
+
+// ----------------------------------------------------
+// UPDATE RESTAURANT PROFILE
+// ----------------------------------------------------
+router.put('/profile', verifyToken, isRestaurant, (req, res) => {
+  const userId = req.userId;
+  const updates = req.body;
+
+  const allowedFields = [
+    'name', 'description', 'cuisine_type', 'address', 
+    'phone', 'email', 'opening_time', 'closing_time',
+    'delivery_time', 'price_range', 'image_url'
+  ];
+
+  const updateFields = [];
+  const updateValues = [];
+
+  for (const field of allowedFields) {
+    if (updates[field] !== undefined) {
+      updateFields.push(`${field} = ?`);
+      updateValues.push(updates[field]);
+    }
+  }
+
+  if (updateFields.length === 0) {
+    return res.status(400).json({ message: 'No fields to update' });
+  }
+
+  updateValues.push(userId);
+
+  db.query(
+    `UPDATE restaurants SET ${updateFields.join(', ')} WHERE user_id = ?`,
+    updateValues,
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error updating profile', error: err });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully'
+      });
+    }
+  );
+});
+
+// ----------------------------------------------------
+// GET RESTAURANT DASHBOARD DATA
+// ----------------------------------------------------
+// ----------------------------------------------------
+// GET RESTAURANT DASHBOARD DATA
+// ----------------------------------------------------
+router.get('/dashboard', verifyToken, isRestaurant, async (req, res) => {
+  const userId = req.userId;
+  console.log('📊 Dashboard request for userId:', userId);
+
+  try {
+    // Get restaurant details using promise
+    const [restaurants] = await db.query('SELECT * FROM restaurants WHERE user_id = ?', [userId]);
+    
+    if (restaurants.length === 0) {
+      console.log('❌ Restaurant not found for userId:', userId);
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    const restaurant = restaurants[0];
+    const restaurantId = restaurant.restaurant_id;
+    const today = new Date().toISOString().split('T')[0];
+    
+    console.log('✅ Restaurant found:', restaurant.name, 'ID:', restaurantId);
+
+    // Get all statistics in parallel
+    const [
+      [todayOrdersResult],
+      [todayRevenueResult],
+      [pendingOrdersResult],
+      [avgRatingResult],
+      recentOrders,
+      popularItems
+    ] = await Promise.all([
+      // Today's orders count
+      db.query(
+        `SELECT COUNT(*) as count FROM orders 
+         WHERE restaurant_id = ? AND DATE(order_date) = ?`,
+        [restaurantId, today]
+      ),
+      // Today's revenue
+      db.query(
+        `SELECT COALESCE(SUM(total_amount), 0) as revenue FROM orders 
+         WHERE restaurant_id = ? AND DATE(order_date) = ? AND status != 'cancelled'`,
+        [restaurantId, today]
+      ),
+      // Pending orders count
+      db.query(
+        `SELECT COUNT(*) as count FROM orders 
+         WHERE restaurant_id = ? AND status = 'pending'`,
+        [restaurantId]
+      ),
+      // Average rating
+      db.query(
+        `SELECT COALESCE(AVG(rating), 0) as avg_rating, COUNT(*) as review_count 
+         FROM reviews WHERE restaurant_id = ?`,
+        [restaurantId]
+      ),
+      // Recent orders (last 5)
+      db.query(
+        `SELECT o.order_id, o.order_date, o.status, o.total_amount,
+         u.name as customer_name, u.phone as customer_phone,
+         (SELECT COUNT(*) FROM order_items WHERE order_id = o.order_id) as item_count
+         FROM orders o
+         JOIN users u ON o.user_id = u.user_id
+         WHERE o.restaurant_id = ?
+         ORDER BY o.order_date DESC
+         LIMIT 5`,
+        [restaurantId]
+      ),
+      // Popular menu items today
+      db.query(
+        `SELECT mi.item_id, mi.name, mi.price, mi.image_url,
+         mc.name as category_name,
+         COUNT(oi.order_item_id) as order_count
+         FROM menu_items mi
+         LEFT JOIN menu_categories mc ON mi.category_id = mc.category_id
+         LEFT JOIN order_items oi ON mi.item_id = oi.item_id
+         LEFT JOIN orders o ON oi.order_id = o.order_id AND DATE(o.order_date) = ?
+         WHERE mi.restaurant_id = ?
+         GROUP BY mi.item_id
+         HAVING order_count > 0
+         ORDER BY order_count DESC
+         LIMIT 3`,
+        [today, restaurantId]
+      )
+    ]);
+
+    console.log('✅ All queries completed successfully');
+    console.log('📈 Stats:', {
+      todayOrders: todayOrdersResult[0].count,
+      todayRevenue: todayRevenueResult[0].revenue,
+      pendingOrders: pendingOrdersResult[0].count,
+      recentOrdersCount: recentOrders[0].length
+    });
+
+    // Send response
+    return res.status(200).json({
+      success: true,
+      data: {
+        restaurant: {
+          id: restaurant.restaurant_id,
+          name: restaurant.name,
+          description: restaurant.description,
+          cuisine_type: restaurant.cuisine_type,
+          address: restaurant.address,
+          phone: restaurant.phone,
+          email: restaurant.email,
+          is_open: restaurant.is_open,
+          opening_time: restaurant.opening_time,
+          closing_time: restaurant.closing_time,
+          image_url: restaurant.image_url
+        },
+        statistics: {
+          todayOrders: todayOrdersResult[0].count,
+          todayRevenue: parseFloat(todayRevenueResult[0].revenue).toFixed(2),
+          pendingOrders: pendingOrdersResult[0].count,
+          averageRating: parseFloat(avgRatingResult[0].avg_rating).toFixed(1),
+          reviewCount: avgRatingResult[0].review_count
+        },
+        recentOrders: recentOrders[0] || [],
+        popularItems: popularItems[0] || []
+      }
+    });
+
+  } catch (err) {
+    console.error('❌ Dashboard error:', err);
+    return res.status(500).json({ 
+      message: 'Failed to load dashboard', 
+      error: err.message 
+    });
+  }
+});
+// ----------------------------------------------------
+// UPDATE RESTAURANT STATUS (OPEN/CLOSED)
+// ----------------------------------------------------
+router.put('/status', verifyToken, isRestaurant, (req, res) => {
+  const userId = req.userId;
+  const { is_open } = req.body;
+
+  db.query(
+    'UPDATE restaurants SET is_open = ? WHERE user_id = ?',
+    [is_open, userId],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error updating status', error: err });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Restaurant ${is_open ? 'opened' : 'closed'} successfully`
+      });
+    }
+  );
 });
 
 module.exports = router;

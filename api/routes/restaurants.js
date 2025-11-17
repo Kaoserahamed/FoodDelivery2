@@ -155,4 +155,154 @@ router.delete('/:id', verifyToken, isAdmin, (req, res) => {
   });
 });
 
+router.get('/dashboard', verifyToken, isRestaurant, (req, res) => {
+  const userId = req.userId;
+
+  // Get restaurant details
+  db.query('SELECT * FROM restaurants WHERE user_id = ?', [userId], (err, restaurants) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error finding restaurant', error: err });
+    }
+
+    if (restaurants.length === 0) {
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    const restaurant = restaurants[0];
+    const restaurantId = restaurant.restaurant_id;
+    const today = new Date().toISOString().split('T')[0];
+
+    // Today's orders count
+    db.query(
+      `SELECT COUNT(*) as count FROM orders 
+       WHERE restaurant_id = ? AND DATE(order_date) = ?`,
+      [restaurantId, today],
+      (err, todayOrders) => {
+        if (err) return res.status(500).json({ message: 'Error fetching orders', error: err });
+
+        // Today's revenue
+        db.query(
+          `SELECT COALESCE(SUM(total_amount), 0) as revenue FROM orders 
+           WHERE restaurant_id = ? AND DATE(order_date) = ? AND status != 'cancelled'`,
+          [restaurantId, today],
+          (err, todayRevenue) => {
+            if (err) return res.status(500).json({ message: 'Error fetching revenue', error: err });
+
+            // Pending orders count
+            db.query(
+              `SELECT COUNT(*) as count FROM orders 
+               WHERE restaurant_id = ? AND status = 'pending'`,
+              [restaurantId],
+              (err, pendingOrders) => {
+                if (err) return res.status(500).json({ message: 'Error fetching pending orders', error: err });
+
+                // Average rating
+                db.query(
+                  `SELECT COALESCE(AVG(rating), 0) as avg_rating, COUNT(*) as review_count 
+                   FROM reviews WHERE restaurant_id = ?`,
+                  [restaurantId],
+                  (err, avgRating) => {
+                    if (err) return res.status(500).json({ message: 'Error fetching rating', error: err });
+
+                    // Recent orders (last 5)
+                    db.query(
+                      `SELECT o.*, u.name as customer_name, u.phone as customer_phone,
+                       COUNT(oi.order_item_id) as item_count
+                       FROM orders o
+                       JOIN users u ON o.user_id = u.user_id
+                       LEFT JOIN order_items oi ON o.order_id = oi.order_id
+                       WHERE o.restaurant_id = ?
+                       GROUP BY o.order_id
+                       ORDER BY o.order_date DESC
+                       LIMIT 5`,
+                      [restaurantId],
+                      (err, recentOrders) => {
+                        if (err) return res.status(500).json({ message: 'Error fetching recent orders', error: err });
+
+                        // Popular menu items today
+                        db.query(
+                          `SELECT mi.*, mc.name as category_name, COUNT(oi.order_item_id) as order_count
+                           FROM menu_items mi
+                           LEFT JOIN menu_categories mc ON mi.category_id = mc.category_id
+                           LEFT JOIN order_items oi ON mi.item_id = oi.item_id
+                           LEFT JOIN orders o ON oi.order_id = o.order_id AND DATE(o.order_date) = ?
+                           WHERE mi.restaurant_id = ?
+                           GROUP BY mi.item_id
+                           ORDER BY order_count DESC
+                           LIMIT 3`,
+                          [today, restaurantId],
+                          (err, popularItems) => {
+                            if (err) return res.status(500).json({ message: 'Error fetching popular items', error: err });
+
+                            // Send response
+                            return res.status(200).json({
+                              success: true,
+                              data: {
+                                restaurant: {
+                                  id: restaurant.restaurant_id,
+                                  name: restaurant.name,
+                                  description: restaurant.description,
+                                  cuisine_type: restaurant.cuisine_type,
+                                  address: restaurant.address,
+                                  phone: restaurant.phone,
+                                  email: restaurant.email,
+                                  is_open: restaurant.is_open,
+                                  opening_time: restaurant.opening_time,
+                                  closing_time: restaurant.closing_time,
+                                  image_url: restaurant.image_url
+                                },
+                                statistics: {
+                                  todayOrders: todayOrders[0].count,
+                                  todayRevenue: parseFloat(todayRevenue[0].revenue).toFixed(2),
+                                  pendingOrders: pendingOrders[0].count,
+                                  averageRating: parseFloat(avgRating[0].avg_rating).toFixed(1),
+                                  reviewCount: avgRating[0].review_count
+                                },
+                                recentOrders: recentOrders,
+                                popularItems: popularItems
+                              }
+                            });
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    );
+  });
+});
+
+// ----------------------------------------------------
+// UPDATE RESTAURANT STATUS (OPEN/CLOSED)
+// ----------------------------------------------------
+router.put('/status', verifyToken, isRestaurant, (req, res) => {
+  const userId = req.userId;
+  const { is_open } = req.body;
+
+  db.query(
+    'UPDATE restaurants SET is_open = ? WHERE user_id = ?',
+    [is_open, userId],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error updating status', error: err });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Restaurant ${is_open ? 'opened' : 'closed'} successfully`
+      });
+    }
+  );
+});
+
+
 module.exports = router;

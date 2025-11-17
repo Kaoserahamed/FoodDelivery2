@@ -1,65 +1,6 @@
 
 const mockRestaurants = [
-    {
-        id: 1,
-        name: 'Spice Palace',
-        cuisine: 'Indian',
-        rating: 4.5,
-        deliveryTime: '30-40',
-        priceRange: '$$ - $$$',
-        isOpen: true,
-        image: 'https://via.placeholder.com/400x200?text=Restaurant+1'
-    },
-    {
-        id: 2,
-        name: 'Burger Haven',
-        cuisine: 'American',
-        rating: 4.0,
-        deliveryTime: '20-30',
-        priceRange: '$ - $$',
-        isOpen: true,
-        image: 'https://via.placeholder.com/400x200?text=Restaurant+2'
-    },
-    {
-        id: 3,
-        name: 'Sushi Express',
-        cuisine: 'Japanese',
-        rating: 5.0,
-        deliveryTime: '25-35',
-        priceRange: '$$$ - $$$$',
-        isOpen: true,
-        image: 'https://via.placeholder.com/400x200?text=Restaurant+3'
-    },
-    {
-        id: 4,
-        name: 'Pizza Paradise',
-        cuisine: 'Italian',
-        rating: 4.2,
-        deliveryTime: '35-45',
-        priceRange: '$$ - $$$',
-        isOpen: false,
-        image: 'https://via.placeholder.com/400x200?text=Restaurant+4'
-    },
-    {
-        id: 5,
-        name: 'Taco Fiesta',
-        cuisine: 'Mexican',
-        rating: 4.8,
-        deliveryTime: '15-25',
-        priceRange: '$ - $$',
-        isOpen: true,
-        image: 'https://via.placeholder.com/400x200?text=Restaurant+5'
-    },
-    {
-        id: 6,
-        name: 'Noodle House',
-        cuisine: 'Chinese',
-        rating: 4.6,
-        deliveryTime: '25-35',
-        priceRange: '$$ - $$$',
-        isOpen: true,
-        image: 'https://via.placeholder.com/400x200?text=Restaurant+6'
-    }
+
 ];
 
 // Search and filter restaurants

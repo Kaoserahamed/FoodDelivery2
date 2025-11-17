@@ -70,7 +70,8 @@
                 <div id="cartItemsContainer" style="min-height: 200px;">
                     <!-- Cart items will be loaded here by JavaScript -->
                     <div style="text-align: center; padding: 40px; color: #999;">
-                        <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+                        <i class="fas fa-shopping-cart"
+                            style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
                         <p>Loading cart items...</p>
                     </div>
                 </div>
@@ -82,63 +83,64 @@
                 </div>
             </div>
 
-                <!-- Cart Summary -->
-                <div class="cart-summary">
-                    <h3 class="mb-lg">Order Summary</h3>
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <h3 class="mb-lg">Order Summary</h3>
 
-                    <div class="summary-row">
-                        <span>Subtotal</span>
-                        <span id="subtotal">$0.00</span>
-                    </div>
-
-                    <div class="summary-row">
-                        <span>Delivery Fee</span>
-                        <span id="deliveryFee">$3.99</span>
-                    </div>
-
-                    <div class="summary-row">
-                        <span>Tax (8%)</span>
-                        <span id="tax">$0.00</span>
-                    </div>
-
-                    <div class="summary-row total">
-                        <span>Total</span>
-                        <span id="total">$0.00</span>
-                    </div>
-
-                    <div class="mt-lg">
-                        <div class="form-group">
-                            <label class="form-label">Have a promo code?</label>
-                            <div class="d-flex gap-sm">
-                                <input type="text" class="form-control" placeholder="Enter code" id="promoCode">
-                                <button class="btn btn-secondary" id="applyPromo">Apply</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-lg">
-                        <div class="form-group">
-                            <label class="form-label">Delivery Address</label>
-                            <textarea class="form-control" placeholder="Enter your delivery address" id="deliveryAddress"
-                                rows="3"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Special Instructions (Optional)</label>
-                            <textarea class="form-control" placeholder="Any special requests?" id="specialInstructions" rows="2"></textarea>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-primary btn-block btn-lg" id="placeOrderBtn">
-                        <i class="fas fa-check"></i> Place Order
-                    </button>
-
-                    <p class="text-center text-muted mt-md" style="font-size: var(--font-size-sm);">
-                        <i class="fas fa-lock"></i> Secure checkout
-                    </p>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$0.00</span>
                 </div>
+
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span id="deliveryFee">$3.99</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Tax (8%)</span>
+                    <span id="tax">$0.00</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="total">$0.00</span>
+                </div>
+
+                <div class="mt-lg">
+                    <div class="form-group">
+                        <label class="form-label">Have a promo code?</label>
+                        <div class="d-flex gap-sm">
+                            <input type="text" class="form-control" placeholder="Enter code" id="promoCode">
+                            <button class="btn btn-secondary" id="applyPromo">Apply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-lg">
+                    <div class="form-group">
+                        <label class="form-label">Delivery Address</label>
+                        <textarea class="form-control" placeholder="Enter your delivery address" id="deliveryAddress"
+                            rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Special Instructions (Optional)</label>
+                        <textarea class="form-control" placeholder="Any special requests?" id="specialInstructions"
+                            rows="2"></textarea>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-block btn-lg" id="placeOrderBtn">
+                    <i class="fas fa-check"></i> Place Order
+                </button>
+
+                <p class="text-center text-muted mt-md" style="font-size: var(--font-size-sm);">
+                    <i class="fas fa-lock"></i> Secure checkout
+                </p>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Footer -->
@@ -181,20 +183,20 @@
         // Load cart from localStorage
         function loadCart() {
             const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
-            console.log('Loaded cart:', cartItems); // Debug log
+            console.log('Loaded cart:', cartItems);
             return cartItems;
         }
 
         // Save cart to localStorage
         function saveCart(items) {
             localStorage.setItem('cart', JSON.stringify(items));
-            console.log('Saved cart:', items); // Debug log
+            console.log('Saved cart:', items);
             renderCart();
         }
 
         // Render cart items
         function renderCart() {
-            console.log('Rendering cart...'); // Debug log
+            console.log('Rendering cart...');
             const cartItems = loadCart();
             const container = document.getElementById('cartItemsContainer');
 
@@ -205,12 +207,12 @@
 
             if (cartItems.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #999;">
-                        <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-                        <p>Your cart is empty</p>
-                        <a href="restaurants.html" class="btn btn-primary" style="margin-top: 16px;">Browse Restaurants</a>
-                    </div>
-                `;
+      <div style="text-align: center; padding: 40px; color: #999;">
+        <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+        <p>Your cart is empty</p>
+        <a href="restaurants.html" class="btn btn-primary" style="margin-top: 16px;">Browse Restaurants</a>
+      </div>
+    `;
                 updateSummary(cartItems);
                 return;
             }
@@ -219,30 +221,30 @@
             cartItems.forEach((item, index) => {
                 const itemTotal = (item.price * item.quantity).toFixed(2);
                 html += `
-                    <div class="cart-item">
-                        <img src="${item.image || 'https://via.placeholder.com/80?text=Food'}" alt="${item.name}" class="cart-item-image">
-                        <div class="cart-item-details">
-                            <h4>${item.name}</h4>
-                            <p class="text-muted">${item.restaurant}</p>
-                            <div class="quantity-selector mt-sm">
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
-                                <span class="quantity-value">${item.quantity}</span>
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
-                            </div>
-                        </div>
-                        <div class="cart-item-actions">
-                            <span class="price">$${itemTotal}</span>
-                            <button class="btn btn-sm" onclick="removeItem(${index})"
-                                style="background-color: var(--danger-color); color: var(--white);">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
+      <div class="cart-item">
+        <img src="${item.image || 'https://via.placeholder.com/80?text=Food'}" alt="${item.name}" class="cart-item-image">
+        <div class="cart-item-details">
+          <h4>${item.name}</h4>
+          <p class="text-muted">${item.restaurant}</p>
+          <div class="quantity-selector mt-sm">
+            <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+            <span class="quantity-value">${item.quantity}</span>
+            <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+          </div>
+        </div>
+        <div class="cart-item-actions">
+          <span class="price">$${itemTotal}</span>
+          <button class="btn btn-sm" onclick="removeItem(${index})"
+            style="background-color: var(--danger-color); color: var(--white);">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
             });
 
             container.innerHTML = html;
-            console.log('Cart rendered with', cartItems.length, 'items'); // Debug log
+            console.log('Cart rendered with', cartItems.length, 'items');
             updateSummary(cartItems);
         }
 
@@ -274,8 +276,8 @@
             document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
             document.getElementById('tax').textContent = '$' + tax.toFixed(2);
             document.getElementById('total').textContent = '$' + total.toFixed(2);
-            
-            // Update badge with total item count
+
+            // Update badge
             const badge = document.getElementById('cartBadge');
             if (badge) {
                 const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -283,7 +285,7 @@
             }
         }
 
-        // Place order
+        // Place order with enhanced validation
         document.getElementById('placeOrderBtn').addEventListener('click', async () => {
             const token = localStorage.getItem('authToken');
             if (!token) {
@@ -306,26 +308,36 @@
                 return;
             }
 
+            // Disable button during processing
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing Order...';
+
             const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const tax = subtotal * TAX_RATE;
             const total = subtotal + DELIVERY_FEE + tax;
 
+            // Group items by restaurant
+            const restaurantId = cartItems[0].restaurantId;
+
             const orderData = {
-                restaurant_id: cartItems[0].restaurantId || 1,
+                restaurant_id: restaurantId || 1,
                 delivery_address: deliveryAddress,
                 special_instructions: specialInstructions,
-                subtotal: subtotal,
+                subtotal: parseFloat(subtotal.toFixed(2)),
                 delivery_fee: DELIVERY_FEE,
-                tax: tax,
-                total_amount: total,
+                tax: parseFloat(tax.toFixed(2)),
+                total_amount: parseFloat(total.toFixed(2)),
                 items: cartItems.map(item => ({
                     item_id: item.id,
                     item_name: item.name,
-                    item_price: item.price,
+                    item_price: parseFloat(item.price.toFixed(2)),
                     quantity: item.quantity,
-                    subtotal: item.price * item.quantity
+                    subtotal: parseFloat((item.price * item.quantity).toFixed(2))
                 }))
             };
+
+            console.log('Sending order data:', orderData);
 
             try {
                 const response = await fetch(`${API_URL}/orders/create`, {
@@ -338,30 +350,34 @@
                 });
 
                 const data = await response.json();
+                console.log('Response:', data);
 
-                if (response.ok) {
-                    alert('Order placed successfully!');
+                if (response.ok && data.success) {
+                    // Clear cart and redirect
                     localStorage.removeItem('cart');
-                    window.location.href = 'order-history.html';
+                    alert('Order placed successfully! Order ID: ' + data.orderId);
+                    window.location.href = `order-history.html?orderId=${data.orderId}`;
                 } else {
                     alert(data.message || 'Failed to place order');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Place Order';
                 }
             } catch (error) {
+                console.error('Error:', error);
                 alert('Error placing order: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Place Order';
             }
         });
 
-        // Initialize on page load
+        // Initialize
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', renderCart);
         } else {
             renderCart();
         }
 
-        // Listen for storage changes (when items added from other pages)
         window.addEventListener('storage', renderCart);
-
-        // Re-render on focus (in case cart was modified in another tab)
         window.addEventListener('focus', renderCart);
     </script>
 </body>

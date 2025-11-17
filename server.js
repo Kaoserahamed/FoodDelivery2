@@ -39,6 +39,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// In server.js, add this line with other routes
+const publicRestaurantRoutes = require('./api/routes/public');
+
+// Add this route BEFORE other restaurant routes
+app.use('/api/restaurants', publicRestaurantRoutes);
+
+// Make sure menu popular endpoint is accessible
+app.use('/api/menu', publicRestaurantRoutes);
+
 // Customer & General Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
@@ -52,6 +61,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/restaurant', restaurantAuthRoutes);
 app.use('/api/restaurant/menu', restaurantMenuRoutes);
 app.use('/api/restaurant/orders', restaurantOrdersRoutes);
+
+
 
 // 404 handler
 app.use((req, res) => {
@@ -83,19 +94,33 @@ app.listen(PORT, () => {
   console.log('  /api/admin - Admin operations');
   console.log('');
   console.log('🍽️  Restaurant Owner Endpoints:');
+  console.log('─────────────────────────────────────────────────');
+  console.log('  Authentication & Profile:');
   console.log('  POST   /api/restaurant/signup - Register restaurant');
   console.log('  POST   /api/restaurant/login - Restaurant login');
   console.log('  GET    /api/restaurant/profile - Get profile');
   console.log('  PUT    /api/restaurant/profile - Update profile');
+  console.log('  PUT    /api/restaurant/status - Update open/closed status');
+  console.log('');
+  console.log('  Dashboard:');
+  console.log('  GET    /api/restaurant/dashboard - Get dashboard data & stats');
+  console.log('');
+  console.log('  Menu Management:');
   console.log('  GET    /api/restaurant/menu/categories - Get categories');
   console.log('  POST   /api/restaurant/menu/categories - Create category');
+  console.log('  PUT    /api/restaurant/menu/categories/:id - Update category');
+  console.log('  DELETE /api/restaurant/menu/categories/:id - Delete category');
   console.log('  GET    /api/restaurant/menu/items - Get menu items');
   console.log('  POST   /api/restaurant/menu/items - Create menu item');
   console.log('  PUT    /api/restaurant/menu/items/:id - Update menu item');
   console.log('  DELETE /api/restaurant/menu/items/:id - Delete menu item');
-  console.log('  GET    /api/restaurant/orders - Get orders');
+  console.log('');
+  console.log('  Order Management:');
+  console.log('  GET    /api/restaurant/orders - Get all orders');
   console.log('  GET    /api/restaurant/orders/:id - Get order details');
   console.log('  PUT    /api/restaurant/orders/:id/status - Update order status');
   console.log('  GET    /api/restaurant/orders/stats/dashboard - Dashboard stats');
+  console.log('═══════════════════════════════════════════════════');
+  console.log('✨ All systems operational. Ready to serve!');
   console.log('═══════════════════════════════════════════════════');
 });

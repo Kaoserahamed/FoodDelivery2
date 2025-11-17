@@ -80,35 +80,9 @@
                 <!-- Category Filter -->
                 <div class="mb-lg" style="padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray);">
                     <h4 class="mb-md">Category</h4>
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="appetizers" onchange="filterByCategory()">
-                            <span>Appetizers</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="main-course" onchange="filterByCategory()">
-                            <span>Main Course</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="breads" onchange="filterByCategory()">
-                            <span>Breads</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="rice" onchange="filterByCategory()">
-                            <span>Rice & Biryani</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="desserts" onchange="filterByCategory()">
-                            <span>Desserts</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="beverages" onchange="filterByCategory()">
-                            <span>Beverages</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="categoryFilter" value="salads" onchange="filterByCategory()">
-                            <span>Salads</span>
-                        </label>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);" id="categoryFilterContainer">
+                        <!-- Categories will be loaded dynamically -->
+                        <p style="color: var(--medium-gray);">Loading categories...</p>
                     </div>
                 </div>
 
@@ -117,39 +91,12 @@
                     <h4 class="mb-md">Dietary</h4>
                     <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
                         <label class="form-checkbox">
-                            <input type="checkbox" class="dietaryFilter" value="veg" onchange="filterByDietary()">
+                            <input type="checkbox" class="dietaryFilter" value="true" onchange="filterByDietary()">
                             <span>Vegetarian</span>
                         </label>
                         <label class="form-checkbox">
-                            <input type="checkbox" class="dietaryFilter" value="non-veg" onchange="filterByDietary()">
+                            <input type="checkbox" class="dietaryFilter" value="false" onchange="filterByDietary()">
                             <span>Non-Vegetarian</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="dietaryFilter" value="vegan" onchange="filterByDietary()">
-                            <span>Vegan</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="dietaryFilter" value="gluten-free" onchange="filterByDietary()">
-                            <span>Gluten Free</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Rating Filter -->
-                <div class="mb-lg" style="padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray);">
-                    <h4 class="mb-md">Rating</h4>
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="ratingFilter" value="4.5" onchange="filterByRating()">
-                            <span><i class="fas fa-star" style="color: #FFD700;"></i> 4.5 & above</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="ratingFilter" value="4.0" onchange="filterByRating()">
-                            <span><i class="fas fa-star" style="color: #FFD700;"></i> 4.0 & above</span>
-                        </label>
-                        <label class="form-checkbox">
-                            <input type="checkbox" class="ratingFilter" value="3.5" onchange="filterByRating()">
-                            <span><i class="fas fa-star" style="color: #FFD700;"></i> 3.5 & above</span>
                         </label>
                     </div>
                 </div>
@@ -171,16 +118,30 @@
                                 <option value="popular">Sort by: Popular</option>
                                 <option value="price-low">Sort by: Price (Low - High)</option>
                                 <option value="price-high">Sort by: Price (High - Low)</option>
-                                <option value="rating">Sort by: Highest Rating</option>
                                 <option value="newest">Sort by: Newest</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" style="text-align: center; padding: var(--spacing-xl); display: none;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <p style="margin-top: var(--spacing-md); color: var(--medium-gray);">Loading foods...</p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" style="display: none;">
+                    <div class="card" style="background-color: #fee; border: 1px solid #fcc;">
+                        <div class="card-body">
+                            <p id="errorText" style="color: #c33; margin: 0;"></p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Results Count -->
                 <div class="mb-lg">
-                    <p style="color: var(--medium-gray);">Showing <span id="resultCount">48</span> items</p>
+                    <p style="color: var(--medium-gray);">Showing <span id="resultCount">0</span> items</p>
                 </div>
 
                 <!-- Foods Grid -->
@@ -188,9 +149,11 @@
                     <!-- Food items will be dynamically populated -->
                 </div>
 
-                <!-- Load More Button -->
-                <div class="text-center mt-xl mb-xl">
-                    <button class="btn btn-outline btn-lg" onclick="loadMoreFoods()">Load More Foods</button>
+                <!-- No Results Message -->
+                <div id="noResults" style="display: none; text-align: center; padding: var(--spacing-xl);">
+                    <i class="fas fa-search" style="font-size: 3rem; color: var(--medium-gray); margin-bottom: var(--spacing-md);"></i>
+                    <h3 style="color: var(--medium-gray);">No foods found</h3>
+                    <p style="color: var(--medium-gray);">Try adjusting your filters or search criteria</p>
                 </div>
             </main>
         </div>
@@ -249,8 +212,8 @@
                         <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Restaurant:</strong> <span id="modalRestaurant"></span></p>
                         <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Category:</strong> <span id="modalCategory"></span></p>
                         <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Price:</strong> <span id="modalPrice" class="fw-semibold" style="color: var(--primary-color); font-size: 18px;"></span></p>
-                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Rating:</strong> <span id="modalRating"></span></p>
                         <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Type:</strong> <span id="modalType"></span></p>
+                        <p style="margin-bottom: 4px; color: var(--medium-gray);"><strong>Prep Time:</strong> <span id="modalPrepTime"></span></p>
                     </div>
                     <p id="modalDescription" style="color: var(--dark-gray); line-height: 1.6; margin-bottom: var(--spacing-md);"></p>
                     <div class="form-group">
@@ -271,149 +234,275 @@
     </div>
 
     <script>
-        // Sample food data
-        const foodData = [
-            { id: 1, name: 'Margherita Pizza', restaurant: 'Pizza Palace', category: 'main-course', price: 12.99, rating: 4.7, type: 'veg', image: 'https://images.unsplash.com/photo-1606787620884-c0ec84bc5524?auto=format&fit=crop&w=400&q=80', description: 'Classic pizza with fresh mozzarella and basil' },
-            { id: 2, name: 'Butter Chicken', restaurant: 'Curry House', category: 'main-course', price: 14.99, rating: 4.8, type: 'non-veg', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80', description: 'Tender chicken in creamy tomato sauce' },
-            { id: 3, name: 'Salmon Sushi Roll', restaurant: 'Sushi Express', category: 'main-course', price: 16.99, rating: 5.0, type: 'non-veg', image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=400&q=80', description: 'Fresh salmon with avocado and cucumber' },
-            { id: 4, name: 'Classic Burger', restaurant: 'Burger Haven', category: 'main-course', price: 9.99, rating: 4.6, type: 'non-veg', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80', description: 'Juicy beef patty with lettuce and tomato' },
-            { id: 5, name: 'Pad Thai', restaurant: 'Thai Tasty', category: 'main-course', price: 11.99, rating: 4.5, type: 'veg', image: 'https://images.unsplash.com/photo-1585238341710-4913d3ca7229?auto=format&fit=crop&w=400&q=80', description: 'Stir-fried rice noodles with peanuts' },
-            { id: 6, name: 'Paneer Tikka Masala', restaurant: 'Spice Palace', category: 'main-course', price: 13.99, rating: 4.7, type: 'veg', image: 'https://images.unsplash.com/photo-1609007656244-cd671800d3f7?auto=format&fit=crop&w=400&q=80', description: 'Grilled paneer in spicy gravy' },
-            { id: 7, name: 'Caesar Salad', restaurant: 'Green Leaf Cafe', category: 'salads', price: 10.99, rating: 4.4, type: 'veg', image: 'https://images.unsplash.com/photo-1574080676950-d049bfeb57b5?auto=format&fit=crop&w=400&q=80', description: 'Fresh romaine with parmesan and croutons' },
-            { id: 8, name: 'Chocolate Cake', restaurant: 'Sweet Delights', category: 'desserts', price: 7.99, rating: 4.9, type: 'veg', image: 'https://images.unsplash.com/photo-1563805042-7684c019e157?auto=format&fit=crop&w=400&q=80', description: 'Rich chocolate cake with ganache' },
-            { id: 9, name: 'Vegetable Samosa', restaurant: 'Indian Corner', category: 'appetizers', price: 4.99, rating: 4.3, type: 'veg', image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80', description: 'Crispy pastry with spiced potatoes' },
-            { id: 10, name: 'Garlic Naan', restaurant: 'Curry House', category: 'breads', price: 3.99, rating: 4.7, type: 'veg', image: 'https://images.unsplash.com/photo-1590080876549-cd379b57d3fc?auto=format&fit=crop&w=400&q=80', description: 'Fluffy bread topped with garlic butter' },
-            { id: 11, name: 'Mango Lassi', restaurant: 'Spice Palace', category: 'beverages', price: 4.99, rating: 4.6, type: 'veg', image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=400&q=80', description: 'Creamy yogurt drink with mango' },
-            { id: 12, name: 'Chicken Biryani', restaurant: 'Biryani House', category: 'rice', price: 15.99, rating: 4.8, type: 'non-veg', image: 'https://images.unsplash.com/photo-1585247099507-84a860bda2b0?auto=format&fit=crop&w=400&q=80', description: 'Fragrant rice with marinated chicken' },
-            { id: 13, name: 'Spring Rolls', restaurant: 'Asian Kitchen', category: 'appetizers', price: 6.99, rating: 4.5, type: 'veg', image: 'https://images.unsplash.com/photo-1535089313624-c1b1ae47d18c?auto=format&fit=crop&w=400&q=80', description: 'Crispy rolls with vegetables' },
-            { id: 14, name: 'Lamb Rogan Josh', restaurant: 'Spice Palace', category: 'main-course', price: 16.99, rating: 4.9, type: 'non-veg', image: 'https://images.unsplash.com/photo-1624867495656-81eb489ce2c5?auto=format&fit=crop&w=400&q=80', description: 'Tender lamb in aromatic sauce' },
-            { id: 15, name: 'Gulab Jamun', restaurant: 'Sweet Delights', category: 'desserts', price: 5.99, rating: 4.8, type: 'veg', image: 'https://images.unsplash.com/photo-1585247099507-84a860bda2b0?auto=format&fit=crop&w=400&q=80', description: 'Soft milk dumplings in sugar syrup' },
-            { id: 16, name: 'Vegan Buddha Bowl', restaurant: 'Green Leaf Cafe', category: 'salads', price: 12.99, rating: 4.7, type: 'vegan', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80', description: 'Healthy mix of organic vegetables and grains' },
-        ];
+        // ==========================================
+        // API Configuration - UPDATE WITH YOUR BACKEND URL
+        // ==========================================
+        const API_BASE_URL = 'http://localhost:5000/api';
 
-        let filteredData = [...foodData];
+        // ==========================================
+        // Available Routes (based on your server.js):
+        // ==========================================
+        // GET  /api/restaurants              - Get all restaurants (public)
+        // GET  /api/restaurants/:id          - Get single restaurant (public)
+        // GET  /api/restaurants/:id/menu     - Get restaurant menu (public)
+        // GET  /api/menu/items/public        - Get all public menu items (public)
+        // ==========================================
+
+        // Global State
+        let allMenuItems = [];
+        let allRestaurants = {};
+        let filteredData = [];
         let currentSort = 'popular';
+        let selectedFood = null;
 
-        // Initialize page
-        function initPage() {
-            displayFoods();
-            document.getElementById('searchInputTop').addEventListener('keyup', (e) => {
-                document.getElementById('searchInput').value = e.target.value;
-                searchFoods();
-            });
-            document.getElementById('searchInput').addEventListener('keyup', searchFoods);
+        // ==========================================
+        // Initialize Page
+        // ==========================================
+        async function initPage() {
+            try {
+                showLoading(true);
+                console.log('🔄 Initializing page...');
+                
+                await loadRestaurants();
+                await loadMenuItems();
+                loadCategories();
+                
+                filteredData = [...allMenuItems];
+                displayFoods();
+                setupEventListeners();
+                
+                showLoading(false);
+                console.log('✅ Page initialized successfully');
+            } catch (error) {
+                console.error('❌ Error initializing page:', error);
+                showError('Failed to load foods. Please try again later.');
+                showLoading(false);
+            }
         }
 
-        // Display foods
+        // ==========================================
+        // Load Restaurants from Backend
+        // ==========================================
+        async function loadRestaurants() {
+            try {
+                console.log('📍 Loading restaurants from:', `${API_BASE_URL}/restaurants`);
+                
+                const response = await fetch(`${API_BASE_URL}/restaurants`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const restaurants = await response.json();
+                
+                if (Array.isArray(restaurants)) {
+                    restaurants.forEach(restaurant => {
+                        allRestaurants[restaurant.restaurant_id] = restaurant;
+                    });
+                    console.log('✅ Restaurants loaded:', restaurants.length);
+                } else {
+                    console.warn('⚠️ Unexpected restaurants response format');
+                }
+            } catch (error) {
+                console.error('❌ Error loading restaurants:', error);
+                // Don't throw - continue with empty restaurants
+            }
+        }
+
+        // ==========================================
+        // Load Menu Items from Backend
+        // ==========================================
+        async function loadMenuItems() {
+            try {
+                console.log('🍽️ Loading menu items from:', `${API_BASE_URL}/menu/items/public`);
+                
+                const response = await fetch(`${API_BASE_URL}/menu/items/public`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && Array.isArray(data.items)) {
+                    allMenuItems = data.items;
+                } else if (Array.isArray(data)) {
+                    allMenuItems = data;
+                } else {
+                    console.warn('⚠️ Unexpected menu items response format:', data);
+                    allMenuItems = [];
+                }
+                
+                console.log('✅ Menu items loaded:', allMenuItems.length);
+            } catch (error) {
+                console.error('❌ Error loading menu items:', error);
+                showError('Failed to load menu items. Please refresh the page.');
+                allMenuItems = [];
+            }
+        }
+
+        // ==========================================
+        // Display Foods Grid
+        // ==========================================
         function displayFoods() {
             const grid = document.getElementById('foodsGrid');
+            const noResults = document.getElementById('noResults');
+            const resultCount = document.getElementById('resultCount');
+
+            if (filteredData.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                resultCount.textContent = '0';
+                return;
+            }
+
+            noResults.style.display = 'none';
             grid.innerHTML = '';
-            
+            resultCount.textContent = filteredData.length;
+
             filteredData.forEach(food => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.cursor = 'pointer';
+
+                const imageUrl = food.image_url || 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(food.name);
+                const restaurant = allRestaurants[food.restaurant_id];
+                const restaurantName = restaurant?.name || 'Unknown Restaurant';
+                const vegetarianStatus = food.is_vegetarian ? '🥬 Veg' : '🍗 Non-Veg';
+                const availabilityBadge = food.is_available ? '' : '<span class="badge" style="background-color: #FF8C00; color: white; margin-left: 4px;">Unavailable</span>';
+
                 card.innerHTML = `
-                    <img src="${food.image}" alt="${food.name}" class="card-img">
+                    <img src="${imageUrl}" alt="${food.name}" class="card-img" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
                     <div class="card-body">
                         <h4 class="card-title" style="margin-bottom: 4px;">${food.name}</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${food.restaurant}</p>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${restaurantName}</p>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${food.price}</span>
-                            <span class="badge" style="background-color: var(--warning-color); color: white;">⭐ ${food.rating}</span>
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${parseFloat(food.price).toFixed(2)}</span>
                         </div>
-                        <span class="badge" style="background-color: ${food.type === 'veg' ? '#51CF66' : '#FF6B6B'}; color: white;">${food.type === 'veg' ? 'Veg' : 'Non-Veg'}</span>
+                        <span class="badge" style="background-color: ${food.is_vegetarian ? '#51CF66' : '#FF6B6B'}; color: white;">${vegetarianStatus}</span>
+                        ${availabilityBadge}
                     </div>
                 `;
                 card.onclick = () => openFoodModal(food);
                 grid.appendChild(card);
             });
-
-            document.getElementById('resultCount').textContent = filteredData.length;
         }
 
-        // Search foods
+        // ==========================================
+        // Event Listeners Setup
+        // ==========================================
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('keyup', searchFoods);
+            document.getElementById('searchInputTop').addEventListener('keyup', (e) => {
+                document.getElementById('searchInput').value = e.target.value;
+                searchFoods();
+            });
+        }
+
+        // ==========================================
+        // Load Categories from Menu Items
+        // ==========================================
+        function loadCategories() {
+            const categories = new Set();
+            allMenuItems.forEach(item => {
+                if (item.category_name && item.category_name.trim()) {
+                    categories.add(item.category_name);
+                }
+            });
+
+            const container = document.getElementById('categoryFilterContainer');
+            
+            if (categories.size === 0) {
+                container.innerHTML = '<p style="color: var(--medium-gray);">All items</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            Array.from(categories).sort().forEach(category => {
+                const label = document.createElement('label');
+                label.className = 'form-checkbox';
+                label.innerHTML = `
+                    <input type="checkbox" class="categoryFilter" value="${category}" onchange="filterByCategory()">
+                    <span>${category}</span>
+                `;
+                container.appendChild(label);
+            });
+
+            console.log('✅ Categories loaded:', categories.size);
+        }
+
+        // ==========================================
+        // Search Foods
+        // ==========================================
         function searchFoods() {
             const term = document.getElementById('searchInput').value.toLowerCase();
-            filteredData = foodData.filter(food => 
-                food.name.toLowerCase().includes(term) || 
-                food.restaurant.toLowerCase().includes(term)
-            );
+            console.log('🔍 Searching for:', term);
             applyAllFilters();
         }
 
-        // Filter by category
+        // ==========================================
+        // Filter Functions
+        // ==========================================
         function filterByCategory() {
             applyAllFilters();
         }
 
-        // Filter by dietary
         function filterByDietary() {
             applyAllFilters();
         }
 
-        // Filter by rating
-        function filterByRating() {
-            applyAllFilters();
-        }
-
-        // Apply all filters
         function applyAllFilters() {
-            let result = [...foodData];
+            let result = [...allMenuItems];
 
             // Search filter
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            result = result.filter(food => 
-                food.name.toLowerCase().includes(searchTerm) || 
-                food.restaurant.toLowerCase().includes(searchTerm)
-            );
+            if (searchTerm) {
+                result = result.filter(food => 
+                    food.name.toLowerCase().includes(searchTerm) || 
+                    (food.category_name && food.category_name.toLowerCase().includes(searchTerm)) ||
+                    (allRestaurants[food.restaurant_id]?.name || '').toLowerCase().includes(searchTerm)
+                );
+            }
 
             // Category filter
             const selectedCategories = Array.from(document.querySelectorAll('.categoryFilter:checked')).map(el => el.value);
             if (selectedCategories.length > 0) {
-                result = result.filter(food => selectedCategories.includes(food.category));
+                result = result.filter(food => selectedCategories.includes(food.category_name));
             }
 
             // Dietary filter
             const selectedDietary = Array.from(document.querySelectorAll('.dietaryFilter:checked')).map(el => el.value);
             if (selectedDietary.length > 0) {
-                result = result.filter(food => selectedDietary.includes(food.type));
-            }
-
-            // Rating filter
-            const selectedRatings = Array.from(document.querySelectorAll('.ratingFilter:checked')).map(el => parseFloat(el.value));
-            if (selectedRatings.length > 0) {
-                result = result.filter(food => selectedRatings.some(rating => food.rating >= rating));
+                result = result.filter(food => {
+                    if (selectedDietary.includes('true')) {
+                        if (food.is_vegetarian) return true;
+                    }
+                    if (selectedDietary.includes('false')) {
+                        if (!food.is_vegetarian) return true;
+                    }
+                    return false;
+                });
             }
 
             // Price filter
             const maxPrice = parseFloat(document.getElementById('priceRange').value);
-            result = result.filter(food => food.price <= maxPrice);
+            result = result.filter(food => parseFloat(food.price) <= maxPrice);
 
             filteredData = result;
             sortFoods(currentSort);
         }
 
-        // Update price filter
-        function updatePriceFilter(value) {
-            document.getElementById('priceValue').textContent = '$' + value;
-            applyAllFilters();
-        }
-
-        // Sort foods
+        // ==========================================
+        // Sort Foods
+        // ==========================================
         function sortFoods(sortType) {
             currentSort = sortType;
             let sorted = [...filteredData];
 
             switch(sortType) {
                 case 'price-low':
-                    sorted.sort((a, b) => a.price - b.price);
+                    sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
                     break;
                 case 'price-high':
-                    sorted.sort((a, b) => b.price - a.price);
-                    break;
-                case 'rating':
-                    sorted.sort((a, b) => b.rating - a.rating);
+                    sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
                     break;
                 case 'newest':
                     sorted.reverse();
@@ -426,32 +515,44 @@
             displayFoods();
         }
 
-        // Clear all filters
+        // ==========================================
+        // Filter Controls
+        // ==========================================
+        function updatePriceFilter(value) {
+            document.getElementById('priceValue').textContent = '$' + value;
+            applyAllFilters();
+        }
+
         function clearAllFilters() {
             document.getElementById('searchInput').value = '';
+            document.getElementById('searchInputTop').value = '';
             document.getElementById('priceRange').value = '50';
             document.getElementById('priceValue').textContent = '$50';
-            document.querySelectorAll('.categoryFilter, .dietaryFilter, .ratingFilter').forEach(el => el.checked = false);
-            filteredData = [...foodData];
+            document.querySelectorAll('.categoryFilter, .dietaryFilter').forEach(el => el.checked = false);
+            filteredData = [...allMenuItems];
             displayFoods();
         }
 
-        // Open food modal
+        // ==========================================
+        // Modal Functions
+        // ==========================================
         function openFoodModal(food) {
+            selectedFood = food;
+            const restaurant = allRestaurants[food.restaurant_id] || {};
+
             document.getElementById('modalFoodName').textContent = food.name;
-            document.getElementById('modalFoodImage').src = food.image;
-            document.getElementById('modalRestaurant').textContent = food.restaurant;
-            document.getElementById('modalCategory').textContent = food.category.replace('-', ' ').toUpperCase();
-            document.getElementById('modalPrice').textContent = '$' + food.price;
-            document.getElementById('modalRating').innerHTML = `<i class="fas fa-star" style="color: #FFD700;"></i> ${food.rating}`;
-            document.getElementById('modalType').textContent = food.type === 'veg' ? 'Vegetarian' : 'Non-Vegetarian';
-            document.getElementById('modalDescription').textContent = food.description;
+            document.getElementById('modalFoodImage').src = food.image_url || 'https://via.placeholder.com/500x300?text=' + encodeURIComponent(food.name);
+            document.getElementById('modalRestaurant').textContent = restaurant.name || 'Unknown Restaurant';
+            document.getElementById('modalCategory').textContent = food.category_name || 'Uncategorized';
+            document.getElementById('modalPrice').textContent = '$' + parseFloat(food.price).toFixed(2);
+            document.getElementById('modalType').textContent = food.is_vegetarian ? 'Vegetarian' : 'Non-Vegetarian';
+            document.getElementById('modalPrepTime').textContent = (food.preparation_time || 15) + ' mins';
+            document.getElementById('modalDescription').textContent = food.description || 'No description available';
             document.getElementById('modalQty').value = 1;
-            
+
             openModal('foodModal');
         }
 
-        // Modal functions
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -468,7 +569,9 @@
             }
         }
 
-        // Quantity controls
+        // ==========================================
+        // Quantity Controls
+        // ==========================================
         function increaseQty() {
             const input = document.getElementById('modalQty');
             input.value = parseInt(input.value) + 1;
@@ -481,36 +584,40 @@
             }
         }
 
-        // Add to cart
+        // ==========================================
+        // Add to Cart
+        // ==========================================
         function addToCart() {
-            const foodName = document.getElementById('modalFoodName').textContent;
-            const qty = parseInt(document.getElementById('modalQty').value);
-            const foodImage = document.getElementById('modalFoodImage').src;
-            const foodPrice = parseFloat(document.getElementById('modalPrice').textContent.replace('$', ''));
-            const foodRestaurant = document.getElementById('modalRestaurant').textContent;
-
-            // Find the food item to get its ID
-            const foodItem = foodData.find(f => f.name === foodName);
-            if (!foodItem) {
+            if (!selectedFood) {
                 alert('Error: Food item not found');
                 return;
             }
 
+            const foodName = document.getElementById('modalFoodName').textContent;
+            const qty = parseInt(document.getElementById('modalQty').value);
+            const foodImage = document.getElementById('modalFoodImage').src;
+            const foodPrice = parseFloat(document.getElementById('modalPrice').textContent.replace('$', ''));
+            const restaurantName = document.getElementById('modalRestaurant').textContent;
+
+            // Use the correct ID field from database
+            const foodId = selectedFood.item_id || selectedFood.menu_item_id || selectedFood.id;
+
             const cartItem = {
-                id: foodItem.id,
+                id: foodId,
                 name: foodName,
                 price: foodPrice,
                 quantity: qty,
-                restaurant: foodRestaurant,
-                restaurantId: foodItem.id, // Using food ID as restaurant ID
-                image: foodImage
+                restaurant: restaurantName,
+                restaurantId: selectedFood.restaurant_id,
+                image: foodImage,
+                description: selectedFood.description
             };
 
             // Load existing cart
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            
+
             // Check if item already exists
-            const existingItem = cart.find(item => item.id === foodItem.id);
+            const existingItem = cart.find(item => item.id === foodId);
             if (existingItem) {
                 existingItem.quantity += qty;
             } else {
@@ -519,35 +626,30 @@
 
             // Save to localStorage
             localStorage.setItem('cart', JSON.stringify(cart));
-
-            // Update cart badge
             updateCartBadge();
 
-            // Show success message
+            console.log('✅ Added to cart:', cartItem);
             alert(`${foodName} x${qty} added to cart!`);
             closeModal('foodModal');
         }
 
-        // Load more foods
-        function loadMoreFoods() {
-            alert('Loading more foods...');
+        // ==========================================
+        // UI Helpers
+        // ==========================================
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
         }
 
-        // Close modal when clicking outside
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-                e.target.classList.remove('active');
-            }
-        });
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
 
-        // Navbar toggle
-        document.getElementById('navbarToggle')?.addEventListener('click', () => {
-            const menu = document.getElementById('navbarMenu');
-            menu.classList.toggle('active');
-        });
-
-        // Update cart badge from localStorage
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -557,13 +659,29 @@
             }
         }
 
-        // Initialize
-        initPage();
+        // ==========================================
+        // Event Listeners
+        // ==========================================
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                e.target.classList.remove('active');
+            }
+        });
 
-        // Update badge on page load
-        document.addEventListener('DOMContentLoaded', updateCartBadge);
+        document.getElementById('navbarToggle')?.addEventListener('click', () => {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        });
 
-        // Update badge when storage changes (for cross-tab sync)
+        // ==========================================
+        // Initialize on Page Load
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage();
+            updateCartBadge();
+        });
+
         window.addEventListener('storage', updateCartBadge);
     </script>
     <script src="../../js/global-auth.js"></script>
