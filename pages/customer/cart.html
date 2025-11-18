@@ -349,22 +349,53 @@
                     body: JSON.stringify(orderData)
                 });
 
+                console.log('Response status:', response.status);
+                
                 const data = await response.json();
-                console.log('Response:', data);
+                console.log('Response data:', data);
 
                 if (response.ok && data.success) {
                     // Clear cart and redirect
                     localStorage.removeItem('cart');
-                    alert('Order placed successfully! Order ID: ' + data.orderId);
-                    window.location.href = `order-history.html?orderId=${data.orderId}`;
+                    
+                    // Show success message with order number
+                    const orderInfo = data.orderNumber ? 
+                        `Order Number: ${data.orderNumber}` : 
+                        `Order ID: ${data.orderId}`;
+                    
+                    alert(`✅ Order placed successfully!\n${orderInfo}\n\nYou will be redirected to your order history.`);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'order-history.html';
+                    }, 1000);
                 } else {
-                    alert(data.message || 'Failed to place order');
+                    // Show detailed error message
+                    let errorMsg = '❌ Failed to place order\n\n';
+                    
+                    if (data.message) {
+                        errorMsg += data.message;
+                    } else if (data.error) {
+                        errorMsg += data.error;
+                    } else {
+                        errorMsg += 'Unknown error occurred. Please try again.';
+                    }
+                    
+                    alert(errorMsg);
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-check"></i> Place Order';
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Error placing order: ' + error.message);
+                console.error('Error placing order:', error);
+                
+                let errorMsg = '❌ Error placing order\n\n';
+                
+                if (error.message.includes('fetch')) {
+                    errorMsg += 'Cannot connect to server. Please check your internet connection.';
+                } else {
+                    errorMsg += error.message;
+                }
+                
+                alert(errorMsg);
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-check"></i> Place Order';
             }

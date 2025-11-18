@@ -144,7 +144,7 @@ router.post('/login', async (req, res) => {
       {
         userId: user.user_id,
         email: user.email,
-        role: user.user_type
+        userRole: user.user_type  // Changed from 'role' to 'userRole' for consistency
       },
       process.env.JWT_SECRET || "secret",
       { expiresIn: "7d" }

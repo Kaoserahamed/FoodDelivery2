@@ -166,7 +166,7 @@ router.get('/:orderId', verifyToken, isRestaurant, (req, res) => {
           m.name AS menu_item_name,
           m.description AS menu_item_description
         FROM order_items oi
-        LEFT JOIN menu_items m ON oi.menu_item_id = m.menu_item_id
+        LEFT JOIN menu_items m ON oi.item_id = m.item_id
         WHERE oi.order_id = ?
       `;
 

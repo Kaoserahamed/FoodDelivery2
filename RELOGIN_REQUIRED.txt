@@ -1,0 +1,38 @@
+🔐 AUTHENTICATION FIX APPLIED - RE-LOGIN REQUIRED!
+
+The authentication token system has been fixed. All users must re-login to get new tokens.
+
+STEPS TO FIX YOUR SESSION:
+
+1. LOGOUT (clear old token)
+2. LOGIN AGAIN (get new token)
+3. TEST ORDER PLACEMENT
+
+CUSTOMER LOGIN:
+http://localhost:5000/pages/customer/login.html
+Email: test@example.com
+Password: password123
+
+RESTAURANT LOGIN:
+http://localhost:5000/pages/restaurant/login.html
+(Use your restaurant credentials)
+
+ADMIN LOGIN:
+http://localhost:5000/pages/admin/login.html
+Email: admin@tastenow.com
+Password: admin123
+
+WHAT WAS FIXED:
+- JWT token now includes correct userRole
+- Middleware now reads userRole correctly
+- Order placement will work after re-login
+- Restaurant dashboard will work after re-login
+
+CHECK SERVER LOGS:
+After re-login, you should see:
+✅ Token verified - userId: X role: customer (or restaurant/admin)
+
+NOT:
+❌ Token verified - userId: X role: undefined
+
+Once you re-login, try placing an order. It should work!

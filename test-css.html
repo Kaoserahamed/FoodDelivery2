@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Test</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .test-box {
+            padding: 20px;
+            margin: 10px 0;
+            border: 2px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Loading Test</h1>
+    
+    <div class="test-box">
+        <h2>Test 1: Basic HTML (should show)</h2>
+        <p>If you can read this, HTML is working.</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 2: CSS Variables</h2>
+        <button class="btn btn-primary">Primary Button</button>
+        <button class="btn btn-secondary">Secondary Button</button>
+        <p>If buttons are styled, CSS is loading.</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 3: Card Component</h2>
+        <div class="card" style="max-width: 300px;">
+            <div class="card-body">
+                <h3 class="card-title">Test Card</h3>
+                <p class="card-text">If this card has styling, components.css is working.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 4: Container</h2>
+        <div class="container" style="background: #f0f0f0; padding: 20px;">
+            <p>If this has max-width and centering, layout.css is working.</p>
+        </div>
+    </div>
+
+    <script>
+        console.log('JavaScript is working!');
+        
+        // Check if CSS files loaded
+        const links = document.querySelectorAll('link[rel="stylesheet"]');
+        console.log('CSS files found:', links.length);
+        
+        links.forEach(link => {
+            console.log('CSS file:', link.href);
+        });
+    </script>
+</body>
+</html>

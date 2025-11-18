@@ -145,7 +145,7 @@
                 </div>
 
                 <!-- Foods Grid -->
-                <div class="grid grid-4" id="foodsGrid">
+                <div class="grid grid-4" id="foodsGrid"></div>
                     <!-- Food items will be dynamically populated -->
                 </div>
 
@@ -235,18 +235,9 @@
 
     <script>
         // ==========================================
-        // API Configuration - UPDATE WITH YOUR BACKEND URL
+        // API Configuration
         // ==========================================
         const API_BASE_URL = 'http://localhost:5000/api';
-
-        // ==========================================
-        // Available Routes (based on your server.js):
-        // ==========================================
-        // GET  /api/restaurants              - Get all restaurants (public)
-        // GET  /api/restaurants/:id          - Get single restaurant (public)
-        // GET  /api/restaurants/:id/menu     - Get restaurant menu (public)
-        // GET  /api/menu/items/public        - Get all public menu items (public)
-        // ==========================================
 
         // Global State
         let allMenuItems = [];
@@ -304,7 +295,6 @@
                 }
             } catch (error) {
                 console.error('❌ Error loading restaurants:', error);
-                // Don't throw - continue with empty restaurants
             }
         }
 

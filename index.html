@@ -49,7 +49,7 @@
                     <i class="fas fa-receipt"></i>
                 </a>
                 <div id="authLinks">
-                    <a href="pages/customer/login.html" class="btn btn-primary btn-sm">Login</a>
+                    <!-- Auth links will be dynamically updated -->
                 </div>
             </div>
         </nav>
@@ -257,36 +257,30 @@
         // Load popular dishes from backend
         async function loadPopularDishes() {
             try {
-                const response = await fetch('http://localhost:5000/api/menu/popular?limit=8');
-                const data = await response.json();
-
-                if (response.ok) {
-                    const items = data.items || data;
-
-                    if (Array.isArray(items)) {
-                        popularDishesData = items.map(item => ({
-                            id: item.item_id || item.menu_item_id,
-                            name: item.name,
-                            price: parseFloat(item.price),
-                            rating: item.rating || 4.5,
-                            image: item.image_url,
-                            restaurant: item.restaurant_name,
-                            restaurantId: item.restaurant_id,
-                            category: item.category,
-                            type: item.is_vegetarian ? 'veg' : 'non-veg',
-                            description: item.description
-                        }));
-
-                        console.log('✅ Popular dishes loaded:', popularDishesData.length);
-                        displayPopularDishes();
-                    }
-                } else {
-                    console.error('Failed to load dishes:', data);
-                    displayPopularDishes(); // Show empty state
+                console.log('🍽️ Loading popular dishes from:', 'http://localhost:5000/api/menu/items/public');
+                const response = await fetch('http://localhost:5000/api/menu/items/public');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
+                const data = await response.json();
+                
+                if (data.success && Array.isArray(data.items)) {
+                    popularDishesData = data.items.slice(0, 8);
+                } else if (Array.isArray(data)) {
+                    popularDishesData = data.slice(0, 8);
+                } else {
+                    console.warn('⚠️ Unexpected menu items response format:', data);
+                    popularDishesData = [];
+                }
+                
+                console.log('✅ Popular dishes loaded:', popularDishesData.length);
+                displayPopularDishes();
             } catch (error) {
                 console.error('❌ Error loading dishes:', error);
-                displayPopularDishes(); // Show empty state
+                popularDishesData = [];
+                displayPopularDishes();
             }
         }
 
@@ -407,7 +401,7 @@
             currentSelectedFood = food;
 
             document.getElementById('modalFoodName').textContent = food.name;
-            document.getElementById('modalFoodImage').src = food.image || 'https://via.placeholder.com/400x300?text=Food';
+            document.getElementById('modalFoodImage').src = food.image_url || 'https://via.placeholder/400x300?text=Food';
             document.getElementById('modalRestaurant').textContent = food.restaurant || 'Restaurant';
             document.getElementById('modalCategory').textContent = (food.category || 'main-course').replace('-', ' ').toUpperCase();
             document.getElementById('modalPrice').textContent = '$' + food.price.toFixed(2);
@@ -534,20 +528,28 @@
 
             if (token && user) {
                 const userData = JSON.parse(user);
+                const firstName = userData.firstName || userData.fullName?.split(' ')[0] || 'User';
                 authLinks.innerHTML = `
                     <span style="font-size: 14px; color: #666; margin-right: 16px;">
-                        Hi, ${userData.firstName}!
+                        Hi, ${firstName}!
                     </span>
                     <button id="logoutBtn" class="btn btn-primary btn-sm" style="cursor: pointer;">
                         Logout
                     </button>
                 `;
 
-                document.getElementById('logoutBtn').addEventListener('click', () => {
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('user');
-                    window.location.href = 'index.html';
-                });
+                // Add logout event listener
+                setTimeout(() => {
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', () => {
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('user');
+                            localStorage.removeItem('cart');
+                            window.location.href = 'index.html';
+                        });
+                    }
+                }, 0);
 
                 // Show orders icon when logged in
                 if (ordersIcon) {
@@ -555,8 +557,8 @@
                 }
             } else {
                 authLinks.innerHTML = `
-                    <a href="pages/customer/login.html" class="btn btn-sm" style="background: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); margin-right: 8px; text-decoration: none; padding: 8px 16px;">Login</a>
-                    <a href="pages/customer/register.html" class="btn btn-primary btn-sm" style="text-decoration: none;">Sign Up</a>
+                    <a href="pages/customer/login.html" class="btn btn-sm" style="background: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); margin-right: 8px; text-decoration: none; padding: 8px 16px; display: inline-block;">Login</a>
+                    <a href="pages/customer/register.html" class="btn btn-primary btn-sm" style="text-decoration: none; display: inline-block;">Sign Up</a>
                 `;
 
                 // Hide orders icon when not logged in

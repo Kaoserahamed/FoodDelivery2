@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - TasteNow</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="../../index.html" style="text-decoration: none;">
+                    <div style="font-size: 48px; color: var(--primary-color);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </a>
+                <span class="admin-badge">
+                    <i class="fas fa-crown"></i> Admin Access
+                </span>
+                <h2 class="auth-title">Admin Login</h2>
+                <p class="auth-subtitle">Access the admin dashboard</p>
+            </div>
+
+            <div id="alertBox" class="alert"></div>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Admin Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="admin@tastenow.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter admin password" required>
+                </div>
+
+                <div class="form-group d-flex justify-between align-center">
+                    <label style="display: flex; align-items: center; gap: var(--spacing-xs); cursor: pointer;">
+                        <input type="checkbox" id="remember">
+                        <span>Remember me</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login as Admin
+                </button>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p style="text-align: center; color: var(--medium-gray); font-size: 14px;">
+                    <i class="fas fa-info-circle"></i> Admin access only
+                </p>
+                <p style="text-align: center; margin-top: 10px;">
+                    <a href="../../index.html" class="text-primary">← Back to Home</a>
+                </p>
+            </div>
+
+            <!-- Test Credentials Info -->
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                <p style="margin: 0; font-size: 13px; color: #666;">
+                    <strong>Test Credentials:</strong><br>
+                    Email: admin@tastenow.com<br>
+                    Password: admin123
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('🔐 Admin login form submitted');
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+
+            hideAlert();
+
+            if (!email || !password) {
+                showAlert('Please enter both email and password', 'danger');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            loading.style.display = 'block';
+
+            try {
+                console.log('📤 Sending admin login request for:', email);
+
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                console.log('📥 Response status:', response.status);
+
+                const responseText = await response.text();
+                console.log('📥 Raw response:', responseText);
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('❌ JSON parse error:', parseError);
+                    throw new Error('Server returned invalid response');
+                }
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+
+                // Check if user is admin
+                if (data.user.userType !== 'admin') {
+                    throw new Error('Access denied. Admin credentials required.');
+                }
+
+                // Store admin authentication data
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminUser', JSON.stringify(data.user));
+
+                if (remember) {
+                    localStorage.setItem('rememberAdminEmail', email);
+                }
+
+                console.log('✅ Admin login successful');
+
+                showAlert('Login successful! Redirecting to dashboard...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('❌ Admin login error:', error);
+
+                let errorMessage = 'Login failed. Please try again.';
+
+                if (error.message.includes('Access denied')) {
+                    errorMessage = error.message;
+                } else if (error.message.includes('Invalid')) {
+                    errorMessage = 'Invalid email or password';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                showAlert(errorMessage, 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login as Admin';
+                loading.style.display = 'none';
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert show alert-${type}`;
+        }
+
+        function hideAlert() {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = 'alert';
+        }
+
+        // Load remembered email
+        window.addEventListener('load', () => {
+            const rememberEmail = localStorage.getItem('rememberAdminEmail');
+            if (rememberEmail) {
+                document.getElementById('email').value = rememberEmail;
+                document.getElementById('remember').checked = true;
+            }
+
+            // Check if already logged in
+            const adminToken = localStorage.getItem('adminToken');
+            if (adminToken) {
+                console.log('Already logged in, redirecting...');
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

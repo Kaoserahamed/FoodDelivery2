@@ -12,7 +12,7 @@ const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
     req.userId = decoded.userId;
-    req.userRole = decoded.role;
+    req.userRole = decoded.userRole; // Fixed: was decoded.role, should be decoded.userRole
     console.log('✅ Token verified - userId:', req.userId, 'role:', req.userRole); // Debug log
     next();
   } catch (err) {

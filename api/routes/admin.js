@@ -4,154 +4,171 @@ const db = require('../../config/database');
 const { verifyToken, isAdmin } = require('../../middleware/auth');
 
 // Get dashboard statistics
-router.get('/dashboard/stats', verifyToken, isAdmin, (req, res) => {
-  const statsQuery = `
-    SELECT 
-      (SELECT COUNT(*) FROM orders) as total_orders,
-      (SELECT SUM(total_amount) FROM orders WHERE status = 'delivered') as total_revenue,
-      (SELECT COUNT(*) FROM restaurants) as total_restaurants,
-      (SELECT COUNT(*) FROM users WHERE user_type = 'customer') as total_customers
-  `;
+router.get('/dashboard/stats', async (req, res) => {
+  try {
+    console.log('📊 Fetching admin dashboard stats...');
 
-  db.query(statsQuery, (err, stats) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching stats', error: err });
-    }
+    const statsQuery = `
+      SELECT 
+        (SELECT COUNT(*) FROM orders) as total_orders,
+        (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status = 'delivered') as total_revenue,
+        (SELECT COUNT(*) FROM restaurants) as total_restaurants,
+        (SELECT COUNT(*) FROM users WHERE user_type = 'customer') as total_customers
+    `;
 
+    const [stats] = await db.query(statsQuery);
+    console.log('✅ Stats fetched:', stats[0]);
+    
     res.status(200).json(stats[0]);
-  });
+  } catch (err) {
+    console.error('❌ Error fetching stats:', err);
+    res.status(500).json({ message: 'Error fetching stats', error: err.message });
+  }
 });
 
 // Get all users
-router.get('/users', verifyToken, isAdmin, (req, res) => {
-  const query = `SELECT user_id, first_name, last_name, email, phone, user_type, created_at 
-                 FROM users 
-                 ORDER BY created_at DESC`;
+router.get('/users', async (req, res) => {
+  try {
+    console.log('👥 Fetching all users...');
 
-  db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching users', error: err });
-    }
+    const query = `SELECT user_id, name, email, phone, user_type, address, created_at 
+                   FROM users 
+                   ORDER BY created_at DESC`;
+
+    const [results] = await db.query(query);
+    console.log(`✅ Fetched ${results.length} users`);
+    
     res.status(200).json(results);
-  });
+  } catch (err) {
+    console.error('❌ Error fetching users:', err);
+    res.status(500).json({ message: 'Error fetching users', error: err.message });
+  }
 });
 
 // Get all restaurants with details
-router.get('/restaurants', verifyToken, isAdmin, (req, res) => {
-  const query = `SELECT r.*, u.first_name, u.last_name, u.email, 
-                        (SELECT COUNT(*) FROM orders WHERE restaurant_id = r.restaurant_id) as total_orders,
-                        (SELECT COUNT(*) FROM menu_items WHERE restaurant_id = r.restaurant_id) as total_items
-                 FROM restaurants r 
-                 JOIN users u ON r.owner_id = u.user_id 
-                 ORDER BY r.created_at DESC`;
+router.get('/restaurants', async (req, res) => {
+  try {
+    console.log('🏪 Fetching all restaurants...');
 
-  db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching restaurants', error: err });
-    }
+    const query = `SELECT r.*, 
+                          (SELECT COUNT(*) FROM orders WHERE restaurant_id = r.restaurant_id) as total_orders,
+                          (SELECT COUNT(*) FROM menu_items WHERE restaurant_id = r.restaurant_id) as total_items
+                   FROM restaurants r 
+                   ORDER BY r.created_at DESC`;
+
+    const [results] = await db.query(query);
+    console.log(`✅ Fetched ${results.length} restaurants`);
+    
     res.status(200).json(results);
-  });
+  } catch (err) {
+    console.error('❌ Error fetching restaurants:', err);
+    res.status(500).json({ message: 'Error fetching restaurants', error: err.message });
+  }
 });
 
 // Get all orders
-router.get('/orders', verifyToken, isAdmin, (req, res) => {
-  const query = `SELECT o.*, 
-                        u.first_name, u.last_name, u.email,
-                        r.name as restaurant_name
-                 FROM orders o 
-                 JOIN users u ON o.user_id = u.user_id 
-                 JOIN restaurants r ON o.restaurant_id = r.restaurant_id 
-                 ORDER BY o.created_at DESC LIMIT 100`;
+router.get('/orders', async (req, res) => {
+  try {
+    console.log('📦 Fetching all orders...');
 
-  db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching orders', error: err });
-    }
+    const query = `SELECT o.*, 
+                          u.name as customer_name, u.email as customer_email,
+                          r.name as restaurant_name
+                   FROM orders o 
+                   JOIN users u ON o.user_id = u.user_id 
+                   JOIN restaurants r ON o.restaurant_id = r.restaurant_id 
+                   ORDER BY o.order_date DESC LIMIT 100`;
+
+    const [results] = await db.query(query);
+    console.log(`✅ Fetched ${results.length} orders`);
+    
     res.status(200).json(results);
-  });
+  } catch (err) {
+    console.error('❌ Error fetching orders:', err);
+    res.status(500).json({ message: 'Error fetching orders', error: err.message });
+  }
 });
 
-// Get admin logs
-router.get('/logs', verifyToken, isAdmin, (req, res) => {
-  const query = `SELECT al.*, u.first_name, u.last_name 
-                 FROM admin_logs al 
-                 LEFT JOIN users u ON al.admin_id = u.user_id 
-                 ORDER BY al.created_at DESC LIMIT 200`;
+// Get top restaurants
+router.get('/top-restaurants', async (req, res) => {
+  try {
+    console.log('🏆 Fetching top restaurants...');
 
-  db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching logs', error: err });
-    }
+    const query = `
+      SELECT r.restaurant_id, r.name, r.rating, r.image_url,
+             COUNT(o.order_id) as total_orders,
+             COALESCE(SUM(o.total_amount), 0) as total_revenue
+      FROM restaurants r
+      LEFT JOIN orders o ON r.restaurant_id = o.restaurant_id 
+        AND o.order_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+      GROUP BY r.restaurant_id
+      ORDER BY total_revenue DESC
+      LIMIT 5
+    `;
+
+    const [results] = await db.query(query);
+    console.log(`✅ Fetched ${results.length} top restaurants`);
+    
     res.status(200).json(results);
-  });
+  } catch (err) {
+    console.error('❌ Error fetching top restaurants:', err);
+    res.status(500).json({ message: 'Error fetching top restaurants', error: err.message });
+  }
 });
 
 // Suspend/Activate restaurant
-router.put('/restaurants/:restaurantId/toggle', verifyToken, isAdmin, (req, res) => {
-  const { restaurantId } = req.params;
+router.put('/restaurants/:restaurantId/toggle', async (req, res) => {
+  try {
+    const { restaurantId } = req.params;
+    console.log(`🔄 Toggling restaurant status: ${restaurantId}`);
 
-  db.query('SELECT is_active FROM restaurants WHERE restaurant_id = ?', [restaurantId], (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching restaurant', error: err });
-    }
+    const [results] = await db.query('SELECT is_open FROM restaurants WHERE restaurant_id = ?', [restaurantId]);
 
     if (results.length === 0) {
       return res.status(404).json({ message: 'Restaurant not found' });
     }
 
-    const newStatus = !results[0].is_active;
+    const newStatus = !results[0].is_open;
+    await db.query('UPDATE restaurants SET is_open = ? WHERE restaurant_id = ?', [newStatus, restaurantId]);
 
-    db.query('UPDATE restaurants SET is_active = ? WHERE restaurant_id = ?', [newStatus, restaurantId], (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error updating restaurant', error: err });
-      }
-
-      res.status(200).json({ 
-        message: newStatus ? 'Restaurant activated' : 'Restaurant suspended'
-      });
+    console.log(`✅ Restaurant ${restaurantId} status updated to: ${newStatus}`);
+    res.status(200).json({ 
+      message: newStatus ? 'Restaurant activated' : 'Restaurant suspended',
+      is_open: newStatus
     });
-  });
-});
-
-// Deactivate user
-router.put('/users/:userId/deactivate', verifyToken, isAdmin, (req, res) => {
-  const { userId } = req.params;
-
-  db.query('UPDATE users SET is_active = false WHERE user_id = ?', [userId], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error deactivating user', error: err });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({ message: 'User deactivated successfully' });
-  });
+  } catch (err) {
+    console.error('❌ Error updating restaurant:', err);
+    res.status(500).json({ message: 'Error updating restaurant', error: err.message });
+  }
 });
 
 // Get orders by status
-router.get('/orders/status/:status', verifyToken, isAdmin, (req, res) => {
-  const { status } = req.params;
-  const validStatuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
+router.get('/orders/status/:status', async (req, res) => {
+  try {
+    const { status } = req.params;
+    const validStatuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
 
-  if (!validStatuses.includes(status)) {
-    return res.status(400).json({ message: 'Invalid status' });
-  }
-
-  const query = `SELECT o.*, u.first_name, u.last_name, r.name as restaurant_name 
-                 FROM orders o 
-                 JOIN users u ON o.user_id = u.user_id 
-                 JOIN restaurants r ON o.restaurant_id = r.restaurant_id 
-                 WHERE o.status = ? 
-                 ORDER BY o.created_at DESC`;
-
-  db.query(query, [status], (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching orders', error: err });
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
     }
+
+    console.log(`📦 Fetching orders with status: ${status}`);
+
+    const query = `SELECT o.*, u.name as customer_name, r.name as restaurant_name 
+                   FROM orders o 
+                   JOIN users u ON o.user_id = u.user_id 
+                   JOIN restaurants r ON o.restaurant_id = r.restaurant_id 
+                   WHERE o.status = ? 
+                   ORDER BY o.order_date DESC`;
+
+    const [results] = await db.query(query, [status]);
+    console.log(`✅ Fetched ${results.length} orders with status ${status}`);
+    
     res.status(200).json(results);
-  });
+  } catch (err) {
+    console.error('❌ Error fetching orders:', err);
+    res.status(500).json({ message: 'Error fetching orders', error: err.message });
+  }
 });
 
 module.exports = router;
