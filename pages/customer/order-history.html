@@ -47,6 +47,32 @@
         </nav>
     </header>
 
+    <!-- Page Header -->
+    <section class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--white); padding: 60px 0; position: relative; overflow: hidden;">
+        <!-- Decorative Elements -->
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+        <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+        
+        <div class="container" style="position: relative; z-index: 1;">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <!-- Icon -->
+                <div style="margin-bottom: 20px;">
+                    <i class="fas fa-receipt" style="font-size: 48px; color: rgba(255,255,255,0.9);"></i>
+                </div>
+                
+                <!-- Title -->
+                <h1 style="font-size: 3rem; color: var(--white); margin-bottom: 16px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    My Orders
+                </h1>
+                
+                <!-- Subtitle -->
+                <p style="font-size: 18px; margin-bottom: 0; color: rgba(255,255,255,0.95); line-height: 1.6;">
+                    Track and manage all your food orders
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Main Content -->
     <div class="container mt-xl mb-xl">
         <!-- Breadcrumb -->
@@ -56,8 +82,6 @@
             </div>
             <div class="breadcrumb-item">Order History</div>
         </div>
-
-        <h1 class="mb-lg">My Orders</h1>
 
         <!-- Filter Tabs -->
         <div class="nav-pills">
@@ -81,6 +105,45 @@
             <h3>No Orders Yet</h3>
             <p style="color: #999; margin-bottom: 16px;">You haven't placed any orders yet.</p>
             <a href="restaurants.html" class="btn btn-primary btn-lg">Browse Restaurants</a>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-dialog" style="max-width: 500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Rate Your Experience</h2>
+                    <button class="modal-close" onclick="closeReviewModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+                        <p class="fw-semibold" style="margin-bottom: var(--spacing-sm);" id="reviewRestaurantName"></p>
+                        <p class="text-muted" style="font-size: var(--font-size-sm);">How was your order?</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+                        <div id="starRating" style="font-size: 3rem; color: #ddd; cursor: pointer;">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                        <p id="ratingText" style="margin-top: var(--spacing-sm); color: var(--medium-gray);">Select a rating</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Your Review (Optional)</label>
+                        <textarea id="reviewComment" class="form-control" rows="4" placeholder="Tell us about your experience..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                        <button class="btn btn-primary btn-block" onclick="submitReview()">Submit Review</button>
+                        <button class="btn btn-outline btn-block" onclick="closeReviewModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -191,27 +254,27 @@
 
             let html = '';
             filteredOrders.forEach(order => {
-                const orderDate = new Date(order.created_at);
+                const orderDate = new Date(order.order_date);
                 const dateStr = orderDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 const timeStr = orderDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-                let statusBadge = 'badge-warning';
-                let statusText = 'Pending';
-                if (order.status === 'confirmed') {
-                    statusBadge = 'badge-info';
-                    statusText = 'Confirmed';
-                } else if (order.status === 'delivered') {
-                    statusBadge = 'badge-success';
-                    statusText = 'Delivered';
-                } else if (order.status === 'cancelled') {
-                    statusBadge = 'badge-danger';
-                    statusText = 'Cancelled';
-                }
+                const statusConfig = {
+                    'pending': { badge: 'badge-warning', text: 'Pending' },
+                    'confirmed': { badge: 'badge-info', text: 'Confirmed' },
+                    'preparing': { badge: 'badge-info', text: 'Preparing' },
+                    'ready': { badge: 'badge-success', text: 'Ready' },
+                    'delivered': { badge: 'badge-success', text: 'Delivered' },
+                    'cancelled': { badge: 'badge-danger', text: 'Cancelled' }
+                };
+                
+                const statusInfo = statusConfig[order.status] || { badge: 'badge-warning', text: order.status };
+                const statusBadge = statusInfo.badge;
+                const statusText = statusInfo.text;
 
                 let itemsHtml = '';
                 if (order.items && Array.isArray(order.items)) {
                     order.items.forEach(item => {
-                        const itemTotal = (item.item_price * item.quantity).toFixed(2);
+                        const itemTotal = '৳' + (item.item_price * item.quantity).toFixed(2);
                         itemsHtml += `
                             <div class="order-item">
                                 <span>${item.quantity}x ${item.item_name}</span>
@@ -234,7 +297,9 @@
                         </div>
                         
                         <div style="margin-bottom: var(--spacing-md);">
-                            <p class="fw-semibold">Restaurant #${order.restaurant_id}</p>
+                            <p class="fw-semibold">
+                                <i class="fas fa-store"></i> ${order.restaurant_name || 'Restaurant'}
+                            </p>
                             <p class="text-muted" style="font-size: var(--font-size-sm);">
                                 <i class="fas fa-map-marker-alt"></i> ${order.delivery_address}
                             </p>
@@ -247,10 +312,11 @@
                         <div class="order-footer">
                             <div>
                                 <p class="text-muted" style="font-size: var(--font-size-sm);">Total Amount</p>
-                                <p class="price">$${order.total_amount?.toFixed(2) || '0.00'}</p>
+                                <p class="price">৳${parseFloat(order.total_amount || 0).toFixed(2)}</p>
                             </div>
                             <div class="d-flex gap-sm">
                                 <button class="btn btn-outline btn-sm" onclick="viewOrder(${order.order_id})">View Details</button>
+                                ${order.status === 'delivered' ? `<button class="btn btn-success btn-sm" onclick="openReviewModal(${order.order_id}, ${order.restaurant_id}, '${order.restaurant_name}')"><i class="fas fa-star"></i> Review</button>` : ''}
                                 <button class="btn btn-primary btn-sm" onclick="reorder(${order.order_id})">Reorder</button>
                             </div>
                         </div>
@@ -301,6 +367,9 @@
             loadOrders();
         }
 
+        // Auto-refresh orders every 30 seconds to show status updates
+        setInterval(loadOrders, 30000);
+
         // Update cart badge from localStorage
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -316,6 +385,123 @@
 
         // Update badge when storage changes (for cross-tab sync)
         window.addEventListener('storage', updateCartBadge);
+
+        // Review functionality
+        let currentReviewOrder = null;
+        let currentReviewRestaurant = null;
+        let selectedRating = 0;
+
+        function openReviewModal(orderId, restaurantId, restaurantName) {
+            currentReviewOrder = orderId;
+            currentReviewRestaurant = restaurantId;
+            selectedRating = 0;
+            
+            document.getElementById('reviewRestaurantName').textContent = restaurantName;
+            document.getElementById('reviewComment').value = '';
+            document.getElementById('ratingText').textContent = 'Select a rating';
+            
+            // Reset stars
+            document.querySelectorAll('#starRating i').forEach(star => {
+                star.className = 'far fa-star';
+            });
+            
+            // Open modal
+            const modal = document.getElementById('reviewModal');
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Add star click handlers
+            document.querySelectorAll('#starRating i').forEach(star => {
+                star.onclick = () => selectRating(parseInt(star.dataset.rating));
+            });
+        }
+
+        function closeReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function selectRating(rating) {
+            selectedRating = rating;
+            
+            // Update stars
+            document.querySelectorAll('#starRating i').forEach((star, index) => {
+                if (index < rating) {
+                    star.className = 'fas fa-star';
+                    star.style.color = '#FFD700';
+                } else {
+                    star.className = 'far fa-star';
+                    star.style.color = '#ddd';
+                }
+            });
+            
+            // Update text
+            const ratingTexts = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+            document.getElementById('ratingText').textContent = ratingTexts[rating];
+        }
+
+        async function submitReview() {
+            if (selectedRating === 0) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            const comment = document.getElementById('reviewComment').value.trim();
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                alert('Please login to submit a review');
+                return;
+            }
+            
+            console.log('Submitting review:', {
+                restaurant_id: currentReviewRestaurant,
+                order_id: currentReviewOrder,
+                rating: selectedRating,
+                comment: comment
+            });
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/reviews/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: currentReviewRestaurant,
+                        order_id: currentReviewOrder,
+                        rating: selectedRating,
+                        comment: comment
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Thank you for your review!');
+                    closeReviewModal();
+                    loadOrders(); // Reload orders
+                } else {
+                    alert(data.message || 'Failed to submit review');
+                }
+            } catch (error) {
+                console.error('Error submitting review:', error);
+                alert('Error submitting review. Please try again.');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'reviewModal') {
+                closeReviewModal();
+            }
+        });
     </script>
     <script src="../../js/global-auth.js"></script>
 </body>

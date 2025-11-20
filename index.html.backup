@@ -56,32 +56,15 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--white); padding: 80px 0; position: relative; overflow: hidden;">
-        <!-- Decorative Elements -->
-        <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
-        <div style="position: absolute; bottom: -80px; left: -80px; width: 250px; height: 250px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
-        
-        <div class="container" style="position: relative; z-index: 1;">
-            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-                <!-- Icon -->
-                <div style="margin-bottom: 24px;">
-                    <i class="fas fa-utensils" style="font-size: 56px; color: rgba(255,255,255,0.9);"></i>
-                </div>
-                
-                <h1 class="hero-title" style="font-size: 3.5rem; color: var(--white); margin-bottom: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    Delicious Food, Delivered Fast
-                </h1>
-                <p class="hero-subtitle" style="font-size: 22px; margin-bottom: 40px; color: rgba(255,255,255,0.95); line-height: 1.6;">
-                    Order from your favorite local restaurants
-                </p>
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Delicious Food, Delivered Fast</h1>
+            <p class="hero-subtitle">Order from your favorite local restaurants</p>
 
-                <div class="hero-search" style="max-width: 600px; margin: 0 auto;">
-                    <input type="text" placeholder="Search for restaurants or dishes..." class="form-control"
-                        id="heroSearchInput" style="padding: 16px 20px; font-size: 16px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                    <button class="btn btn-secondary" onclick="searchFromHero()" style="padding: 16px 32px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
+            <div class="hero-search">
+                <input type="text" placeholder="Search for restaurants or dishes..." class="form-control"
+                    id="heroSearchInput">
+                <button class="btn btn-secondary" onclick="searchFromHero()">Search</button>
             </div>
         </div>
     </section>
@@ -224,7 +207,6 @@
 
     <!-- JavaScript -->
     <script src="js/main.js"></script>
-    <script src="js/index-page.js"></script>
     <script>
         // Data arrays - To be populated from backend
         let restaurantsData = [];
@@ -371,64 +353,45 @@
         
 
         function displayPopularDishes() {
-            const grid = document.getElementById('popularDishesGrid');
-            
-            if (!grid) {
-                console.error('popularDishesGrid not found');
+            const grid = document.getElementById('foodsGrid');
+            const noResults = document.getElementById('noResults');
+            const resultCount = document.getElementById('resultCount');
+
+            if (filteredData.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                resultCount.textContent = '0';
                 return;
             }
 
+            noResults.style.display = 'none';
             grid.innerHTML = '';
+            resultCount.textContent = filteredData.length;
 
-            if (popularDishesData.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--medium-gray); padding: var(--spacing-xl);">No dishes available at the moment.</p>';
-                return;
-            }
-
-            popularDishesData.forEach(food => {
+            filteredData.forEach(food => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.cursor = 'pointer';
-                card.style.transition = 'transform 0.2s, box-shadow 0.2s';
-                
-                card.onmouseenter = () => {
-                    card.style.transform = 'translateY(-4px)';
-                    card.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)';
-                };
-                card.onmouseleave = () => {
-                    card.style.transform = 'translateY(0)';
-                    card.style.boxShadow = '';
-                };
 
-                const imageUrl = food.image_url || `https://placehold.co/400x300/667eea/white?text=${encodeURIComponent(food.name)}`;
-                const restaurantName = food.restaurant_name || 'Restaurant';
+                const imageUrl = food.image_url || 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(food.name);
+                const restaurant = allRestaurants[food.restaurant_id];
+                const restaurantName = restaurant?.name || 'Unknown Restaurant';
                 const vegetarianStatus = food.is_vegetarian ? '🥬 Veg' : '🍗 Non-Veg';
-                const availabilityBadge = food.is_available ? '' : '<span class="badge" style="background-color: #FF8C00; color: white; margin-left: 8px;">Unavailable</span>';
+                const availabilityBadge = food.is_available ? '' : '<span class="badge" style="background-color: #FF8C00; color: white; margin-left: 4px;">Unavailable</span>';
 
                 card.innerHTML = `
-                    <div style="position: relative;">
-                        <img src="${imageUrl}" alt="${food.name}" class="card-img" onerror="this.src='https://placehold.co/400x300/667eea/white?text=Food'">
-                        ${!food.is_available ? '<div style="position: absolute; top: 12px; right: 12px; background: rgba(255,140,0,0.9); color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600;">Unavailable</div>' : ''}
-                    </div>
+                    <img src="${imageUrl}" alt="${food.name}" class="card-img" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
                     <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 8px; font-size: 16px; font-weight: 600;">${food.name}</h4>
-                        <p class="text-muted" style="font-size: 13px; margin-bottom: 12px;">
-                            <i class="fas fa-store" style="margin-right: 4px;"></i> ${restaurantName}
-                        </p>
+                        <h4 class="card-title" style="margin-bottom: 4px;">${food.name}</h4>
+                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${restaurantName}</p>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 20px;">৳${parseFloat(food.price).toFixed(2)}</span>
-                            <span class="badge" style="background-color: ${food.is_vegetarian ? '#51CF66' : '#FF6B6B'}; color: white;">${vegetarianStatus}</span>
+                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${parseFloat(food.price).toFixed(2)}</span>
                         </div>
-                        ${food.preparation_time ? `<span style="font-size: 12px; color: var(--medium-gray);"><i class="fas fa-clock"></i> ${food.preparation_time} mins</span>` : ''}
+                        <span class="badge" style="background-color: ${food.is_vegetarian ? '#51CF66' : '#FF6B6B'}; color: white;">${vegetarianStatus}</span>
                         ${availabilityBadge}
                     </div>
                 `;
-                
-                // Navigate to foods.html page when clicked
-                card.onclick = () => {
-                    window.location.href = 'pages/customer/foods.html';
-                };
-                
+                card.onclick = () => openFoodModal(food);
                 grid.appendChild(card);
             });
         }
@@ -441,7 +404,7 @@
             document.getElementById('modalFoodImage').src = food.image_url || 'https://via.placeholder/400x300?text=Food';
             document.getElementById('modalRestaurant').textContent = food.restaurant || 'Restaurant';
             document.getElementById('modalCategory').textContent = (food.category || 'main-course').replace('-', ' ').toUpperCase();
-            document.getElementById('modalPrice').textContent = '৳' + food.price.toFixed(2);
+            document.getElementById('modalPrice').textContent = '$' + food.price.toFixed(2);
             document.getElementById('modalRating').innerHTML = `<i class="fas fa-star" style="color: #FFD700;"></i> ${food.rating}`;
             document.getElementById('modalType').textContent = food.type === 'veg' ? 'Vegetarian' : food.type === 'vegan' ? 'Vegan' : 'Non-Vegetarian';
             document.getElementById('modalDescription').textContent = food.description || 'Delicious food item from our menu.';

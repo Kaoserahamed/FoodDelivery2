@@ -10,13 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load restaurants from backend
 async function loadRestaurants() {
     try {
-        const response = await fetch(`${API_URL}/admin/restaurants`);
+        const token = localStorage.getItem('authToken');
+        
+        const response = await fetch(`${API_URL}/admin/restaurants`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
 
-        allRestaurants = await response.json();
+        const data = await response.json();
+        allRestaurants = Array.isArray(data) ? data : [];
         console.log(`✅ Loaded ${allRestaurants.length} restaurants`);
 
         updateStats();
@@ -24,7 +33,7 @@ async function loadRestaurants() {
 
     } catch (error) {
         console.error('❌ Error loading restaurants:', error);
-        showAlert('Error loading restaurants', 'danger');
+        showAlert('Error loading restaurants. Please refresh the page.', 'danger');
     }
 }
 
@@ -32,13 +41,14 @@ async function loadRestaurants() {
 function updateStats() {
     const totalRestaurants = allRestaurants.length;
     const activeRestaurants = allRestaurants.filter(r => r.is_open).length;
-    const pendingRestaurants = 0; // Can be calculated based on approval status if needed
     const suspendedRestaurants = allRestaurants.filter(r => !r.is_open).length;
 
-    document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = totalRestaurants;
-    document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = activeRestaurants;
-    document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = pendingRestaurants;
-    document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = suspendedRestaurants;
+    const statCards = document.querySelectorAll('.stat-card .stat-value');
+    if (statCards.length >= 3) {
+        statCards[0].textContent = totalRestaurants;
+        statCards[1].textContent = activeRestaurants;
+        statCards[2].textContent = suspendedRestaurants;
+    }
 }
 
 // Display restaurants in table
@@ -79,13 +89,10 @@ function displayRestaurants(restaurants) {
                 <td><span class="badge ${statusBadge}">${statusText}</span></td>
                 <td>
                     <div class="table-actions">
-                        <button class="action-btn action-btn-view" title="View" onclick="viewRestaurant(${restaurant.restaurant_id})">
+                        <button class="action-btn action-btn-view" title="View Details" onclick="viewRestaurant(${restaurant.restaurant_id})">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="action-btn action-btn-edit" title="Edit" onclick="editRestaurant(${restaurant.restaurant_id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn action-btn-delete" title="${restaurant.is_open ? 'Suspend' : 'Activate'}" onclick="toggleRestaurant(${restaurant.restaurant_id}, ${restaurant.is_open})">
+                        <button class="action-btn ${restaurant.is_open ? 'action-btn-delete' : 'action-btn-edit'}" title="${restaurant.is_open ? 'Suspend' : 'Activate'}" onclick="toggleRestaurant(${restaurant.restaurant_id}, ${restaurant.is_open})">
                             <i class="fas fa-${restaurant.is_open ? 'ban' : 'check'}"></i>
                         </button>
                     </div>
@@ -124,22 +131,20 @@ document.addEventListener('click', (e) => {
 function viewRestaurant(restaurantId) {
     const restaurant = allRestaurants.find(r => r.restaurant_id === restaurantId);
     if (restaurant) {
-        showAlert(`Viewing ${restaurant.name}`, 'info');
+        alert(`Restaurant Details:\n\nName: ${restaurant.name}\nCuisine: ${restaurant.cuisine_type || 'N/A'}\nAddress: ${restaurant.address || 'N/A'}\nPhone: ${restaurant.phone || 'N/A'}\nEmail: ${restaurant.email || 'N/A'}\nRating: ${restaurant.rating || 'N/A'}\nTotal Orders: ${restaurant.total_orders || 0}\nStatus: ${restaurant.is_open ? 'Active' : 'Suspended'}`);
     }
-}
-
-function editRestaurant(restaurantId) {
-    showAlert('Edit functionality - Restaurant #' + restaurantId, 'info');
-    openModal('addRestaurantModal');
 }
 
 async function toggleRestaurant(restaurantId, currentStatus) {
     const action = currentStatus ? 'suspend' : 'activate';
     if (confirm(`Are you sure you want to ${action} this restaurant?`)) {
         try {
+            const token = localStorage.getItem('authToken');
+            
             const response = await fetch(`${API_URL}/admin/restaurants/${restaurantId}/toggle`, {
                 method: 'PUT',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -149,7 +154,7 @@ async function toggleRestaurant(restaurantId, currentStatus) {
             }
 
             const result = await response.json();
-            showAlert(result.message, 'success');
+            showAlert(result.message || `Restaurant ${action}d successfully`, 'success');
             
             // Reload restaurants
             setTimeout(() => loadRestaurants(), 1000);
@@ -161,20 +166,7 @@ async function toggleRestaurant(restaurantId, currentStatus) {
     }
 }
 
-// Save Restaurant
-function saveRestaurant(e) {
-    e.preventDefault();
-    showAlert('Restaurant added successfully!', 'success');
-    closeModal('addRestaurantModal');
-    e.target.reset();
-    // Reload restaurants
-    setTimeout(() => loadRestaurants(), 1000);
-}
 
-// Export Data
-function exportData() {
-    showAlert('Exporting restaurant data...', 'info');
-}
 
 // Filter Functions
 document.getElementById('filterStatus')?.addEventListener('change', (e) => {

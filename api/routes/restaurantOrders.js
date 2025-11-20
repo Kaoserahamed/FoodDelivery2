@@ -4,20 +4,21 @@ const db = require('../../config/database');
 const { verifyToken, isRestaurant } = require('../../middleware/auth');
 
 // Get all restaurant's orders (with filters)
-router.get('/', verifyToken, isRestaurant, (req, res) => {
-  const { status, date, sort = 'latest', limit = 20, offset = 0 } = req.query;
+router.get('/', verifyToken, isRestaurant, async (req, res) => {
+  try {
+    console.log('📦 GET /restaurant/orders - userId:', req.userId);
+    const { status, date, sort = 'latest', limit = 20, offset = 0 } = req.query;
 
-  // Get restaurant ID
-  db.query('SELECT restaurant_id FROM restaurants WHERE user_id = ?', [req.userId], (err, restaurants) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: 'Error finding restaurant', error: err });
-    }
+    // Get restaurant ID
+    const [restaurants] = await db.query('SELECT restaurant_id FROM restaurants WHERE user_id = ?', [req.userId]);
 
     if (restaurants.length === 0) {
+      console.error('❌ Restaurant not found for userId:', req.userId);
       return res.status(404).json({ success: false, message: 'Restaurant not found' });
     }
 
     const restaurantId = restaurants[0].restaurant_id;
+    console.log('✅ Restaurant found - ID:', restaurantId);
 
     let query = `
       SELECT 
@@ -80,54 +81,50 @@ router.get('/', verifyToken, isRestaurant, (req, res) => {
     query += ' LIMIT ? OFFSET ?';
     params.push(parseInt(limit), parseInt(offset));
 
-    db.query(query, params, (err, orders) => {
-      if (err) {
-        return res.status(500).json({ success: false, message: 'Error fetching orders', error: err });
+    console.log('🔍 Executing orders query for restaurant:', restaurantId);
+    const [orders] = await db.query(query, params);
+    console.log('✅ Orders fetched:', orders.length);
+
+    // Get total count for pagination
+    let countQuery = 'SELECT COUNT(*) AS total FROM orders WHERE restaurant_id = ?';
+    const countParams = [restaurantId];
+
+    if (status && status !== 'all') {
+      countQuery += ' AND status = ?';
+      countParams.push(status);
+    }
+
+    if (date) {
+      countQuery += ' AND DATE(order_date) = ?';
+      countParams.push(date);
+    }
+
+    const [countResult] = await db.query(countQuery, countParams);
+
+    console.log('✅ Sending response with', orders.length, 'orders');
+    res.status(200).json({
+      success: true,
+      orders,
+      pagination: {
+        total: countResult[0].total,
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        pages: Math.ceil(countResult[0].total / parseInt(limit))
       }
-
-      // Get total count for pagination
-      let countQuery = 'SELECT COUNT(*) AS total FROM orders WHERE restaurant_id = ?';
-      const countParams = [restaurantId];
-
-      if (status && status !== 'all') {
-        countQuery += ' AND status = ?';
-        countParams.push(status);
-      }
-
-      if (date) {
-        countQuery += ' AND DATE(order_date) = ?';
-        countParams.push(date);
-      }
-
-      db.query(countQuery, countParams, (err, countResult) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: 'Error counting orders', error: err });
-        }
-
-        res.status(200).json({
-          success: true,
-          orders,
-          pagination: {
-            total: countResult[0].total,
-            limit: parseInt(limit),
-            offset: parseInt(offset),
-            pages: Math.ceil(countResult[0].total / parseInt(limit))
-          }
-        });
-      });
     });
-  });
+  } catch (error) {
+    console.error('❌ Error in GET /restaurant/orders:', error);
+    res.status(500).json({ success: false, message: 'Error fetching orders', error: error.message });
+  }
 });
 
 // Get single order details with items
-router.get('/:orderId', verifyToken, isRestaurant, (req, res) => {
-  const { orderId } = req.params;
+router.get('/:orderId', verifyToken, isRestaurant, async (req, res) => {
+  try {
+    const { orderId } = req.params;
 
-  // Get restaurant ID
-  db.query('SELECT restaurant_id FROM restaurants WHERE user_id = ?', [req.userId], (err, restaurants) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: 'Error finding restaurant', error: err });
-    }
+    // Get restaurant ID
+    const [restaurants] = await db.query('SELECT restaurant_id FROM restaurants WHERE user_id = ?', [req.userId]);
 
     if (restaurants.length === 0) {
       return res.status(404).json({ success: false, message: 'Restaurant not found' });
@@ -148,61 +145,56 @@ router.get('/:orderId', verifyToken, isRestaurant, (req, res) => {
       WHERE o.order_id = ? AND o.restaurant_id = ?
     `;
 
-    db.query(orderQuery, [orderId, restaurantId], (err, orders) => {
-      if (err) {
-        return res.status(500).json({ success: false, message: 'Error fetching order', error: err });
+    const [orders] = await db.query(orderQuery, [orderId, restaurantId]);
+
+    if (orders.length === 0) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const order = orders[0];
+
+    // Get order items
+    const itemsQuery = `
+      SELECT 
+        oi.*,
+        m.name AS menu_item_name,
+        m.description AS menu_item_description
+      FROM order_items oi
+      LEFT JOIN menu_items m ON oi.item_id = m.item_id
+      WHERE oi.order_id = ?
+    `;
+
+    const [items] = await db.query(itemsQuery, [orderId]);
+
+    res.status(200).json({
+      success: true,
+      order: {
+        ...order,
+        items
       }
-
-      if (orders.length === 0) {
-        return res.status(404).json({ success: false, message: 'Order not found' });
-      }
-
-      const order = orders[0];
-
-      // Get order items
-      const itemsQuery = `
-        SELECT 
-          oi.*,
-          m.name AS menu_item_name,
-          m.description AS menu_item_description
-        FROM order_items oi
-        LEFT JOIN menu_items m ON oi.item_id = m.item_id
-        WHERE oi.order_id = ?
-      `;
-
-      db.query(itemsQuery, [orderId], (err, items) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: 'Error fetching order items', error: err });
-        }
-
-        res.status(200).json({
-          success: true,
-          order: {
-            ...order,
-            items
-          }
-        });
-      });
     });
-  });
+  } catch (error) {
+    console.error('❌ Error fetching order details:', error);
+    res.status(500).json({ success: false, message: 'Error fetching order', error: error.message });
+  }
 });
 
 // Update order status
-router.put('/:orderId/status', verifyToken, isRestaurant, (req, res) => {
-  const { orderId } = req.params;
-  const { status } = req.body;
+router.put('/:orderId/status', verifyToken, isRestaurant, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status, reason } = req.body;
 
-  const validStatuses = ['pending', 'accepted', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'cancelled'];
+    console.log(`📝 Updating order ${orderId} to status: ${status}`);
 
-  if (!status || !validStatuses.includes(status)) {
-    return res.status(400).json({ success: false, message: 'Invalid status' });
-  }
+    const validStatuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
 
-  // Get restaurant ID
-  db.query('SELECT restaurant_id FROM restaurants WHERE user_id = ?', [req.userId], (err, restaurants) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: 'Error finding restaurant', error: err });
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
     }
+
+    // Get restaurant ID
+    const [restaurants] = await db.query('SELECT restaurant_id FROM restaurants WHERE user_id = ?', [req.userId]);
 
     if (restaurants.length === 0) {
       return res.status(404).json({ success: false, message: 'Restaurant not found' });
@@ -211,46 +203,40 @@ router.put('/:orderId/status', verifyToken, isRestaurant, (req, res) => {
     const restaurantId = restaurants[0].restaurant_id;
 
     // Verify order belongs to restaurant
-    db.query(
+    const [orders] = await db.query(
       'SELECT order_id FROM orders WHERE order_id = ? AND restaurant_id = ?',
-      [orderId, restaurantId],
-      (err, orders) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: 'Error finding order', error: err });
-        }
-
-        if (orders.length === 0) {
-          return res.status(404).json({ success: false, message: 'Order not found' });
-        }
-
-        // Update order status
-        let updateQuery = 'UPDATE orders SET status = ?, updated_at = NOW()';
-        const params = [status];
-
-        if (status === 'delivered') {
-          updateQuery += ', actual_delivery_time = NOW()';
-        } else if (status === 'cancelled') {
-          updateQuery += ', cancelled_at = NOW()';
-        }
-
-        updateQuery += ' WHERE order_id = ?';
-        params.push(orderId);
-
-        db.query(updateQuery, params, (err, result) => {
-          if (err) {
-            return res.status(500).json({ success: false, message: 'Error updating order status', error: err });
-          }
-
-          res.status(200).json({
-            success: true,
-            message: 'Order status updated successfully',
-            orderId,
-            newStatus: status
-          });
-        });
-      }
+      [orderId, restaurantId]
     );
-  });
+
+    if (orders.length === 0) {
+      return res.status(404).json({ success: false, message: 'Order not found or does not belong to your restaurant' });
+    }
+
+    // Update order status
+    let updateQuery = 'UPDATE orders SET status = ?';
+    const params = [status];
+
+    if (status === 'delivered') {
+      updateQuery += ', actual_delivery_time = NOW()';
+    }
+
+    updateQuery += ' WHERE order_id = ?';
+    params.push(orderId);
+
+    await db.query(updateQuery, params);
+
+    console.log(`✅ Order ${orderId} updated to ${status}`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Order status updated successfully',
+      orderId: parseInt(orderId),
+      newStatus: status
+    });
+  } catch (error) {
+    console.error('❌ Error updating order status:', error);
+    res.status(500).json({ success: false, message: 'Error updating order status', error: error.message });
+  }
 });
 
 // Get dashboard statistics

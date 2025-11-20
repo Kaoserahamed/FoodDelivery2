@@ -132,6 +132,13 @@ router.get('/my-orders', verifyToken, async (req, res) => {
 
     const [orders] = await db.query(query, params);
 
+    // Fetch items for each order
+    for (let order of orders) {
+      const [items] = await db.query('SELECT * FROM order_items WHERE order_id = ?', [order.order_id]);
+      console.log(`📦 Order #${order.order_id} has ${items.length} items`);
+      order.items = items;
+    }
+
     // Get total count
     let countQuery = 'SELECT COUNT(*) AS total FROM orders WHERE user_id = ?';
     const countParams = [req.userId];

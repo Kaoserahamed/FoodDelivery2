@@ -84,16 +84,14 @@
                 <a href="dashboard.html" class="navbar-link">Dashboard</a>
                 <a href="orders.html" class="navbar-link active">Orders</a>
                 <a href="menu-management.html" class="navbar-link">Menu</a>
+                <a href="reviews.html" class="navbar-link">Reviews</a>
             </div>
             
             <div class="navbar-actions">
-                <div class="navbar-icon" onclick="refreshOrders()" style="cursor: pointer;">
+                <a href="notifications.html" class="navbar-icon">
                     <i class="fas fa-bell"></i>
                     <span class="navbar-badge" id="notificationBadge">0</span>
-                </div>
-                <div class="navbar-icon">
-                    <i class="fas fa-user-circle"></i>
-                </div>
+                </a>
                 <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
             </div>
         </nav>
@@ -121,14 +119,7 @@
                         <i class="fas fa-star"></i>
                         <span>Reviews</span>
                     </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Analytics</span>
-                    </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
+                    
                 </div>
 
                 <!-- Quick Stats -->
@@ -288,12 +279,14 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('restaurantAuthToken') || localStorage.getItem('authToken');
             if (!token) {
+                console.error('No restaurant auth token found, redirecting to login');
                 window.location.href = 'login.html';
                 return;
             }
             
+            console.log('Restaurant orders page initialized with token');
             loadOrders();
             // Auto-refresh every 30 seconds
             setInterval(loadOrders, 30000);
@@ -301,8 +294,12 @@
 
         // Load orders from backend
         async function loadOrders() {
-            const token = localStorage.getItem('authToken');
-            if (!token) return;
+            const token = localStorage.getItem('restaurantAuthToken') || localStorage.getItem('authToken');
+            if (!token) {
+                console.error('No auth token found');
+                window.location.href = 'login.html';
+                return;
+            }
 
             const ordersList = document.getElementById('ordersList');
             const refreshBtn = document.getElementById('refreshBtn');
@@ -340,10 +337,29 @@
                 }
             } catch (error) {
                 console.error('Error loading orders:', error);
+                
+                let errorMessage = error.message;
+                let additionalHelp = '';
+                
+                if (error.message.includes('403')) {
+                    errorMessage = 'Access Denied - Restaurant Login Required';
+                    additionalHelp = `
+                        <p style="margin-top: 12px;">You need to be logged in as a restaurant to view orders.</p>
+                        <p style="margin-top: 8px;">Please logout and login with your restaurant credentials:</p>
+                        <ul style="margin: 8px 0; padding-left: 20px;">
+                            <li>Email: spicepalace@restaurant.com</li>
+                            <li>Password: password123</li>
+                        </ul>
+                        <button class="btn btn-primary mt-md" onclick="logout()">Logout & Login as Restaurant</button>
+                    `;
+                } else {
+                    additionalHelp = '<button class="btn btn-sm btn-outline mt-md" onclick="loadOrders()">Try Again</button>';
+                }
+                
                 ordersList.innerHTML = `
                     <div class="alert alert-danger">
-                        <strong>Error loading orders:</strong> ${error.message}
-                        <br><button class="btn btn-sm btn-outline mt-md" onclick="loadOrders()">Try Again</button>
+                        <strong>Error loading orders:</strong> ${errorMessage}
+                        ${additionalHelp}
                     </div>
                 `;
             } finally {
@@ -521,7 +537,6 @@
                 'confirmed': { text: 'Confirmed', badgeClass: 'badge-info' },
                 'preparing': { text: 'Preparing', badgeClass: 'badge-info' },
                 'ready': { text: 'Ready for Pickup', badgeClass: 'badge-success' },
-                'out_for_delivery': { text: 'Out for Delivery', badgeClass: 'badge-info' },
                 'delivered': { text: 'Delivered', badgeClass: 'badge-success' },
                 'cancelled': { text: 'Cancelled', badgeClass: 'badge-danger' }
             };
@@ -571,13 +586,6 @@
                     break;
                 case 'ready':
                     buttons = `
-                        <button class="btn btn-primary" onclick="updateOrderStatus(${orderId}, 'out_for_delivery')">
-                            <i class="fas fa-truck"></i> Out for Delivery
-                        </button>
-                    `;
-                    break;
-                case 'out_for_delivery':
-                    buttons = `
                         <button class="btn btn-success" onclick="updateOrderStatus(${orderId}, 'delivered')">
                             <i class="fas fa-check"></i> Mark Delivered
                         </button>
@@ -607,7 +615,7 @@
                 return;
             }
 
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('restaurantAuthToken') || localStorage.getItem('authToken');
             
             try {
                 const response = await fetch(`${API_URL}/restaurant/orders/${orderId}`, {
@@ -647,7 +655,7 @@
 
         // Update order status
         async function updateOrderStatus(orderId, newStatus) {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('restaurantAuthToken') || localStorage.getItem('authToken');
             if (!token) return;
 
             try {
@@ -693,7 +701,7 @@
             const orderId = document.getElementById('rejectOrderId').value;
             const reason = document.getElementById('rejectReason').value;
             const details = document.getElementById('rejectDetails').value;
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('restaurantAuthToken') || localStorage.getItem('authToken');
 
             if (!reason) {
                 alert('Please select a rejection reason');
@@ -855,7 +863,10 @@
         // Logout
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('restaurantAuthToken');
                 localStorage.removeItem('authToken');
+                localStorage.removeItem('restaurantUser');
+                localStorage.removeItem('restaurantData');
                 window.location.href = '../../index.html';
             }
         }

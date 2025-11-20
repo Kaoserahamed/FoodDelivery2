@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Menu API</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .log { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #fee; color: #c00; }
+        .success { background: #efe; color: #060; }
+    </style>
+</head>
+<body>
+    <h1>Debug Menu API</h1>
+    <div id="logs"></div>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        const restaurantId = 1;
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = message;
+            document.getElementById('logs').appendChild(div);
+            console.log(message);
+        }
+        
+        async function testMenu() {
+            log('Starting menu test...');
+            log(`Restaurant ID: ${restaurantId}`);
+            log(`API Base URL: ${API_BASE_URL}`);
+            
+            // Test 1: Restaurant data
+            try {
+                log('\n--- Test 1: Fetching restaurant data ---');
+                const restaurantUrl = `${API_BASE_URL}/restaurants/${restaurantId}`;
+                log(`URL: ${restaurantUrl}`);
+                
+                const restaurantResponse = await fetch(restaurantUrl);
+                log(`Response status: ${restaurantResponse.status}`, restaurantResponse.ok ? 'success' : 'error');
+                
+                const restaurantData = await restaurantResponse.json();
+                log(`Restaurant name: ${restaurantData.name}`, 'success');
+                log(`Restaurant data: ${JSON.stringify(restaurantData, null, 2)}`);
+                
+            } catch (error) {
+                log(`ERROR in restaurant fetch: ${error.message}`, 'error');
+                log(`Error stack: ${error.stack}`, 'error');
+            }
+            
+            // Test 2: Menu data
+            try {
+                log('\n--- Test 2: Fetching menu data ---');
+                const menuUrl = `${API_BASE_URL}/restaurants/${restaurantId}/menu`;
+                log(`URL: ${menuUrl}`);
+                
+                const menuResponse = await fetch(menuUrl);
+                log(`Response status: ${menuResponse.status}`, menuResponse.ok ? 'success' : 'error');
+                log(`Response ok: ${menuResponse.ok}`);
+                
+                if (!menuResponse.ok) {
+                    const errorText = await menuResponse.text();
+                    log(`Error response: ${errorText}`, 'error');
+                    throw new Error(`HTTP ${menuResponse.status}`);
+                }
+                
+                const menuData = await menuResponse.json();
+                log(`Menu data structure: ${JSON.stringify(Object.keys(menuData))}`, 'success');
+                log(`Has success property: ${menuData.hasOwnProperty('success')}`);
+                log(`Success value: ${menuData.success}`);
+                log(`Has items property: ${menuData.hasOwnProperty('items')}`);
+                log(`Items is array: ${Array.isArray(menuData.items)}`);
+                log(`Items count: ${menuData.items ? menuData.items.length : 'N/A'}`, 'success');
+                
+                if (menuData.items && menuData.items.length > 0) {
+                    log(`First item: ${JSON.stringify(menuData.items[0], null, 2)}`);
+                }
+                
+            } catch (error) {
+                log(`ERROR in menu fetch: ${error.message}`, 'error');
+                log(`Error stack: ${error.stack}`, 'error');
+            }
+        }
+        
+        testMenu();
+    </script>
+</body>
+</html>

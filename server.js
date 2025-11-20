@@ -11,6 +11,7 @@ const orderRoutes = require('./api/routes/orders');
 const reviewRoutes = require('./api/routes/reviews');
 const userRoutes = require('./api/routes/users');
 const adminRoutes = require('./api/routes/admin');
+const notificationsRoutes = require('./api/routes/notifications');
 
 // Import new restaurant-specific routes
 const restaurantAuthRoutes = require('./api/routes/restaurantAuth');
@@ -23,6 +24,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// Serve static files
+app.use(express.static(__dirname));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -56,6 +60,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 // Restaurant-Specific Routes (for restaurant owners)
 app.use('/api/restaurant', restaurantAuthRoutes);

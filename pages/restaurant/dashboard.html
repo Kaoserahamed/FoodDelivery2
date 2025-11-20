@@ -34,16 +34,15 @@
                 <a href="dashboard.html" class="navbar-link active">Dashboard</a>
                 <a href="orders.html" class="navbar-link">Orders</a>
                 <a href="menu-management.html" class="navbar-link">Menu</a>
+                <a href="reviews.html" class="navbar-link">Reviews</a>
+                
             </div>
 
             <div class="navbar-actions">
-                <div class="navbar-icon">
+                <a href="notifications.html" class="navbar-icon">
                     <i class="fas fa-bell"></i>
-                    <span class="navbar-badge">5</span>
-                </div>
-                <div class="navbar-icon">
-                    <i class="fas fa-user-circle"></i>
-                </div>
+                    <span class="navbar-badge" id="notificationBadge">0</span>
+                </a>
                 <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
             </div>
         </nav>
@@ -67,18 +66,11 @@
                         <i class="fas fa-utensils"></i>
                         <span>Menu Management</span>
                     </a>
-                    <a href="#" class="sidebar-link">
+                    <a href="reviews.html" class="sidebar-link">
                         <i class="fas fa-star"></i>
                         <span>Reviews</span>
                     </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Analytics</span>
-                    </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
+                    
                 </div>
 
                 <!-- Restaurant Status Toggle -->
@@ -148,26 +140,6 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="card mt-xl">
-                    <div class="card-body">
-                        <h3 class="mb-lg">Quick Actions</h3>
-                        <div class="d-flex gap-md flex-wrap">
-                            <a href="orders.html" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Orders
-                            </a>
-                            <a href="menu-management.html" class="btn btn-secondary">
-                                <i class="fas fa-plus"></i> Add Menu Item
-                            </a>
-                            <button class="btn btn-outline" onclick="openModal('specialsModal')">
-                                <i class="fas fa-tag"></i> Add Special Offer
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-download"></i> Download Report
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Recent Orders -->
                 <div class="card mt-xl">
@@ -272,67 +244,7 @@
                     </div>
                 </div>
 
-                <!-- Popular Menu Items -->
-                <div class="card mt-xl">
-                    <div class="card-body">
-                        <h3 class="mb-lg">Popular Menu Items Today</h3>
-                        <div class="grid grid-3">
-                            <div
-                                style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
-                                <div class="d-flex align-center gap-md mb-sm">
-                                    <img src="https://via.placeholder.com/60?text=Food" alt="Item"
-                                        style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
-                                    <div>
-                                        <h4 style="margin: 0;">Butter Chicken</h4>
-                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Main
-                                            Course</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-between align-center">
-                                    <span class="text-muted">Orders: <span
-                                            class="fw-semibold text-primary">15</span></span>
-                                    <span class="price">$14.99</span>
-                                </div>
-                            </div>
-
-                            <div
-                                style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
-                                <div class="d-flex align-center gap-md mb-sm">
-                                    <img src="https://via.placeholder.com/60?text=Food" alt="Item"
-                                        style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
-                                    <div>
-                                        <h4 style="margin: 0;">Garlic Naan</h4>
-                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Breads
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-between align-center">
-                                    <span class="text-muted">Orders: <span
-                                            class="fw-semibold text-primary">12</span></span>
-                                    <span class="price">$3.99</span>
-                                </div>
-                            </div>
-
-                            <div
-                                style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
-                                <div class="d-flex align-center gap-md mb-sm">
-                                    <img src="https://via.placeholder.com/60?text=Food" alt="Item"
-                                        style="width: 60px; height: 60px; border-radius: var(--radius-md); object-fit: cover;">
-                                    <div>
-                                        <h4 style="margin: 0;">Chicken Biryani</h4>
-                                        <p class="text-muted" style="font-size: var(--font-size-sm); margin: 0;">Rice &
-                                            Biryani</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-between align-center">
-                                    <span class="text-muted">Orders: <span
-                                            class="fw-semibold text-primary">10</span></span>
-                                    <span class="price">$15.99</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
 
                 <!-- Sales Chart Placeholder -->
                 <div class="card mt-xl">
@@ -537,7 +449,6 @@
             tbody.innerHTML = orders.map(order => {
                 const statusBadges = {
                     'pending': '<span class="badge badge-warning">Pending</span>',
-                    'accepted': '<span class="badge badge-info">Accepted</span>',
                     'confirmed': '<span class="badge badge-info">Confirmed</span>',
                     'preparing': '<span class="badge badge-info">Preparing</span>',
                     'ready': '<span class="badge badge-success">Ready</span>',
@@ -549,10 +460,9 @@
                 const getActionButton = (status, orderId) => {
                     switch (status) {
                         case 'pending':
-                            return `<button class="action-btn action-btn-edit" onclick="updateOrderStatus(${orderId}, 'accepted')">
+                            return `<button class="action-btn action-btn-edit" onclick="updateOrderStatus(${orderId}, 'confirmed')">
                             <i class="fas fa-check"></i> Accept
                         </button>`;
-                        case 'accepted':
                         case 'confirmed':
                             return `<button class="action-btn action-btn-edit" onclick="updateOrderStatus(${orderId}, 'preparing')">
                             <i class="fas fa-fire"></i> Start Preparing
@@ -562,8 +472,8 @@
                             <i class="fas fa-check-circle"></i> Mark Ready
                         </button>`;
                         case 'ready':
-                            return `<button class="action-btn action-btn-edit" onclick="updateOrderStatus(${orderId}, 'out_for_delivery')">
-                            <i class="fas fa-truck"></i> Dispatch
+                            return `<button class="action-btn action-btn-edit" onclick="updateOrderStatus(${orderId}, 'delivered')">
+                            <i class="fas fa-check"></i> Mark Delivered
                         </button>`;
                         default:
                             return `<button class="action-btn action-btn-edit" onclick="viewOrder(${orderId})">
@@ -724,7 +634,7 @@
             try {
                 showLoading();
 
-                const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
+                const response = await fetch(`${API_URL}/restaurant/orders/${orderId}/status`, {
                     method: 'PUT',
                     headers: getHeaders(),
                     body: JSON.stringify({ status: newStatus })
@@ -734,10 +644,9 @@
 
                 if (response.ok && result.success) {
                     const statusMessages = {
-                        'accepted': 'Order accepted successfully!',
+                        'confirmed': 'Order accepted successfully!',
                         'preparing': 'Order is now being prepared',
                         'ready': 'Order is ready for pickup/delivery',
-                        'out_for_delivery': 'Order dispatched for delivery',
                         'delivered': 'Order marked as delivered',
                         'cancelled': 'Order cancelled'
                     };

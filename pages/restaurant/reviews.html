@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews - TasteNow Restaurant</title>
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../../index.html" class="navbar-brand">
+                <i class="fas fa-utensils"></i>
+                TasteNow Restaurant
+            </a>
+            
+            <button class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="dashboard.html" class="navbar-link">Dashboard</a>
+                <a href="orders.html" class="navbar-link">Orders</a>
+                <a href="menu-management.html" class="navbar-link">Menu</a>
+                <a href="reviews.html" class="navbar-link active">Reviews</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <a href="notifications.html" class="navbar-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="navbar-badge" id="notificationBadge">0</span>
+                </a>
+                <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mt-xl mb-xl">
+        <div class="layout-sidebar">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-menu">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="orders.html" class="sidebar-link">
+                        <i class="fas fa-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                    <a href="menu-management.html" class="sidebar-link">
+                        <i class="fas fa-utensils"></i>
+                        <span>Menu</span>
+                    </a>
+                    <a href="reviews.html" class="sidebar-link active">
+                        <i class="fas fa-star"></i>
+                        <span>Reviews</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Page Header -->
+                <div class="dashboard-header">
+                    <h1>Customer Reviews</h1>
+                    <p class="text-muted">View and manage customer feedback</p>
+                </div>
+
+                <!-- Rating Overview -->
+                <div class="card mb-lg">
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--spacing-xl); align-items: center;">
+                            <!-- Overall Rating -->
+                            <div style="text-align: center; padding: var(--spacing-lg);">
+                                <div style="font-size: 4rem; font-weight: 700; color: var(--primary-color); margin-bottom: var(--spacing-sm);" id="averageRating">0.0</div>
+                                <div style="font-size: 1.5rem; color: #FFD700; margin-bottom: var(--spacing-sm);">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-muted" id="totalReviews">0 reviews</p>
+                            </div>
+
+                            <!-- Rating Breakdown -->
+                            <div>
+                                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-sm);">
+                                    <span style="width: 60px;">5 stars</span>
+                                    <div style="flex: 1; height: 8px; background: var(--gray); border-radius: 4px; overflow: hidden;">
+                                        <div id="bar5" style="height: 100%; background: #FFD700; width: 0%; transition: width 0.3s;"></div>
+                                    </div>
+                                    <span style="width: 40px; text-align: right;" id="count5">0</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-sm);">
+                                    <span style="width: 60px;">4 stars</span>
+                                    <div style="flex: 1; height: 8px; background: var(--gray); border-radius: 4px; overflow: hidden;">
+                                        <div id="bar4" style="height: 100%; background: #FFD700; width: 0%; transition: width 0.3s;"></div>
+                                    </div>
+                                    <span style="width: 40px; text-align: right;" id="count4">0</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-sm);">
+                                    <span style="width: 60px;">3 stars</span>
+                                    <div style="flex: 1; height: 8px; background: var(--gray); border-radius: 4px; overflow: hidden;">
+                                        <div id="bar3" style="height: 100%; background: #FFD700; width: 0%; transition: width 0.3s;"></div>
+                                    </div>
+                                    <span style="width: 40px; text-align: right;" id="count3">0</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-sm);">
+                                    <span style="width: 60px;">2 stars</span>
+                                    <div style="flex: 1; height: 8px; background: var(--gray); border-radius: 4px; overflow: hidden;">
+                                        <div id="bar2" style="height: 100%; background: #FFD700; width: 0%; transition: width 0.3s;"></div>
+                                    </div>
+                                    <span style="width: 40px; text-align: right;" id="count2">0</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                                    <span style="width: 60px;">1 star</span>
+                                    <div style="flex: 1; height: 8px; background: var(--gray); border-radius: 4px; overflow: hidden;">
+                                        <div id="bar1" style="height: 100%; background: #FFD700; width: 0%; transition: width 0.3s;"></div>
+                                    </div>
+                                    <span style="width: 40px; text-align: right;" id="count1">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="card mb-lg">
+                    <div class="card-body" style="padding: var(--spacing-md);">
+                        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+                            <select class="form-control" style="max-width: 200px;" id="filterRating" onchange="filterReviews()">
+                                <option value="all">All Ratings</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                            <select class="form-control" style="max-width: 200px;" id="sortBy" onchange="sortReviews()">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="highest">Highest Rating</option>
+                                <option value="lowest">Lowest Rating</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews List -->
+                <div id="reviewsContainer">
+                    <div style="text-align: center; padding: var(--spacing-xl); color: var(--medium-gray);">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Loading reviews...</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" style="display: none; text-align: center; padding: var(--spacing-xl);">
+                    <i class="fas fa-star" style="font-size: 3rem; color: var(--medium-gray); margin-bottom: var(--spacing-md);"></i>
+                    <h3 style="color: var(--medium-gray);">No reviews yet</h3>
+                    <p style="color: var(--medium-gray);">Customer reviews will appear here once they start rating your restaurant</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 TasteNow Restaurant Portal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/restaurant-reviews.js"></script>
+</body>
+</html>

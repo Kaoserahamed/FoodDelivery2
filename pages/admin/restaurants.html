@@ -30,16 +30,17 @@
                 <a href="dashboard.html" class="navbar-link">Dashboard</a>
                 <a href="restaurants.html" class="navbar-link active">Restaurants</a>
                 <a href="users.html" class="navbar-link">Users</a>
+                
             </div>
             
             <div class="navbar-actions">
-                <div class="navbar-icon">
+                <!-- <div class="navbar-icon">
                     <i class="fas fa-bell"></i>
                     <span class="navbar-badge">8</span>
                 </div>
                 <div class="navbar-icon">
                     <i class="fas fa-user-circle"></i>
-                </div>
+                </div> -->
                 <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
             </div>
         </nav>
@@ -63,29 +64,6 @@
                         <i class="fas fa-users"></i>
                         <span>Users</span>
                     </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-receipt"></i>
-                        <span>Orders</span>
-                    </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Analytics</span>
-                    </a>
-                    <a href="#" class="sidebar-link">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="mt-xl" style="padding: var(--spacing-md); background-color: var(--light-gray); border-radius: var(--radius-md);">
-                    <h4 class="mb-md">Quick Actions</h4>
-                    <button class="btn btn-primary btn-block btn-sm mb-sm" onclick="openModal('addRestaurantModal')">
-                        <i class="fas fa-plus"></i> Add Restaurant
-                    </button>
-                    <button class="btn btn-secondary btn-block btn-sm" onclick="exportData()">
-                        <i class="fas fa-download"></i> Export
-                    </button>
                 </div>
             </aside>
 
@@ -98,9 +76,6 @@
                             <h1>Manage Restaurants</h1>
                             <p class="text-muted">View and manage all restaurant accounts</p>
                         </div>
-                        <button class="btn btn-primary" onclick="openModal('addRestaurantModal')">
-                            <i class="fas fa-plus"></i> Add New Restaurant
-                        </button>
                     </div>
                 </div>
 
@@ -152,7 +127,7 @@
                                 <th>Orders</th>
                                 <th>Rating</th>
                                 <th>Status</th>
-                                <th style="width: 200px;">Actions</th>
+                                <th style="width: 120px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="restaurantsTable">
@@ -166,64 +141,6 @@
                     </table>
                 </div>
             </main>
-        </div>
-    </div>
-
-    <!-- Add Restaurant Modal -->
-    <div class="modal" id="addRestaurantModal">
-        <div class="modal-dialog" style="max-width: 600px;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Add New Restaurant</h2>
-                    <button class="modal-close" onclick="closeModal('addRestaurantModal')">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form onsubmit="saveRestaurant(event)">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Restaurant Name *</label>
-                                <input type="text" class="form-control" placeholder="Enter restaurant name" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Cuisine Type *</label>
-                                <input type="text" class="form-control" placeholder="e.g., Italian, Indian" required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Owner Name *</label>
-                                <input type="text" class="form-control" placeholder="Enter owner name" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Email *</label>
-                                <input type="email" class="form-control" placeholder="owner@restaurant.com" required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Phone *</label>
-                                <input type="tel" class="form-control" placeholder="Enter phone number" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">City *</label>
-                                <input type="text" class="form-control" placeholder="Enter city" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Address *</label>
-                            <textarea class="form-control" placeholder="Enter restaurant address" rows="2" required></textarea>
-                        </div>
-
-                        <div class="form-actions" style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
-                            <button type="submit" class="btn btn-primary">Add Restaurant</button>
-                            <button type="button" class="btn btn-outline" onclick="closeModal('addRestaurantModal')">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 

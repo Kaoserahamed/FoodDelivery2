@@ -76,11 +76,11 @@
                     </div>
                 </div>
 
-                <div class="mt-lg">
+                <!-- <div class="mt-lg">
                     <a href="menu.html" class="btn btn-outline">
                         <i class="fas fa-plus"></i> Add More Items
                     </a>
-                </div>
+                </div> -->
             </div>
 
             <!-- Cart Summary -->
@@ -89,25 +89,25 @@
 
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span id="subtotal">$0.00</span>
+                    <span id="subtotal">৳0.00</span>
                 </div>
 
                 <div class="summary-row">
                     <span>Delivery Fee</span>
-                    <span id="deliveryFee">$3.99</span>
+                    <span id="deliveryFee">৳50.00</span>
                 </div>
 
                 <div class="summary-row">
                     <span>Tax (8%)</span>
-                    <span id="tax">$0.00</span>
+                    <span id="tax">৳0.00</span>
                 </div>
 
                 <div class="summary-row total">
                     <span>Total</span>
-                    <span id="total">$0.00</span>
+                    <span id="total">৳0.00</span>
                 </div>
 
-                <div class="mt-lg">
+                <!-- <div class="mt-lg">
                     <div class="form-group">
                         <label class="form-label">Have a promo code?</label>
                         <div class="d-flex gap-sm">
@@ -115,7 +115,7 @@
                             <button class="btn btn-secondary" id="applyPromo">Apply</button>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="mt-lg">
                     <div class="form-group">
@@ -177,7 +177,7 @@
 
     <script>
         const API_URL = 'http://localhost:5000/api';
-        const DELIVERY_FEE = 3.99;
+        const DELIVERY_FEE = 50.00;
         const TAX_RATE = 0.08;
 
         // Load cart from localStorage
@@ -233,7 +233,7 @@
           </div>
         </div>
         <div class="cart-item-actions">
-          <span class="price">$${itemTotal}</span>
+          <span class="price">৳${itemTotal}</span>
           <button class="btn btn-sm" onclick="removeItem(${index})"
             style="background-color: var(--danger-color); color: var(--white);">
             <i class="fas fa-trash"></i>
@@ -273,9 +273,9 @@
             const tax = subtotal * TAX_RATE;
             const total = subtotal + DELIVERY_FEE + tax;
 
-            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
-            document.getElementById('tax').textContent = '$' + tax.toFixed(2);
-            document.getElementById('total').textContent = '$' + total.toFixed(2);
+            document.getElementById('subtotal').textContent = '৳' + subtotal.toFixed(2);
+            document.getElementById('tax').textContent = '৳' + tax.toFixed(2);
+            document.getElementById('total').textContent = '৳' + total.toFixed(2);
 
             // Update badge
             const badge = document.getElementById('cartBadge');

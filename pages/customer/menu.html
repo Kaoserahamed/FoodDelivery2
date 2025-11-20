@@ -87,7 +87,7 @@
                             <span id="deliveryTime">Loading...</span>
                         </div>
                         <div class="restaurant-meta-item">
-                            <i class="fas fa-dollar-sign"></i>
+                            <i class="fas fa-bangladeshi-taka-sign"></i>
                             <span id="priceRange">Loading...</span>
                         </div>
                         <div class="restaurant-meta-item">
@@ -113,7 +113,7 @@
         </div>
 
         <!-- Menu Items -->
-        <div class="grid" style="gap: var(--spacing-md);" id="menuItemsContainer">
+        <div class="grid" style="gap: var(--spacing-md); grid-template-columns: 1fr;" id="menuItemsContainer"></div>
             <!-- Menu items will be dynamically populated -->
         </div>
 
@@ -187,28 +187,40 @@
         // Initialize Page
         // ==========================================
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Page loaded, starting initialization...');
+            console.log('📍 Current URL:', window.location.href);
+            console.log('📍 Search params:', window.location.search);
+            
+            // Ensure error is hidden at start
+            hideError();
+            
             try {
                 // Get restaurant ID from URL
                 const params = new URLSearchParams(window.location.search);
                 currentRestaurantId = params.get('id');
+                
+                console.log('🔍 Extracted restaurant ID:', currentRestaurantId);
 
                 if (!currentRestaurantId) {
+                    console.error('❌ No restaurant ID in URL');
                     showError('No restaurant selected. Please go back and select a restaurant.');
                     return;
                 }
 
                 console.log('🏪 Loading restaurant ID:', currentRestaurantId);
 
-                // Load restaurant data and menu
-                await Promise.all([
-                    loadRestaurantData(),
-                    loadRestaurantMenu()
-                ]);
+                // Load restaurant data
+                await loadRestaurantData();
+                console.log('✅ Restaurant data loaded successfully');
+
+                // Load menu
+                await loadRestaurantMenu();
+                console.log('✅ Menu loaded successfully');
 
                 // Setup category filters
                 setupCategories();
 
-                // Hide loading and show content
+                // Hide loading, show content
                 document.getElementById('loadingSpinner').style.display = 'none';
                 document.getElementById('restaurantHeader').style.display = 'block';
                 document.getElementById('categoriesContainer').style.display = 'flex';
@@ -216,8 +228,11 @@
                 updateCartBadge();
                 setupEventListeners();
 
+                console.log('✅ Page initialization complete - no errors');
+
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
+                console.error('❌ Error details:', error.message, error.stack);
                 showError('Failed to load restaurant menu. Please try again.');
             }
         });
@@ -275,10 +290,11 @@
             }
 
             // Update rating
-            const ratingHtml = generateStarRating(restaurantData.rating || 4.5);
+            const rating = parseFloat(restaurantData.rating) || 4.5;
+            const ratingHtml = generateStarRating(rating);
             document.getElementById('restaurantRating').innerHTML = `
                 ${ratingHtml}
-                <span class="text-muted">(${(restaurantData.rating || 4.5).toFixed(1)}) • ${restaurantData.total_reviews || 0}+ ratings</span>
+                <span class="text-muted">(${rating.toFixed(1)}) • ${restaurantData.total_reviews || 0}+ ratings</span>
             `;
 
             // Update logo/image
@@ -308,16 +324,21 @@
                 }
 
                 const data = await response.json();
+                console.log('📦 API Response:', data);
 
                 if (data.success && Array.isArray(data.items)) {
                     menuItems = data.items;
+                    console.log('✅ Using data.items format');
                 } else if (Array.isArray(data)) {
                     menuItems = data;
+                    console.log('✅ Using array format');
                 } else {
+                    console.error('❌ Invalid data format:', data);
                     throw new Error('Invalid menu data format');
                 }
 
                 console.log('✅ Menu items loaded:', menuItems.length);
+                console.log('📋 First item:', menuItems[0]);
 
                 // Extract unique categories
                 menuItems.forEach(item => {
@@ -333,9 +354,7 @@
 
             } catch (error) {
                 console.error('❌ Error loading menu:', error);
-                if (menuItems.length === 0) {
-                    document.getElementById('noItemsMessage').style.display = 'block';
-                }
+                throw error;
             }
         }
 
@@ -364,13 +383,26 @@
         // Display Menu Items
         // ==========================================
         function displayMenuItems() {
+            console.log('🎨 displayMenuItems called with', menuItems.length, 'items');
             const container = document.getElementById('menuItemsContainer');
+            
+            if (!container) {
+                console.error('❌ menuItemsContainer not found!');
+                return;
+            }
+            
             container.innerHTML = '';
+            container.style.display = 'grid'; // Ensure container is visible
 
             if (menuItems.length === 0) {
+                console.log('⚠️ No menu items to display');
+                container.style.display = 'none';
                 document.getElementById('noItemsMessage').style.display = 'block';
                 return;
             }
+
+            document.getElementById('noItemsMessage').style.display = 'none';
+            console.log('✅ Rendering', menuItems.length, 'menu items');
 
             menuItems.forEach(item => {
                 const itemDiv = document.createElement('div');
@@ -397,8 +429,8 @@
                         </div>
                     </div>
                     <div class="menu-item-actions">
-                        <span class="price">$${parseFloat(item.price).toFixed(2)}</span>
-                        <button class="btn btn-primary btn-sm" onclick="addToCart(this, '${item.name}', ${item.item_id || item.menu_item_id}, ${parseFloat(item.price)}, '${imageUrl}')" style="width: 100%; margin-top: 8px;" ${!item.is_available ? 'disabled' : ''}>
+                        <span class="price">৳${parseFloat(item.price).toFixed(2)}</span>
+                        <button class="btn btn-primary btn-sm" onclick="addToCart(this, '${item.name}', ${item.item_id}, ${parseFloat(item.price)}, '${imageUrl}')" style="width: 100%; margin-top: 8px;" ${!item.is_available ? 'disabled' : ''}>
                             ${item.is_available ? 'Add to Cart' : 'Unavailable'}
                         </button>
                     </div>
@@ -532,9 +564,19 @@
 
         function showError(message) {
             document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('restaurantHeader').style.display = 'none';
+            document.getElementById('categoriesContainer').style.display = 'none';
+            document.getElementById('menuItemsContainer').style.display = 'none';
             const errorDiv = document.getElementById('errorMessage');
             document.getElementById('errorText').textContent = message;
             errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
         }
     </script>
     <script src="../../js/global-auth.js"></script>

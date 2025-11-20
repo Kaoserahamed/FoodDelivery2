@@ -48,10 +48,44 @@
     </header>
 
     <!-- Page Header -->
-    <section class="section" style="background: linear-gradient(135deg, var(--primary-color) 0%, #e85d75 100%); color: var(--white);">
-        <div class="container">
-            <h1 style="font-size: 2.5rem; color: var(--white); margin-bottom: var(--spacing-md);">Browse All Foods</h1>
-            <p style="font-size: 18px; margin-bottom: var(--spacing-lg);">Discover delicious dishes from all restaurants</p>
+    <section class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--white); padding: 60px 0; position: relative; overflow: hidden;">
+        <!-- Decorative Elements -->
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+        <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+        
+        <div class="container" style="position: relative; z-index: 1;">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <!-- Icon -->
+                <div style="margin-bottom: 20px;">
+                    <i class="fas fa-utensils" style="font-size: 48px; color: rgba(255,255,255,0.9);"></i>
+                </div>
+                
+                <!-- Title -->
+                <h1 style="font-size: 3rem; color: var(--white); margin-bottom: 16px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    Browse All Foods
+                </h1>
+                
+                <!-- Subtitle -->
+                <p style="font-size: 20px; margin-bottom: 32px; color: rgba(255,255,255,0.95); line-height: 1.6;">
+                    Discover delicious dishes from all restaurants
+                </p>
+                
+                <!-- Quick Stats -->
+                <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--white);" id="totalFoodsCount">0</div>
+                        <div style="font-size: 14px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Dishes</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--white);" id="totalRestaurantsCount">0</div>
+                        <div style="font-size: 14px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Restaurants</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--white);" id="totalCategoriesCount">0</div>
+                        <div style="font-size: 14px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Categories</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -59,27 +93,37 @@
     <div class="container" style="padding: var(--spacing-xl) 0;">
         <div class="layout-sidebar">
             <!-- Sidebar Filters -->
-            <aside class="sidebar">
+            <aside class="sidebar" style="position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto;">
                 <!-- Search -->
                 <div class="mb-lg">
-                    <h4 class="mb-md">Search Foods</h4>
+                    <h4 class="mb-md" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-search" style="color: var(--primary-color);"></i>
+                        Search Foods
+                    </h4>
                     <input type="text" class="form-control" placeholder="Search by name..." id="searchInput" style="width: 100%;">
                 </div>
 
                 <!-- Price Range Filter -->
                 <div class="mb-lg" style="padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray);">
-                    <h4 class="mb-md">Price Range</h4>
+                    <h4 class="mb-md" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-bangladeshi-taka-sign" style="color: var(--primary-color);"></i>
+                        Price Range
+                    </h4>
                     <div class="mb-md">
-                        <input type="range" min="0" max="50" value="50" id="priceRange" style="width: 100%;" oninput="updatePriceFilter(this.value)">
+                        <input type="range" min="0" max="5000" value="5000" id="priceRange" style="width: 100%; accent-color: var(--primary-color);" oninput="updatePriceFilter(this.value)">
                     </div>
-                    <p style="font-size: 14px; color: var(--medium-gray);">
-                        Max Price: <span id="priceValue">$50</span>
+                    <p style="font-size: 14px; color: var(--medium-gray); display: flex; justify-content: space-between;">
+                        <span>৳0</span>
+                        <span style="font-weight: 600; color: var(--primary-color);" id="priceValue">৳5000</span>
                     </p>
                 </div>
 
                 <!-- Category Filter -->
                 <div class="mb-lg" style="padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray);">
-                    <h4 class="mb-md">Category</h4>
+                    <h4 class="mb-md" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-th-large" style="color: var(--primary-color);"></i>
+                        Category
+                    </h4>
                     <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);" id="categoryFilterContainer">
                         <!-- Categories will be loaded dynamically -->
                         <p style="color: var(--medium-gray);">Loading categories...</p>
@@ -88,21 +132,27 @@
 
                 <!-- Dietary Preferences -->
                 <div class="mb-lg" style="padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray);">
-                    <h4 class="mb-md">Dietary</h4>
+                    <h4 class="mb-md" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-leaf" style="color: var(--primary-color);"></i>
+                        Dietary
+                    </h4>
                     <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
                         <label class="form-checkbox">
                             <input type="checkbox" class="dietaryFilter" value="true" onchange="filterByDietary()">
-                            <span>Vegetarian</span>
+                            <span>🥬 Vegetarian</span>
                         </label>
                         <label class="form-checkbox">
                             <input type="checkbox" class="dietaryFilter" value="false" onchange="filterByDietary()">
-                            <span>Non-Vegetarian</span>
+                            <span>🍗 Non-Vegetarian</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Clear Filters -->
-                <button class="btn btn-outline btn-block" onclick="clearAllFilters()">Clear All Filters</button>
+                <button class="btn btn-outline btn-block" onclick="clearAllFilters()" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-redo"></i>
+                    Clear All Filters
+                </button>
             </aside>
 
             <!-- Main Content -->
@@ -140,12 +190,14 @@
                 </div>
 
                 <!-- Results Count -->
-                <div class="mb-lg">
-                    <p style="color: var(--medium-gray);">Showing <span id="resultCount">0</span> items</p>
+                <div class="mb-lg" style="display: flex; justify-content: space-between; align-items: center;">
+                    <p style="color: var(--medium-gray); margin: 0;">
+                        <i class="fas fa-list"></i> Showing <span id="resultCount" style="font-weight: 600; color: var(--primary-color);">0</span> items
+                    </p>
                 </div>
 
                 <!-- Foods Grid -->
-                <div class="grid grid-4" id="foodsGrid"></div>
+                <div class="grid grid-4" id="foodsGrid" style="min-height: 400px;">
                     <!-- Food items will be dynamically populated -->
                 </div>
 
@@ -233,447 +285,8 @@
         </div>
     </div>
 
-    <script>
-        // ==========================================
-        // API Configuration
-        // ==========================================
-        const API_BASE_URL = 'http://localhost:5000/api';
-
-        // Global State
-        let allMenuItems = [];
-        let allRestaurants = {};
-        let filteredData = [];
-        let currentSort = 'popular';
-        let selectedFood = null;
-
-        // ==========================================
-        // Initialize Page
-        // ==========================================
-        async function initPage() {
-            try {
-                showLoading(true);
-                console.log('🔄 Initializing page...');
-                
-                await loadRestaurants();
-                await loadMenuItems();
-                loadCategories();
-                
-                filteredData = [...allMenuItems];
-                displayFoods();
-                setupEventListeners();
-                
-                showLoading(false);
-                console.log('✅ Page initialized successfully');
-            } catch (error) {
-                console.error('❌ Error initializing page:', error);
-                showError('Failed to load foods. Please try again later.');
-                showLoading(false);
-            }
-        }
-
-        // ==========================================
-        // Load Restaurants from Backend
-        // ==========================================
-        async function loadRestaurants() {
-            try {
-                console.log('📍 Loading restaurants from:', `${API_BASE_URL}/restaurants`);
-                
-                const response = await fetch(`${API_BASE_URL}/restaurants`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const restaurants = await response.json();
-                
-                if (Array.isArray(restaurants)) {
-                    restaurants.forEach(restaurant => {
-                        allRestaurants[restaurant.restaurant_id] = restaurant;
-                    });
-                    console.log('✅ Restaurants loaded:', restaurants.length);
-                } else {
-                    console.warn('⚠️ Unexpected restaurants response format');
-                }
-            } catch (error) {
-                console.error('❌ Error loading restaurants:', error);
-            }
-        }
-
-        // ==========================================
-        // Load Menu Items from Backend
-        // ==========================================
-        async function loadMenuItems() {
-            try {
-                console.log('🍽️ Loading menu items from:', `${API_BASE_URL}/menu/items/public`);
-                
-                const response = await fetch(`${API_BASE_URL}/menu/items/public`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.success && Array.isArray(data.items)) {
-                    allMenuItems = data.items;
-                } else if (Array.isArray(data)) {
-                    allMenuItems = data;
-                } else {
-                    console.warn('⚠️ Unexpected menu items response format:', data);
-                    allMenuItems = [];
-                }
-                
-                console.log('✅ Menu items loaded:', allMenuItems.length);
-            } catch (error) {
-                console.error('❌ Error loading menu items:', error);
-                showError('Failed to load menu items. Please refresh the page.');
-                allMenuItems = [];
-            }
-        }
-
-        // ==========================================
-        // Display Foods Grid
-        // ==========================================
-        function displayFoods() {
-            const grid = document.getElementById('foodsGrid');
-            const noResults = document.getElementById('noResults');
-            const resultCount = document.getElementById('resultCount');
-
-            if (filteredData.length === 0) {
-                grid.innerHTML = '';
-                noResults.style.display = 'block';
-                resultCount.textContent = '0';
-                return;
-            }
-
-            noResults.style.display = 'none';
-            grid.innerHTML = '';
-            resultCount.textContent = filteredData.length;
-
-            filteredData.forEach(food => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.style.cursor = 'pointer';
-
-                const imageUrl = food.image_url || 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(food.name);
-                const restaurant = allRestaurants[food.restaurant_id];
-                const restaurantName = restaurant?.name || 'Unknown Restaurant';
-                const vegetarianStatus = food.is_vegetarian ? '🥬 Veg' : '🍗 Non-Veg';
-                const availabilityBadge = food.is_available ? '' : '<span class="badge" style="background-color: #FF8C00; color: white; margin-left: 4px;">Unavailable</span>';
-
-                card.innerHTML = `
-                    <img src="${imageUrl}" alt="${food.name}" class="card-img" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
-                    <div class="card-body">
-                        <h4 class="card-title" style="margin-bottom: 4px;">${food.name}</h4>
-                        <p class="text-muted" style="font-size: 14px; margin-bottom: 8px;">${restaurantName}</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span class="fw-semibold" style="color: var(--primary-color); font-size: 18px;">$${parseFloat(food.price).toFixed(2)}</span>
-                        </div>
-                        <span class="badge" style="background-color: ${food.is_vegetarian ? '#51CF66' : '#FF6B6B'}; color: white;">${vegetarianStatus}</span>
-                        ${availabilityBadge}
-                    </div>
-                `;
-                card.onclick = () => openFoodModal(food);
-                grid.appendChild(card);
-            });
-        }
-
-        // ==========================================
-        // Event Listeners Setup
-        // ==========================================
-        function setupEventListeners() {
-            document.getElementById('searchInput').addEventListener('keyup', searchFoods);
-            document.getElementById('searchInputTop').addEventListener('keyup', (e) => {
-                document.getElementById('searchInput').value = e.target.value;
-                searchFoods();
-            });
-        }
-
-        // ==========================================
-        // Load Categories from Menu Items
-        // ==========================================
-        function loadCategories() {
-            const categories = new Set();
-            allMenuItems.forEach(item => {
-                if (item.category_name && item.category_name.trim()) {
-                    categories.add(item.category_name);
-                }
-            });
-
-            const container = document.getElementById('categoryFilterContainer');
-            
-            if (categories.size === 0) {
-                container.innerHTML = '<p style="color: var(--medium-gray);">All items</p>';
-                return;
-            }
-
-            container.innerHTML = '';
-            Array.from(categories).sort().forEach(category => {
-                const label = document.createElement('label');
-                label.className = 'form-checkbox';
-                label.innerHTML = `
-                    <input type="checkbox" class="categoryFilter" value="${category}" onchange="filterByCategory()">
-                    <span>${category}</span>
-                `;
-                container.appendChild(label);
-            });
-
-            console.log('✅ Categories loaded:', categories.size);
-        }
-
-        // ==========================================
-        // Search Foods
-        // ==========================================
-        function searchFoods() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            console.log('🔍 Searching for:', term);
-            applyAllFilters();
-        }
-
-        // ==========================================
-        // Filter Functions
-        // ==========================================
-        function filterByCategory() {
-            applyAllFilters();
-        }
-
-        function filterByDietary() {
-            applyAllFilters();
-        }
-
-        function applyAllFilters() {
-            let result = [...allMenuItems];
-
-            // Search filter
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            if (searchTerm) {
-                result = result.filter(food => 
-                    food.name.toLowerCase().includes(searchTerm) || 
-                    (food.category_name && food.category_name.toLowerCase().includes(searchTerm)) ||
-                    (allRestaurants[food.restaurant_id]?.name || '').toLowerCase().includes(searchTerm)
-                );
-            }
-
-            // Category filter
-            const selectedCategories = Array.from(document.querySelectorAll('.categoryFilter:checked')).map(el => el.value);
-            if (selectedCategories.length > 0) {
-                result = result.filter(food => selectedCategories.includes(food.category_name));
-            }
-
-            // Dietary filter
-            const selectedDietary = Array.from(document.querySelectorAll('.dietaryFilter:checked')).map(el => el.value);
-            if (selectedDietary.length > 0) {
-                result = result.filter(food => {
-                    if (selectedDietary.includes('true')) {
-                        if (food.is_vegetarian) return true;
-                    }
-                    if (selectedDietary.includes('false')) {
-                        if (!food.is_vegetarian) return true;
-                    }
-                    return false;
-                });
-            }
-
-            // Price filter
-            const maxPrice = parseFloat(document.getElementById('priceRange').value);
-            result = result.filter(food => parseFloat(food.price) <= maxPrice);
-
-            filteredData = result;
-            sortFoods(currentSort);
-        }
-
-        // ==========================================
-        // Sort Foods
-        // ==========================================
-        function sortFoods(sortType) {
-            currentSort = sortType;
-            let sorted = [...filteredData];
-
-            switch(sortType) {
-                case 'price-low':
-                    sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-                    break;
-                case 'price-high':
-                    sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-                    break;
-                case 'newest':
-                    sorted.reverse();
-                    break;
-                default:
-                    // popular (original order)
-            }
-
-            filteredData = sorted;
-            displayFoods();
-        }
-
-        // ==========================================
-        // Filter Controls
-        // ==========================================
-        function updatePriceFilter(value) {
-            document.getElementById('priceValue').textContent = '$' + value;
-            applyAllFilters();
-        }
-
-        function clearAllFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchInputTop').value = '';
-            document.getElementById('priceRange').value = '50';
-            document.getElementById('priceValue').textContent = '$50';
-            document.querySelectorAll('.categoryFilter, .dietaryFilter').forEach(el => el.checked = false);
-            filteredData = [...allMenuItems];
-            displayFoods();
-        }
-
-        // ==========================================
-        // Modal Functions
-        // ==========================================
-        function openFoodModal(food) {
-            selectedFood = food;
-            const restaurant = allRestaurants[food.restaurant_id] || {};
-
-            document.getElementById('modalFoodName').textContent = food.name;
-            document.getElementById('modalFoodImage').src = food.image_url || 'https://via.placeholder.com/500x300?text=' + encodeURIComponent(food.name);
-            document.getElementById('modalRestaurant').textContent = restaurant.name || 'Unknown Restaurant';
-            document.getElementById('modalCategory').textContent = food.category_name || 'Uncategorized';
-            document.getElementById('modalPrice').textContent = '$' + parseFloat(food.price).toFixed(2);
-            document.getElementById('modalType').textContent = food.is_vegetarian ? 'Vegetarian' : 'Non-Vegetarian';
-            document.getElementById('modalPrepTime').textContent = (food.preparation_time || 15) + ' mins';
-            document.getElementById('modalDescription').textContent = food.description || 'No description available';
-            document.getElementById('modalQty').value = 1;
-
-            openModal('foodModal');
-        }
-
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'flex';
-                modal.classList.add('active');
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'none';
-                modal.classList.remove('active');
-            }
-        }
-
-        // ==========================================
-        // Quantity Controls
-        // ==========================================
-        function increaseQty() {
-            const input = document.getElementById('modalQty');
-            input.value = parseInt(input.value) + 1;
-        }
-
-        function decreaseQty() {
-            const input = document.getElementById('modalQty');
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
-            }
-        }
-
-        // ==========================================
-        // Add to Cart
-        // ==========================================
-        function addToCart() {
-            if (!selectedFood) {
-                alert('Error: Food item not found');
-                return;
-            }
-
-            const foodName = document.getElementById('modalFoodName').textContent;
-            const qty = parseInt(document.getElementById('modalQty').value);
-            const foodImage = document.getElementById('modalFoodImage').src;
-            const foodPrice = parseFloat(document.getElementById('modalPrice').textContent.replace('$', ''));
-            const restaurantName = document.getElementById('modalRestaurant').textContent;
-
-            // Use the correct ID field from database
-            const foodId = selectedFood.item_id || selectedFood.menu_item_id || selectedFood.id;
-
-            const cartItem = {
-                id: foodId,
-                name: foodName,
-                price: foodPrice,
-                quantity: qty,
-                restaurant: restaurantName,
-                restaurantId: selectedFood.restaurant_id,
-                image: foodImage,
-                description: selectedFood.description
-            };
-
-            // Load existing cart
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-            // Check if item already exists
-            const existingItem = cart.find(item => item.id === foodId);
-            if (existingItem) {
-                existingItem.quantity += qty;
-            } else {
-                cart.push(cartItem);
-            }
-
-            // Save to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartBadge();
-
-            console.log('✅ Added to cart:', cartItem);
-            alert(`${foodName} x${qty} added to cart!`);
-            closeModal('foodModal');
-        }
-
-        // ==========================================
-        // UI Helpers
-        // ==========================================
-        function showLoading(show) {
-            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            errorText.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const badge = document.getElementById('cartBadge');
-            if (badge) {
-                badge.textContent = totalItems;
-            }
-        }
-
-        // ==========================================
-        // Event Listeners
-        // ==========================================
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-                e.target.classList.remove('active');
-            }
-        });
-
-        document.getElementById('navbarToggle')?.addEventListener('click', () => {
-            const menu = document.getElementById('navbarMenu');
-            menu.classList.toggle('active');
-        });
-
-        // ==========================================
-        // Initialize on Page Load
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage();
-            updateCartBadge();
-        });
-
-        window.addEventListener('storage', updateCartBadge);
-    </script>
+    <!-- JavaScript -->
+    <script src="../../js/foods-page.js"></script>
     <script src="../../js/global-auth.js"></script>
 </body>
 </html>

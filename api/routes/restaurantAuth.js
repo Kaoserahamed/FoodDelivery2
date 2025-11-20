@@ -400,4 +400,107 @@ router.put('/status', verifyToken, isRestaurant, (req, res) => {
   );
 });
 
+// ----------------------------------------------------
+// RESTAURANT DASHBOARD STATISTICS
+// ----------------------------------------------------
+router.get('/dashboard', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    
+    // Get restaurant info
+    const [restaurants] = await db.query(
+      'SELECT * FROM restaurants WHERE user_id = ?',
+      [userId]
+    );
+    
+    if (restaurants.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found'
+      });
+    }
+    
+    const restaurant = restaurants[0];
+    const restaurantId = restaurant.restaurant_id;
+    
+    // Get today's date range
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Get statistics
+    const [todayOrdersResult] = await db.query(
+      'SELECT COUNT(*) as count, COALESCE(SUM(total_amount), 0) as revenue FROM orders WHERE restaurant_id = ? AND order_date >= ? AND order_date < ?',
+      [restaurantId, today, tomorrow]
+    );
+    
+    const [pendingOrdersResult] = await db.query(
+      'SELECT COUNT(*) as count FROM orders WHERE restaurant_id = ? AND status IN ("pending", "confirmed")',
+      [restaurantId]
+    );
+    
+    const [reviewStats] = await db.query(
+      'SELECT AVG(rating) as avg_rating, COUNT(*) as review_count FROM reviews WHERE restaurant_id = ?',
+      [restaurantId]
+    );
+    
+    // Get recent orders (last 5)
+    const [recentOrders] = await db.query(`
+      SELECT o.*, u.name as customer_name, u.email as customer_email,
+             (SELECT COUNT(*) FROM order_items WHERE order_id = o.order_id) as item_count
+      FROM orders o
+      JOIN users u ON o.user_id = u.user_id
+      WHERE o.restaurant_id = ?
+      ORDER BY o.order_date DESC
+      LIMIT 5
+    `, [restaurantId]);
+    
+    // Get popular items (top 3 most ordered today)
+    const [popularItems] = await db.query(`
+      SELECT mi.*, mc.name as category_name, COUNT(oi.order_item_id) as order_count
+      FROM menu_items mi
+      LEFT JOIN menu_categories mc ON mi.category_id = mc.category_id
+      LEFT JOIN order_items oi ON mi.item_id = oi.item_id
+      LEFT JOIN orders o ON oi.order_id = o.order_id AND o.order_date >= ? AND o.order_date < ?
+      WHERE mi.restaurant_id = ?
+      GROUP BY mi.item_id
+      ORDER BY order_count DESC
+      LIMIT 3
+    `, [today, tomorrow, restaurantId]);
+    
+    const statistics = {
+      todayOrders: todayOrdersResult[0].count,
+      todayRevenue: '$' + parseFloat(todayOrdersResult[0].revenue || 0).toFixed(2),
+      pendingOrders: pendingOrdersResult[0].count,
+      averageRating: parseFloat(reviewStats[0].avg_rating || 0).toFixed(1),
+      reviewCount: reviewStats[0].review_count || 0
+    };
+    
+    res.status(200).json({
+      success: true,
+      data: {
+        restaurant: {
+          restaurant_id: restaurant.restaurant_id,
+          name: restaurant.name,
+          is_open: restaurant.is_open,
+          rating: restaurant.rating,
+          total_reviews: restaurant.total_reviews
+        },
+        statistics,
+        recentOrders,
+        popularItems
+      }
+    });
+    
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error loading dashboard',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;

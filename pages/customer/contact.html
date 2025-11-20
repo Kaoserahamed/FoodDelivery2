@@ -43,9 +43,14 @@
             <div class="navbar-actions">
                 <a href="cart.html" class="navbar-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="navbar-badge">3</span>
+                    <span class="navbar-badge" id="cartBadge">0</span>
                 </a>
-                <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                <a href="order-history.html" class="navbar-icon" id="ordersIcon" style="display: none;">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <div id="authLinks">
+                    <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -326,6 +331,76 @@
     <!-- JavaScript -->
     <script src="../../js/main.js"></script>
     <script>
+        // Update cart badge from localStorage
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                badge.textContent = totalItems;
+            }
+        }
+
+        // Update auth UI
+        function updateAuthUI() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('user');
+            const authLinks = document.getElementById('authLinks');
+            const ordersIcon = document.getElementById('ordersIcon');
+
+            if (!authLinks) return;
+
+            if (token && user) {
+                const userData = JSON.parse(user);
+                const firstName = userData.firstName || userData.fullName?.split(' ')[0] || 'User';
+                authLinks.innerHTML = `
+                    <span style="font-size: 14px; color: #666; margin-right: 16px;">
+                        Hi, ${firstName}!
+                    </span>
+                    <button id="logoutBtn" class="btn btn-primary btn-sm" style="cursor: pointer;">
+                        Logout
+                    </button>
+                `;
+
+                setTimeout(() => {
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', () => {
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('user');
+                            localStorage.removeItem('cart');
+                            window.location.href = '../../index.html';
+                        });
+                    }
+                }, 0);
+
+                if (ordersIcon) ordersIcon.style.display = 'inline-block';
+            } else {
+                authLinks.innerHTML = `
+                    <a href="login.html" class="btn btn-sm" style="background: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); margin-right: 8px; text-decoration: none; padding: 8px 16px; display: inline-block;">Login</a>
+                    <a href="register.html" class="btn btn-primary btn-sm" style="text-decoration: none; display: inline-block;">Sign Up</a>
+                `;
+                if (ordersIcon) ordersIcon.style.display = 'none';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartBadge();
+            updateAuthUI();
+        });
+
+        // Update on storage change
+        window.addEventListener('storage', () => {
+            updateCartBadge();
+            updateAuthUI();
+        });
+
+        // Navbar toggle
+        document.getElementById('navbarToggle')?.addEventListener('click', () => {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        });
+
         // FAQ Accordion
         document.querySelectorAll('.section').forEach(section => {
             section.addEventListener('click', function(e) {
