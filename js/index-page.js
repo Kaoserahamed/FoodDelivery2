@@ -339,3 +339,163 @@ window.addEventListener('storage', () => {
     updateCartBadge();
     updateAuthUI();
 });
+
+// Modal-related variables and functions
+let currentSelectedFood = null;
+
+// View dish details in modal
+function viewDishDetails(dish) {
+    console.log('Opening modal for dish:', dish);
+    currentSelectedFood = dish;
+
+    const imageUrl = dish.image_url || `https://placehold.co/500x300/667eea/white?text=${encodeURIComponent(dish.name)}`;
+    const restaurantName = dish.restaurant_name || 'Restaurant';
+    const categoryName = dish.category_name || 'Food Item';
+    const price = parseFloat(dish.price || 0);
+    const vegetarianType = dish.is_vegetarian ? 'Vegetarian' : 'Non-Vegetarian';
+    const prepTime = dish.preparation_time || 15;
+
+    document.getElementById('modalFoodName').textContent = dish.name;
+    document.getElementById('modalFoodImage').src = imageUrl;
+    document.getElementById('modalFoodImage').onerror = function() {
+        this.src = 'https://placehold.co/500x300/667eea/white?text=Food';
+    };
+    document.getElementById('modalRestaurant').textContent = restaurantName;
+    document.getElementById('modalCategory').textContent = categoryName;
+    document.getElementById('modalPrice').textContent = '৳' + price.toFixed(2);
+    document.getElementById('modalRating').innerHTML = `<i class="fas fa-clock" style="color: var(--primary-color);"></i> ${prepTime} mins`;
+    document.getElementById('modalType').textContent = vegetarianType;
+    document.getElementById('modalDescription').textContent = dish.description || 'Delicious food item from our menu.';
+    document.getElementById('modalQty').value = 1;
+
+    openModal('foodModal');
+}
+
+// Modal functions
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Quantity controls
+function increaseQty() {
+    const input = document.getElementById('modalQty');
+    if (input) {
+        input.value = parseInt(input.value) + 1;
+    }
+}
+
+function decreaseQty() {
+    const input = document.getElementById('modalQty');
+    if (input && parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+    }
+}
+
+// Add to cart from modal
+function addToCart() {
+    if (!currentSelectedFood) {
+        alert('Error: No food item selected');
+        return;
+    }
+
+    const qty = parseInt(document.getElementById('modalQty').value);
+    const foodId = currentSelectedFood.item_id || currentSelectedFood.id;
+    const imageUrl = currentSelectedFood.image_url || `https://placehold.co/400x300/667eea/white?text=${encodeURIComponent(currentSelectedFood.name)}`;
+
+    const cartItem = {
+        id: foodId,
+        name: currentSelectedFood.name,
+        price: parseFloat(currentSelectedFood.price),
+        quantity: qty,
+        restaurant: currentSelectedFood.restaurant_name || 'Restaurant',
+        restaurantId: currentSelectedFood.restaurant_id || 1,
+        image: imageUrl,
+        description: currentSelectedFood.description
+    };
+
+    // Load existing cart
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Check if item already exists
+    const existingItem = cart.find(item => item.id === foodId);
+    if (existingItem) {
+        existingItem.quantity += qty;
+    } else {
+        cart.push(cartItem);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update cart badge
+    updateCartBadge();
+
+    // Show success message
+    alert(`${currentSelectedFood.name} x${qty} added to cart!`);
+    closeModal('foodModal');
+}
+
+// Quick add to cart (from button on card)
+function quickAddToCart(itemId, itemName, price, restaurantName, restaurantId) {
+    const cartItem = {
+        id: itemId,
+        name: itemName,
+        price: parseFloat(price),
+        quantity: 1,
+        restaurant: restaurantName,
+        restaurantId: restaurantId,
+        image: `https://placehold.co/400x300/667eea/white?text=${encodeURIComponent(itemName)}`
+    };
+
+    // Load existing cart
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Check if item already exists
+    const existingItem = cart.find(item => item.id === itemId);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push(cartItem);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update cart badge
+    updateCartBadge();
+
+    alert(`${itemName} added to cart!`);
+}
+
+// Search from hero
+function searchFromHero() {
+    const searchTerm = document.getElementById('heroSearchInput').value;
+    if (searchTerm.trim()) {
+        window.location.href = `pages/customer/foods.html?search=${encodeURIComponent(searchTerm)}`;
+    }
+}
+
+// Newsletter subscription
+function subscribeNewsletter() {
+    const email = document.getElementById('newsletterEmail').value;
+    if (email && email.includes('@')) {
+        alert('Thank you for subscribing! You will receive updates at ' + email);
+        document.getElementById('newsletterEmail').value = '';
+    } else {
+        alert('Please enter a valid email address');
+    }
+}
