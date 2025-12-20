@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 require('dotenv').config();
 
 // Import existing routes
@@ -12,6 +13,7 @@ const reviewRoutes = require('./api/routes/reviews');
 const userRoutes = require('./api/routes/users');
 const adminRoutes = require('./api/routes/admin');
 const notificationsRoutes = require('./api/routes/notifications');
+const uploadRoutes = require('./api/routes/upload');
 
 // Import new restaurant-specific routes
 const restaurantAuthRoutes = require('./api/routes/restaurantAuth');
@@ -27,6 +29,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Serve static files
 app.use(express.static(__dirname));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -46,11 +49,8 @@ app.get('/api/health', (req, res) => {
 // In server.js, add this line with other routes
 const publicRestaurantRoutes = require('./api/routes/public');
 
-// Add this route BEFORE other restaurant routes
-app.use('/api/restaurants', publicRestaurantRoutes);
-
-// Make sure menu popular endpoint is accessible
-app.use('/api/menu', publicRestaurantRoutes);
+// Add public routes BEFORE other restaurant routes
+app.use('/api/public', publicRestaurantRoutes);
 
 // Customer & General Routes
 app.use('/api/auth', authRoutes);
@@ -61,6 +61,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Restaurant-Specific Routes (for restaurant owners)
 app.use('/api/restaurant', restaurantAuthRoutes);
