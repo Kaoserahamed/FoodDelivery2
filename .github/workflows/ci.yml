@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [development]
-  pull_request:
-    branches: [development]
+    branches: \[main\]
 
 jobs:
   lint:
@@ -88,3 +86,4 @@ jobs:
           sleep 10
           curl -f http://localhost:5000/api/restaurants
           docker compose down
+
